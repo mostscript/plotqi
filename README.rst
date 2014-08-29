@@ -26,8 +26,7 @@ See ``doc/COPYING.txt``
 Contributors
 ------------
 
-* `Sean Upton`_ (UPIQ, University of Utah Health Sciences)
-  .. _`Sean Upton`: https://github.com/seanupton
+* `Sean Upton <https://github.com/seanupton>` (UPIQ, University of Utah Health Sciences)
 
 * Atomic Jolt
 
