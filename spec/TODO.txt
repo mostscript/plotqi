@@ -1,0 +1,6 @@
+
+* Add JSON specification documents.
+
+* Reference code for model and/or requirements/ideas for transforming JSON.
+
+
