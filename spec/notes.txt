@@ -1,0 +1,4 @@
+Small multiples pilot/proof-of-concept:
+
+* See https://teamspace.upiq.org/trac/wiki/SmallMultiplesPilot and SVG
+  mockup contained within this directory.
