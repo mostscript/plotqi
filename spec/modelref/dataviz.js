@@ -84,7 +84,7 @@ uu.klass = (function (ns) {
         };
     };
 
-    /** 
+    /**
      * BaseContent: base class uses instance __props__ for storage of
      *              property values set/get using descriptors.
      */
@@ -119,7 +119,7 @@ uu.schema = (function (uu, ns) {
     ns.ValidationError.constructor = ns.ValidationError;
 
     /**
-     * fieldProperty(field): 
+     * fieldProperty(field):
      *  returns descriptor that implements field configuration, including
      *  default field value on read, and constraints:
      *  name: field name (required, but in practice may come from schema key)
@@ -130,7 +130,7 @@ uu.schema = (function (uu, ns) {
      *
      *   vocabulary: if present, a list of valid choices, set value must abide
      *               DEFAULT: undefined (ignored)
-     * 
+     *
      *   constraint: callable can throw ValidationError, and may return
      *               a normalized value
      *               DEFAULT: undefined (ignored)
@@ -468,7 +468,7 @@ uu.plotqi = (function (ns, uu, moment) {
             color: {
                 title: 'Line/bar color',
                 description: 'Primary series color name or HTML color code; ' +
-                             'if unspecified ("Auto" default), defer to ' + 
+                             'if unspecified ("Auto" default), defer to ' +
                              'automatic default color palette choices.',
                 type: 'string',
                 defaultValue: 'Auto',
@@ -477,7 +477,7 @@ uu.plotqi = (function (ns, uu, moment) {
             marker_color: {
                 title: 'Point marker fill color',
                 description: 'Data point marker color name or code; ' +
-                             'if unspecified ("Auto" default), defer to ' + 
+                             'if unspecified ("Auto" default), defer to ' +
                              'match the line/bar color.',
                 type: 'string',
                 defaultValue: 'Auto',
@@ -534,7 +534,7 @@ uu.plotqi = (function (ns, uu, moment) {
             trend_color: {
                 title: 'Trend line color, if applicable',
                 description: 'Trend line color name or code; ' +
-                             'if unspecified ("Auto" default), defer to ' + 
+                             'if unspecified ("Auto" default), defer to ' +
                              'match the line/bar color.',
                 type: 'string',
                 defaultValue: 'Auto'
@@ -550,7 +550,7 @@ uu.plotqi = (function (ns, uu, moment) {
                 defaultValue: 'defer'
             }
         };
-        
+
         bindSchema(DataSeries, DataSeries.prototype.schema);
 
         // Sort plug point -- return sorted and/or de-duplicated points,
@@ -600,7 +600,7 @@ uu.plotqi = (function (ns, uu, moment) {
         TimeDataSeries.prototype.schema = {
             break_lines: {
                 title: 'Break lines?',
-                description: 
+                description:
                     'When a value is missing for name or date on the ' +
                     'X axis, should the line be broken/discontinuous ' +
                     'such that no line runs through the empty/null ' +
@@ -649,6 +649,36 @@ uu.plotqi = (function (ns, uu, moment) {
         MultiSeriesChart.prototype.seriesConstructor = ns.DataSeries;
 
         MultiSeriesChart.prototype.schema = {
+            // Identifiction: shortname and uid
+            name: {
+                title: 'Short name',
+                description: 'Short name of plot, unique only to report it ' +
+                             'is contained within, usually descriptive, ' +
+                             'like a filename; often transformed from ' +
+                             'title.  May be present in JSON, but usually ' +
+                             'is not preferred for identification or ' +
+                             'data binding vs. UID; may be used in URL ' +
+                             'construction, but in itself does not contain ' +
+                             'full context or URI.',
+                type: 'string',
+                required: false
+            },
+            uid: {
+                title: 'UID',
+                description: 'UUID (hexidecimal representation) of chart, ' +
+                             'based on UUID of chart content in Teamspace ' +
+                             'CMS system.  May or may not be in canonical ' +
+                             'RFC 4122 format (with dashes) or unfieled ' +
+                             'hexidecimal format (usually, no dashes).',
+                type: 'string',
+                required: false
+            },
+            url: {
+                title: 'Chart URL',
+                description: 'Base URL to chart content',
+                type: 'string',
+                required: false
+            },
             // Basic metadata -- may be rendered in template in HTML source
             //                   rendered by server, if it is included in
             //                   DOM this way, plotting application may
@@ -816,7 +846,7 @@ uu.plotqi = (function (ns, uu, moment) {
                 title: 'Legend placement',
                 description: 'Where to place legend in relationship to the ' +
                              'grid. Note: the legend is disabled for less ' +
-                             'than two series/line unless the tabular '+ 
+                             'than two series/line unless the tabular '+
                              'legend is selected.',
                 type: 'string',
                 vocabulary: [
@@ -917,7 +947,7 @@ uu.plotqi = (function (ns, uu, moment) {
                              'MM/DD/YYYY may be good enough to justify ' +
                              'ignoring this?  I cannot remember why jqPlot ' +
                              'wants this interval-frequency on the domain, ' +
-                             'but it may be unnecessarily constraining to ' + 
+                             'but it may be unnecessarily constraining to ' +
                              'fix this to a controlled set of choices or ' +
                              'just plain unnecessary?',
                 type: 'string',
@@ -927,7 +957,7 @@ uu.plotqi = (function (ns, uu, moment) {
             },
             start: {
                 title: 'Start date',
-                description: 'Explicit start date; optional.  If an ' + 
+                description: 'Explicit start date; optional.  If an ' +
                              'explicit start date is not provided, one ' +
                              'should be computed from earliest value in ' +
                              'provided data.',
@@ -944,7 +974,7 @@ uu.plotqi = (function (ns, uu, moment) {
             },
             end: {
                 title: 'End date',
-                description: 'Explicit end date; optional.  If an ' + 
+                description: 'Explicit end date; optional.  If an ' +
                              'explicit end date is not provided, one ' +
                              'should be computed from latest value in ' +
                              'provided data.',
@@ -996,7 +1026,7 @@ uu.plotqi = (function (ns, uu, moment) {
             },
             auto_crop: {
                 title: 'Auto-crop data?',
-                description: 
+                description:
                     'If data contains sequential null values (incomplete ' +
                     'or no data calculable) on the right-hand of a ' +
                     'time-series plot, should that right-hand side ' +
@@ -1019,7 +1049,7 @@ uu.plotqi = (function (ns, uu, moment) {
         /* jshint newcap:false */
         var factory = ns.MultiSeriesChart;  // base/default type
         if (data.x_axis_type === 'date') {
-            factory = ns.TimeSeriesChart;    
+            factory = ns.TimeSeriesChart;
         }
         return new factory(data);
     };
