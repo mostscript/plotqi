@@ -47,7 +47,6 @@ uu.klass = (function (ns) {
         if (typeof o === 'function') {
             return o;
         }
-        //o = (typeof(o) === 'function') ? new o() : o;
         return ns.prototypeFor(o).constructor;
     };
 
@@ -56,7 +55,6 @@ uu.klass = (function (ns) {
         if (typeof o === 'function') {
             return o.prototype.__super__ || null;
         }
-        //o = (typeof(o) === 'function') ? new o() : o;
         return ns.prototypeFor(o).__super__ || null;
     };
 
@@ -70,7 +68,6 @@ uu.klass = (function (ns) {
         var ctor = ns.get(o),
             base = ns.base(o),
             hasParent = function (obj) { return !!ns.base(obj); };
-        //o = (typeof(o) === 'function') ? new o() : o;
         return hasParent(o) ? [ctor].concat(ns.all(base)) : [ctor];
     };
 
