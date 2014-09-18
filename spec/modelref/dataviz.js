@@ -621,7 +621,10 @@ uu.plotqi = (function (ns, uu, moment) {
                 };
             }
             // reload schema fields, skipping any omitted:
-            DataSeries.prototype.__super__.prototype.reload.apply(this, [opts, true]);
+            DataSeries.prototype.__super__.prototype.reload.apply(
+                this,
+                [opts, true]
+            );
             // reload this.data, traverse arry of points, normalize each:
             this.data = this.sorted(
                 (opts.data || []).map(
