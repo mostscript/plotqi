@@ -203,7 +203,11 @@ uu.schema = (function (uu, ns) {
         }
         return {
             get: function () {
-                return this.__props__[field.name] || field.defaultValue;
+                var rv = this.__props__[field.name];
+                if (rv === undefined) {
+                    return field.defaultValue;
+                }
+                return rv;
             },
             set: function (v) {
                 // validate() may normalize, may throw ValidationError
@@ -269,21 +273,27 @@ uu.schema = (function (uu, ns) {
 
         // Base constructor copies schema fields
         function BaseContent(opts) {
-            var schema = ns.merged(this.constructor);
             opts = opts || {};
             BaseContent.prototype.__super__.apply(this, [opts]);
-            // given merged schema, attempt setting values from passed opts:
-            Object.keys(schema).forEach(
-                function (name) {
-                    // May raise validation error on required missing
-                    this[name] = opts[name];
-                },
-                this
-            );
+            this.reload(opts);
             this.afterAdd(opts);
         }
 
         BaseContent.prototype.schema = {};  // base schema is empty
+
+        BaseContent.prototype.reload = function (opts, skipOmitted) {
+            var schema = ns.merged(this.constructor);
+            // given merged schema, attempt setting values from passed opts:
+            Object.keys(schema).forEach(
+                function (name) {
+                    // May raise validation error on required missing
+                    if (!skipOmitted || opts[name] !== undefined) {
+                        this[name] = opts[name];
+                    }
+                },
+                this
+            );
+        };
 
         BaseContent.prototype.afterAdd = function (opts) {};  // hook
 
@@ -427,20 +437,8 @@ uu.plotqi = (function (ns, uu, moment) {
             opts = opts || {};
             // superclass ctor will bind all DataSeries schema fields:
             DataSeries.prototype.__super__.apply(this, [opts]);
-            // Traverse the array of point data, normalize each point:
-            this.data = this.sorted(
-                (opts.data || []).map(
-                    function (pointData) {
-                        if (pointData instanceof Array &&
-                            pointData.length === 2) {
-                            // name, value pair
-                            pointData = pointData[1];  // just use value
-                        }
-                        return this.constructPoint(pointData);
-                    },
-                    this
-                )
-            );
+            // load data points:
+            this.reload({data: opts.data});
         }
 
         DataSeries.prototype.schema = {
@@ -583,6 +581,62 @@ uu.plotqi = (function (ns, uu, moment) {
         DataSeries.prototype.constructPoint = function (data) {
             var point = new this.pointConstructor(data);
             return point;
+        };
+
+        // range min/max fn (with caching), may return [-Infinity, Infinity] if no
+        // data is present
+        DataSeries.prototype.range = function () {
+            var getrange = function () {
+                    var min = Infinity,
+                        max = -Infinity;
+                    (this.data || []).forEach(
+                        function (point) {
+                            if (point.value !== null) {
+                                min = Math.min(min, point.value);
+                                max = Math.max(max, point.value);
+                            }
+                        },
+                        this
+                    );
+                    return [min, max];
+                };
+            if (this._range instanceof Array) {
+                return this._range;
+            }
+            this._range = getrange.call(this);
+            return this._range;
+        };
+
+        // either invalidate cached range (no args), or reload from data:
+        DataSeries.prototype.reload = function (opts) {
+            var _super = DataSeries.prototype.__super__;
+            // clear potentially cached values:
+            this._range = null;
+            if (opts === undefined) {
+                return;  // use existing data, now that cached values cleared
+            }
+            if (opts instanceof Array) {
+                opts = {
+                    data: opts
+                };
+            }
+            // reload schema fields, skipping any omitted:
+            DataSeries.prototype.__super__.prototype.reload.apply(this, [opts, true]);
+            // reload this.data, traverse arry of points, normalize each:
+            this.data = this.sorted(
+                (opts.data || []).map(
+                    function (pointData) {
+                        if (pointData instanceof Array &&
+                            pointData.length === 2) {
+                            // name, value pair
+                            pointData = pointData[1];  // just use value
+                        }
+                        return this.constructPoint(pointData);
+                    },
+                    this
+                )
+            );
+
         };
 
         return DataSeries;
@@ -914,6 +968,29 @@ uu.plotqi = (function (ns, uu, moment) {
         };
 
         bindSchema(MultiSeriesChart, MultiSeriesChart.prototype.schema);
+
+        MultiSeriesChart.prototype.range = function () {
+            var min = this.range_min,
+                max = this.range_max,
+                seriesRange = function (series) {
+                    return series.range();
+                },
+                rangeCmp = function (a, b) {
+                    return [Math.min(a[0], b[0]), Math.max(a[1], b[1])];
+                },
+                calculatedRange;
+            if (min !== undefined && max !== undefined) {
+                return [min, max];  // both explicit, do not calculate
+            }
+            // normalize against possibly undefined explicit min and/or max:
+            min = (this.range_min === undefined) ? Infinity : this.range_min;
+            max = (this.range_max === undefined) ? -Infinity : this.range_max;
+            // ...then return wholly or partially calculated result of
+            // walking all points in all series (via each series.range());
+            return this.series
+                       .map(seriesRange)
+                       .reduce(rangeCmp, [min, max]);
+        };
 
         return MultiSeriesChart;
     }());
