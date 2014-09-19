@@ -416,8 +416,10 @@ uu.plotqi = (function (ns, uu, moment) {
                 constraint: function (field, value) {
                     // normalize value on property set, if setter gets
                     // date stamp parsable by moment.js (e.g. ISO8601),
-                    // stored state is local Date object value:
-                    return normalizeDate(value);
+                    // stored state is local Date object value; if value
+                    // is empty, null, or zero, set explicitly to null,
+                    // which should trigger exception later in validation
+                    return (value) ? normalizeDate(value) : null;
                 }
             }
         };
@@ -678,6 +680,40 @@ uu.plotqi = (function (ns, uu, moment) {
         };
 
         bindSchema(TimeDataSeries, TimeDataSeries.prototype.schema);
+
+        TimeDataSeries.prototype.dataDomain = function (autoCrop) {
+            var msKey = function (point) { return point.key.getTime(); },
+                seriesDataCropped = (function () {
+                    // cropping is not the job of a series, but of the
+                    // chart; however, computing the crop for the series
+                    // in a vacuum helps determine range for just this
+                    // line/series IFF auto_crop is enabled on plot.
+                    var nullValued = function (point) {
+                            return (point && point.value === null);
+                        },
+                        result = (this.data || []).slice(),  // shallow copy
+                        lastSeen;
+                    do {
+                        lastSeen = result.pop();
+                    } while (lastSeen !== undefined && nullValued(lastSeen));
+                    if (lastSeen) {
+                        result.push(lastSeen);  // add last non-null value back
+                    }
+                    return result;
+                }).bind(this),
+                // either all data or data with auto-cropped right-hand-side
+                data = (autoCrop) ? seriesDataCropped() : this.data || [],
+                // data point keys, as millisecond units:
+                msKeys = data.map(msKey),
+                // shorthand min/max fn:
+                _min = function (s) { return Math.min.apply(null, s); },
+                _max = function (s) { return Math.max.apply(null, s); },
+                // calculated min/max keys:
+                minKey = msKeys.length ? normalizeDate(_min(msKeys)) : null,
+                maxKey = msKeys.length ? normalizeDate(_max(msKeys)) : null;
+            // return min/max, if available, otherwise NULL SENTINEL:
+            return msKeys ? [minKey, maxKey] : null;
+        };
 
         TimeDataSeries.prototype.pointConstructor = ns.TimeSeriesDataPoint;
 
@@ -1046,9 +1082,7 @@ uu.plotqi = (function (ns, uu, moment) {
                     // normalize value on property set, if setter gets
                     // date stamp parsable by moment.js (e.g. ISO8601),
                     // stored state is local Date object value:
-                    if (value !== undefined) {
-                        return normalizeDate(value);
-                    }
+                    return (value != null) ? normalizeDate(value) : value;
                 },
                 required: false
             },
@@ -1063,9 +1097,7 @@ uu.plotqi = (function (ns, uu, moment) {
                     // normalize value on property set, if setter gets
                     // date stamp parsable by moment.js (e.g. ISO8601),
                     // stored state is local Date object value:
-                    if (value !== undefined) {
-                        return normalizeDate(value);
-                    }
+                    return (value != null) ? normalizeDate(value) : value;
                 },
                 required: false
             },
@@ -1119,6 +1151,58 @@ uu.plotqi = (function (ns, uu, moment) {
         };
 
         bindSchema(TimeSeriesChart, TimeSeriesChart.prototype.schema);
+
+        TimeSeriesChart.prototype.dataDomain = function () {
+            var specifiedStart = this.start || null,
+                specifiedEnd = this.end || null,
+                autoCrop = this.auto_crop || false,
+                seriesDomain = function (series) {
+                    return series.dataDomain(autoCrop);  // arr or null
+                },
+                nonNull = function (v) { return v != null; },
+                domainCmp = function (a, b) {
+                    var msMinMax;
+                    if (!(a instanceof Array) || !(b instanceof Array)) {
+                        throw new Error('invalid domain boundary');
+                    }
+                    msMinMax = [
+                        Math.min(a[0].getTime(), b[0].getTime()),
+                        Math.max(a[1].getTime(), b[1].getTime())
+                    ];
+                    return [
+                        normalizeDate(msMinMax[0]),
+                        normalizeDate(msMinMax[1])
+                    ];
+                },
+                consideredSeries,
+                calculatedDomain,
+                now = normalizeDate('now'),
+                start,
+                end;
+            if (!this.series) {
+                // get specified start/end or last-resort fallback of now:
+                specifiedStart = specifiedStart || normalizeDate('now');
+                specifiedEnd = specifiedEnd || specifiedStart;
+                return [specifiedStart, specifiedEnd];  // no data to work on    
+            }
+            // calculated min/max from all considered (though possibly 
+            // cropped date keys in) data:
+            consideredSeries = this.series.map(seriesDomain).filter(nonNull);
+            if (!consideredSeries) {
+                // while series exist, all point values are null, bail out
+                return [
+                    specifiedStart || now,
+                    specifiedEnd || now
+                ];
+            }
+            // we have non-empty considered series with some non-null dates
+            // so we can reduce/compare without initial value to get min/max:
+            calculatedDomain = consideredSeries.reduce(domainCmp);
+            // prefer configured values to calculated values, return result:
+            start = specifiedStart || calculatedDomain[0];
+            end = specifiedEnd || calculatedDomain[1];
+            return [start, end];
+        };
 
         return TimeSeriesChart;
     }());
