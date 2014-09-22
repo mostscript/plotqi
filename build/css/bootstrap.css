@@ -5946,12 +5946,6 @@ button.close {
   -webkit-transform: translate3d(0, 0, 0);
           transform: translate3d(0, 0, 0);
   }
-.browsehappy {
-  padding: .2em 0;
-  margin: .2em 0;
-  color: #000;
-  background: #ccc;
-  }
 @-ms-viewport {
   width: device-width;
   }

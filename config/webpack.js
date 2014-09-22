@@ -16,7 +16,7 @@ module.exports = function (release) {
     cache: !release,
     debug: !release,
     devtool: false,
-    entry: './src/App.jsx',
+    entry: './src/App.js',
 
     stats: {
       colors: true,
@@ -38,7 +38,7 @@ module.exports = function (release) {
     module: {
       preLoaders: [
         {
-          test: '\\.js$',
+          test: '\\.js',
           exclude: 'node_modules',
           loader: 'jshint'
         }
@@ -60,10 +60,6 @@ module.exports = function (release) {
         {
           test: /\.png/,
           loader: 'url-loader?limit=10000&mimetype=image/png'
-        },
-        {
-          test: /\.jsx$/,
-          loader: 'jsx-loader?harmony'
         }
       ]
     }
