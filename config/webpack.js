@@ -16,6 +16,7 @@ module.exports = function (release) {
     cache: !release,
     debug: !release,
     devtool: false,
+    //devtool: 'source-map',
     entry: './src/App.js',
 
     stats: {
@@ -28,8 +29,11 @@ module.exports = function (release) {
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin(),
       new webpack.optimize.OccurenceOrderPlugin(),
-      new webpack.optimize.AggressiveMergingPlugin()
-    ] : [],
+      new webpack.optimize.AggressiveMergingPlugin(),
+      new webpack.dependencies.LabeledModulesPlugin()
+    ] : [
+      new webpack.dependencies.LabeledModulesPlugin()
+    ],
 
     resolve: {
       extensions: ['', '.webpack.js', '.web.js', '.js']
@@ -38,10 +42,14 @@ module.exports = function (release) {
     module: {
       preLoaders: [
         {
-          test: '\\.js',
+          test: '\\.js$',
           exclude: 'node_modules',
           loader: 'jshint'
-        }
+        },
+        {
+          test: /\.es6(\.js)?$/,
+          loader: 'esnext'
+        },
       ],
 
       loaders: [
@@ -60,6 +68,10 @@ module.exports = function (release) {
         {
           test: /\.png/,
           loader: 'url-loader?limit=10000&mimetype=image/png'
+        },
+        {
+          test: /\.es6(\.js)?$/,
+          loader: 'es6-loader'
         }
       ]
     }

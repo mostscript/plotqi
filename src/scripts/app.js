@@ -1,1 +1,0 @@
-var dataviz = require("../../spec/modelref/dataviz.js");
