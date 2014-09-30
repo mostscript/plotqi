@@ -1,0 +1,751 @@
+[
+  [
+    "test_numero_dos", 
+    {
+      "uid": "test_numero_dos", 
+      "range_min": 0, 
+      "series": [
+        {
+          "line_width": 4, 
+          "break_lines": true, 
+          "marker_style": "filledSquare", 
+          "marker_color": "#554e4e", 
+          "title": "Jupiter Pediatrics", 
+          "color": "#554e4e", 
+          "marker_size": 9.0, 
+          "marker_width": 4, 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "10 of 10 records -- We are doing a prescreen for family stressors. We are in the process of developing a screening tool if they prescreen was positive for toxic stress.", 
+                "uri": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/chart-review/may-2014", 
+                "value": 100.0, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }, 
+        {
+          "line_width": 2, 
+          "break_lines": true, 
+          "marker_style": "x", 
+          "marker_color": "#95baf4", 
+          "title": "All Teams - Project Average", 
+          "color": "#95baf4", 
+          "marker_size": 9.0, 
+          "marker_width": 2, 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-04-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 1.6666666666666667, 
+                "key": "2014-04-01T00:00:00", 
+                "title": "2014-04-01"
+              }
+            ], 
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "Average of 9 values found.", 
+                "value": 48.888888888888886, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ], 
+            [
+              "2014-06-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 58.125, 
+                "key": "2014-06-01T00:00:00", 
+                "title": "2014-06-01"
+              }
+            ], 
+            [
+              "2014-07-01T00:00:00", 
+              {
+                "note": "Average of 7 values found.", 
+                "value": 88.36734693877551, 
+                "key": "2014-07-01T00:00:00", 
+                "title": "2014-07-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }
+      ], 
+      "labels": {
+        "2014-07-01": "Jul 2014", 
+        "2014-06-01": "Jun 2014", 
+        "2014-05-01": "May 2014", 
+        "2014-04-01": "Baseline"
+      }, 
+      "point_labels": "omit", 
+      "height": 100, 
+      "frequency": "monthly", 
+      "chart_type": "line", 
+      "goal": 80.0, 
+      "title": "% of patients screened for exposure of adverse events", 
+      "legend_location": "e", 
+      "height_units": "px", 
+      "width": 800, 
+      "range_max": 100, 
+      "x_axis_type": "date", 
+      "auto_crop": true, 
+      "start": "2014-04-01T00:00:00", 
+      "name": "of-patients-screened-for-exposure-of-adverse-events-2", 
+      "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-patients-screened-for-exposure-of-adverse-events-2", 
+      "goal_color": "#ff0000", 
+      "width_units": "px", 
+      "legend_placement": "tabular"
+    }
+  ], 
+  [
+    "this_is_a_test", 
+    {
+      "uid": "this_is_a_test", 
+      "range_min": 0, 
+      "series": [
+        {
+          "line_width": 4, 
+          "break_lines": true, 
+          "marker_style": "filledSquare", 
+          "marker_color": "#554e4e", 
+          "title": "Jupiter Pediatrics", 
+          "color": "#554e4e", 
+          "marker_size": 9.0, 
+          "marker_width": 4, 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "10 of 10 records -- We are doing a prescreen for family stressors. We are in the process of developing a screening tool if they prescreen was positive for toxic stress.", 
+                "uri": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/chart-review/may-2014", 
+                "value": 100.0, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }, 
+        {
+          "line_width": 2, 
+          "break_lines": true, 
+          "marker_style": "x", 
+          "marker_color": "#95baf4", 
+          "title": "All Teams - Project Average", 
+          "color": "#95baf4", 
+          "marker_size": 9.0, 
+          "marker_width": 2, 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-04-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 1.6666666666666667, 
+                "key": "2014-04-01T00:00:00", 
+                "title": "2014-04-01"
+              }
+            ], 
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "Average of 9 values found.", 
+                "value": 48.888888888888886, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ], 
+            [
+              "2014-06-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 58.125, 
+                "key": "2014-06-01T00:00:00", 
+                "title": "2014-06-01"
+              }
+            ], 
+            [
+              "2014-07-01T00:00:00", 
+              {
+                "note": "Average of 7 values found.", 
+                "value": 88.36734693877551, 
+                "key": "2014-07-01T00:00:00", 
+                "title": "2014-07-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }
+      ], 
+      "labels": {
+        "2014-07-01": "Jul 2014", 
+        "2014-06-01": "Jun 2014", 
+        "2014-05-01": "May 2014", 
+        "2014-04-01": "Baseline"
+      }, 
+      "point_labels": "omit", 
+      "height": 50, 
+      "frequency": "monthly", 
+      "chart_type": "line", 
+      "goal": 80.0, 
+      "title": "% of patients screened for exposure of adverse events", 
+      "legend_location": "e", 
+      "height_units": "2:1", 
+      "width": 700, 
+      "range_max": 100, 
+      "x_axis_type": "date", 
+      "auto_crop": true, 
+      "start": "2014-04-01T00:00:00", 
+      "name": "of-patients-screened-for-exposure-of-adverse-events-2", 
+      "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-patients-screened-for-exposure-of-adverse-events-2", 
+      "goal_color": "#ff0000", 
+      "aspect_ratio": [
+        2, 
+        1
+      ], 
+      "width_units": "px", 
+      "legend_placement": "tabular"
+    }
+  ], 
+  [
+    "0ea73a08e820426c87ca48034794c3f5", 
+    {
+      "uid": "0ea73a08e820426c87ca48034794c3f5", 
+      "range_min": 0, 
+      "series": [
+        {
+          "line_width": 4, 
+          "break_lines": true, 
+          "marker_style": "filledSquare", 
+          "marker_color": "#554e4e", 
+          "title": "Jupiter Pediatrics", 
+          "color": "#554e4e", 
+          "marker_size": 9.0, 
+          "marker_width": 4, 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "10 of 10 records -- We are doing a prescreen for family stressors. We are in the process of developing a screening tool if they prescreen was positive for toxic stress.", 
+                "uri": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/chart-review/may-2014", 
+                "value": 100.0, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }, 
+        {
+          "line_width": 2, 
+          "break_lines": true, 
+          "marker_style": "x", 
+          "marker_color": "#95baf4", 
+          "title": "All Teams - Project Average", 
+          "color": "#95baf4", 
+          "marker_size": 9.0, 
+          "marker_width": 2, 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-04-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 1.6666666666666667, 
+                "key": "2014-04-01T00:00:00", 
+                "title": "2014-04-01"
+              }
+            ], 
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "Average of 9 values found.", 
+                "value": 48.888888888888886, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ], 
+            [
+              "2014-06-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 58.125, 
+                "key": "2014-06-01T00:00:00", 
+                "title": "2014-06-01"
+              }
+            ], 
+            [
+              "2014-07-01T00:00:00", 
+              {
+                "note": "Average of 7 values found.", 
+                "value": 88.36734693877551, 
+                "key": "2014-07-01T00:00:00", 
+                "title": "2014-07-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }
+      ], 
+      "labels": {
+        "2014-07-01": "Jul 2014", 
+        "2014-06-01": "Jun 2014", 
+        "2014-05-01": "May 2014", 
+        "2014-04-01": "Baseline"
+      }, 
+      "point_labels": "omit", 
+      "height": 50, 
+      "frequency": "monthly", 
+      "chart_type": "line", 
+      "goal": 80.0, 
+      "title": "% of patients screened for exposure of adverse events", 
+      "legend_location": "e", 
+      "height_units": "2:1", 
+      "width": 100, 
+      "range_max": 100, 
+      "x_axis_type": "date", 
+      "auto_crop": true, 
+      "start": "2014-04-01T00:00:00", 
+      "name": "of-patients-screened-for-exposure-of-adverse-events-2", 
+      "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-patients-screened-for-exposure-of-adverse-events-2", 
+      "goal_color": "#ff0000", 
+      "aspect_ratio": [
+        2, 
+        1
+      ], 
+      "width_units": "%", 
+      "legend_placement": "tabular"
+    }
+  ], 
+  [
+    "2f6cff1468054f8bad190f94690e3858", 
+    {
+      "uid": "2f6cff1468054f8bad190f94690e3858", 
+      "range_min": 0, 
+      "series": [
+        {
+          "line_width": 4, 
+          "break_lines": true, 
+          "marker_style": "filledSquare", 
+          "marker_color": "#554e4e", 
+          "title": "Jupiter Pediatrics", 
+          "color": "#554e4e", 
+          "marker_size": 9.0, 
+          "marker_width": 4, 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "7 of 10 (filtered) records -- We are doing a prescreen for family stressors. We are in the process of developing a screening tool if they prescreen was positive for toxic stress.", 
+                "uri": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/chart-review/may-2014", 
+                "value": 70.0, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }, 
+        {
+          "line_width": 2, 
+          "break_lines": true, 
+          "marker_style": "x", 
+          "marker_color": "#95baf4", 
+          "title": "All Teams - Project Average", 
+          "color": "#95baf4", 
+          "marker_size": 9.0, 
+          "marker_width": 2, 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-04-01T00:00:00", 
+              {
+                "note": "2 of 4 (filtered) records", 
+                "uri": "http://nohost/qiteamspace/toxic-stress/holladay-clinic/chart-review/baseline-2014", 
+                "value": 50.0, 
+                "key": "2014-04-01T00:00:00", 
+                "title": "2014-04-01"
+              }
+            ], 
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "Average of 7 values found.", 
+                "value": 88.09523809523809, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ], 
+            [
+              "2014-06-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 81.77083333333333, 
+                "key": "2014-06-01T00:00:00", 
+                "title": "2014-06-01"
+              }
+            ], 
+            [
+              "2014-07-01T00:00:00", 
+              {
+                "note": "Average of 7 values found.", 
+                "value": 84.12698412698413, 
+                "key": "2014-07-01T00:00:00", 
+                "title": "2014-07-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }
+      ], 
+      "labels": {
+        "2014-07-01": "Jul 2014", 
+        "2014-06-01": "Jun 2014", 
+        "2014-05-01": "May 2014", 
+        "2014-04-01": "Baseline"
+      }, 
+      "point_labels": "omit", 
+      "height": 50, 
+      "frequency": "monthly", 
+      "chart_type": "line", 
+      "goal": 80.0, 
+      "title": "% of patients evaluated for symptoms of toxic stress", 
+      "legend_location": "e", 
+      "height_units": "2:1", 
+      "width": 100, 
+      "range_max": 100, 
+      "x_axis_type": "date", 
+      "auto_crop": true, 
+      "start": "2014-04-01T00:00:00", 
+      "name": "of-patients-evaluated-for-symptoms-of-toxic-stress-2", 
+      "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-patients-evaluated-for-symptoms-of-toxic-stress-2", 
+      "goal_color": "#ff0000", 
+      "aspect_ratio": [
+        2, 
+        1
+      ], 
+      "width_units": "%", 
+      "legend_placement": "tabular"
+    }
+  ], 
+  [
+    "0af8eedd52a641cb94f36f3f6bd65fca", 
+    {
+      "uid": "0af8eedd52a641cb94f36f3f6bd65fca", 
+      "range_min": 0, 
+      "series": [
+        {
+          "line_width": 4, 
+          "break_lines": true, 
+          "marker_style": "filledSquare", 
+          "marker_color": "#554e4e", 
+          "title": "Jupiter Pediatrics", 
+          "color": "#554e4e", 
+          "marker_size": 9.0, 
+          "marker_width": 4, 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "10 of 10 (filtered) records -- We are doing a prescreen for family stressors. We are in the process of developing a screening tool if they prescreen was positive for toxic stress.", 
+                "uri": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/chart-review/may-2014", 
+                "value": 100.0, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }, 
+        {
+          "line_width": 2, 
+          "break_lines": true, 
+          "marker_style": "x", 
+          "marker_color": "#95baf4", 
+          "title": "All Teams - Project Average", 
+          "color": "#95baf4", 
+          "marker_size": 9.0, 
+          "marker_width": 2, 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-04-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 96.12068965517241, 
+                "key": "2014-04-01T00:00:00", 
+                "title": "2014-04-01"
+              }
+            ], 
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "Average of 9 values found.", 
+                "value": 97.77777777777777, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ], 
+            [
+              "2014-06-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 98.125, 
+                "key": "2014-06-01T00:00:00", 
+                "title": "2014-06-01"
+              }
+            ], 
+            [
+              "2014-07-01T00:00:00", 
+              {
+                "note": "Average of 7 values found.", 
+                "value": 94.28571428571429, 
+                "key": "2014-07-01T00:00:00", 
+                "title": "2014-07-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }
+      ], 
+      "labels": {
+        "2014-07-01": "Jul 2014", 
+        "2014-06-01": "Jun 2014", 
+        "2014-05-01": "May 2014", 
+        "2014-04-01": "Baseline"
+      }, 
+      "point_labels": "omit", 
+      "height": 50, 
+      "frequency": "monthly", 
+      "chart_type": "line", 
+      "goal": 80.0, 
+      "title": "% of positive screens with documented follow-up", 
+      "legend_location": "e", 
+      "height_units": "2:1", 
+      "width": 100, 
+      "range_max": 100, 
+      "x_axis_type": "date", 
+      "auto_crop": true, 
+      "start": "2014-04-01T00:00:00", 
+      "name": "of-positive-screens-with-documented-follow-up-2", 
+      "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-positive-screens-with-documented-follow-up-2", 
+      "goal_color": "#ff0000", 
+      "aspect_ratio": [
+        2, 
+        1
+      ], 
+      "width_units": "%", 
+      "legend_placement": "tabular"
+    }
+  ], 
+  [
+    "992ab24ea49c4f3c9ad2e3447f04e829", 
+    {
+      "uid": "992ab24ea49c4f3c9ad2e3447f04e829", 
+      "range_min": 0, 
+      "series": [
+        {
+          "line_width": 2, 
+          "break_lines": true, 
+          "marker_width": 2, 
+          "data": [
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "10 of 10 records -- We are doing a prescreen for family stressors. We are in the process of developing a screening tool if they prescreen was positive for toxic stress.", 
+                "uri": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/chart-review/may-2014", 
+                "value": 100.0, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ]
+          ], 
+          "title": "Jupiter Pediatrics", 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "marker_size": 9.0, 
+          "display_format": "%.1f", 
+          "marker_style": "square", 
+          "show_trend": false
+        }
+      ], 
+      "labels": {
+        "2014-05-01": "May 2014"
+      }, 
+      "point_labels": "omit", 
+      "height": 50, 
+      "frequency": "monthly", 
+      "chart_type": "line", 
+      "end": "2014-07-31T00:00:00", 
+      "goal": 80.0, 
+      "title": "% of patients screened for exposure of adverse events", 
+      "legend_location": "e", 
+      "height_units": "2:1", 
+      "width": 100, 
+      "range_max": 100, 
+      "x_axis_type": "date", 
+      "auto_crop": true, 
+      "start": "2014-04-01T00:00:00", 
+      "name": "of-patients-screened-for-exposure-of-adverse-events", 
+      "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-patients-screened-for-exposure-of-adverse-events", 
+      "goal_color": "#ff0000", 
+      "aspect_ratio": [
+        2, 
+        1
+      ], 
+      "width_units": "%", 
+      "legend_placement": "tabular"
+    }
+  ], 
+  [
+    "c5d834ad376f4275a8852767bfacf286", 
+    {
+      "uid": "c5d834ad376f4275a8852767bfacf286", 
+      "range_min": 0, 
+      "series": [
+        {
+          "line_width": 2, 
+          "break_lines": true, 
+          "marker_width": 2, 
+          "data": [
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "7 of 10 (filtered) records -- We are doing a prescreen for family stressors. We are in the process of developing a screening tool if they prescreen was positive for toxic stress.", 
+                "uri": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/chart-review/may-2014", 
+                "value": 70.0, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ]
+          ], 
+          "title": "Jupiter Pediatrics", 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "marker_size": 9.0, 
+          "display_format": "%.1f", 
+          "marker_style": "square", 
+          "show_trend": false
+        }
+      ], 
+      "labels": {
+        "2014-05-01": "May 2014"
+      }, 
+      "point_labels": "omit", 
+      "height": 50, 
+      "frequency": "monthly", 
+      "chart_type": "line", 
+      "end": "2014-07-31T00:00:00", 
+      "goal": 80.0, 
+      "title": "% of patients evaluated for symptoms of toxic stress", 
+      "legend_location": "e", 
+      "height_units": "2:1", 
+      "width": 100, 
+      "range_max": 100, 
+      "x_axis_type": "date", 
+      "auto_crop": true, 
+      "start": "2014-04-01T00:00:00", 
+      "name": "of-patients-evaluated-for-symptoms-of-toxic-stress", 
+      "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-patients-evaluated-for-symptoms-of-toxic-stress", 
+      "goal_color": "#ff0000", 
+      "aspect_ratio": [
+        2, 
+        1
+      ], 
+      "width_units": "%", 
+      "legend_placement": "tabular"
+    }
+  ], 
+  [
+    "8d3a059c77914ca88b370f2835bcf767", 
+    {
+      "uid": "8d3a059c77914ca88b370f2835bcf767", 
+      "range_min": 0, 
+      "series": [
+        {
+          "line_width": 2, 
+          "break_lines": true, 
+          "marker_width": 2, 
+          "data": [
+            [
+              "2014-05-01T00:00:00", 
+              {
+                "note": "10 of 10 (filtered) records -- We are doing a prescreen for family stressors. We are in the process of developing a screening tool if they prescreen was positive for toxic stress.", 
+                "uri": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/chart-review/may-2014", 
+                "value": 100.0, 
+                "key": "2014-05-01T00:00:00", 
+                "title": "2014-05-01"
+              }
+            ]
+          ], 
+          "title": "Jupiter Pediatrics", 
+          "point_labels": "defer", 
+          "trend_width": 2, 
+          "marker_size": 9.0, 
+          "display_format": "%.1f", 
+          "marker_style": "square", 
+          "show_trend": false
+        }
+      ], 
+      "labels": {
+        "2014-05-01": "May 2014"
+      }, 
+      "point_labels": "omit", 
+      "height": 50, 
+      "frequency": "monthly", 
+      "chart_type": "line", 
+      "end": "2014-07-31T00:00:00", 
+      "goal": 80.0, 
+      "title": "% of positive screens with documented follow-up", 
+      "legend_location": "e", 
+      "height_units": "2:1", 
+      "width": 100, 
+      "range_max": 100, 
+      "x_axis_type": "date", 
+      "auto_crop": true, 
+      "start": "2014-04-01T00:00:00", 
+      "name": "of-positive-screens-with-documented-follow-up", 
+      "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-positive-screens-with-documented-follow-up", 
+      "goal_color": "#ff0000", 
+      "aspect_ratio": [
+        2, 
+        1
+      ], 
+      "width_units": "%", 
+      "legend_placement": "tabular"
+    }
+  ]
+]
