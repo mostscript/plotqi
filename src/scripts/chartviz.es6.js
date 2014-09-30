@@ -54,13 +54,16 @@ export class DataSeries extends Klass {
   }
 
   set data(d) {
-    this[dataSym] = d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
-      .filter( (v, i) => (i === 0 || v.key != d[i-1].key) )
-      .map( datum => new DataPoint(datum) );
+    var data = d3.map();
+    d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
+    .filter( (v, i) => (i === 0 || v.key != d[i-1].key) )
+    .map( datum => new DataPoint(datum) )
+    .forEach( datum => data.set(datum.key, datum) );
+    this[dataSym] = data;
   }
 
   get range() {
-    return d3.extent(this.data, (d) => d.value) || [-Infinity, Infinity];
+    return d3.extent(this.data.values(), d => d.value) || [-Infinity, Infinity];
   }
 }
 
@@ -77,21 +80,24 @@ export class TimeDataSeries extends DataSeries {
   }
 
   set data(d) {
-    this[dataSym] = d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
-      .filter( (v, i) => (i === 0 || v.key.toString() != d[i-1].key.toString()) )
-      .map( datum => new TimeDataPoint(datum) );
+    var data = d3.map();
+    d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
+    .filter( (v, i) => (i === 0 || v.key.toString() != d[i-1].key.toString()) )
+    .map( datum => new TimeDataPoint(datum) )
+    .forEach( datum => data.set(datum.key, datum) );
+    this[dataSym] = data;
   }
 
   get domain() {
-    var min = moment.min.apply(null, this.data.map( d => moment(d.key) )).toDate();
-    var max = moment.max.apply(null, this.data.map( d => moment(d.key) )).toDate();
+    var min = moment.min(...this.data.values().map( d => moment(d.key) )).toDate();
+    var max = moment.max(...this.data.values().map( d => moment(d.key) )).toDate();
     return [min, max];
   }
 
   get croppedDomain() {
-    var data = this.data.filter( datum => datum.value != null );
-    var min = moment.min.apply(null, data.map( d => moment(d.key) )).toDate();
-    var max = moment.max.apply(null, data.map( d => moment(d.key) )).toDate();
+    var data = this.data.values().filter( datum => datum.value != null );
+    var min = moment.min(...data.map( d => moment(d.key) )).toDate();
+    var max = moment.max(...data.map( d => moment(d.key) )).toDate();
     return [min, max];
   }
 }
@@ -121,6 +127,13 @@ export class MultiSeriesChart extends Klass {
       d3.max(ranges, function ([, max]) { return max; } )
     ];
   }
+
+  get keys() {
+    var data = this.series.map( serum => serum.data )
+    .map( datum => datum.values() );
+    data = d3.merge(data);
+    return data.map( datum => datum.key )
+  }
 }
 
 export class TimeSeriesChart extends MultiSeriesChart {
@@ -146,8 +159,8 @@ export class TimeSeriesChart extends MultiSeriesChart {
     if(!domains) return [start || new Date(), end || new Date()];
     domains = domains.map( function([a,b]) { return [moment(a), moment(b)]; } );
     return [
-      start || moment.min.apply(null, domains.map( function ([min, ]) { return min; } ) ).toDate(),
-      end || moment.max.apply(null, domains.map( function ([, max]) { return max; } ) ).toDate()
+      start || moment.min(...domains.map( function ([min, ]) { return min; } ) ).toDate(),
+      end || moment.max(...domains.map( function ([, max]) { return max; } ) ).toDate()
     ];
   }
 }
