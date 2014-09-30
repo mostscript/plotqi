@@ -6,6 +6,7 @@ import {ChartContainer, Graph} from "./graphviz.es6.js";
 //var dataviz = require("imports?moment=moment!exports?uu!../../spec/modelref/dataviz.js");
 require: "./Symbol.js";
 var d3 = require("d3");
+var c3 = require("../c3.js");
 getObjects("report.json", function (charts) {
   console.log(charts);
   charts = charts.map( graph => Chart(graph) )
@@ -25,7 +26,7 @@ getObjects("report.json", function (charts) {
   window.container = ChartContainer;
   myObj[sym] = "HEHEHE THIS IS HIDDEN";
 
-  var graphs = charts.map( chart => new Graph(chart) );
+  window.graphs = charts.map( chart => new Graph(chart) );
   function renderAll() {
     graphs.forEach(function (g) {
       g.render();
@@ -33,5 +34,7 @@ getObjects("report.json", function (charts) {
   }
   renderAll();
   //d3.select(window).on("resize", renderAll);
+  var div = d3.select("#chart-div-test_numero_dos");
+  window.c3chart = c3.generate(graphs[0].bindTo(div));
 });
 export default "hi";

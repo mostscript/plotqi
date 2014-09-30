@@ -1,6 +1,5 @@
 require: "./Symbol.js";
 var privateSym = new Symbol();
-var d3 = require("d3");
 import {
   DataPoint,
   TimeDataPoint,
@@ -10,18 +9,21 @@ import {
   TimeSeriesChartSchema
 } from "./chartviz.es6.js";
 var moment = require("moment");
+var d3 = require("d3");
+var c3 = require("../c3.js");
 
 export class ChartContainer {
-  constructor(chart) {
+  constructor(chart, parent) {
     this.chart = chart;
+    this.parent = parent? parent.node() : document.documentElement;
   }
 
   get width() {
     if(this.chart.width_units === "px")
       return this.chart.width;
-    var winWidth = document.documentElement.clientWidth;
+    var parentWidth = this.parent.clientWidth;
     var ratio = this.chart.width / 100;
-    return Math.floor(ratio * winWidth);
+    return Math.floor(ratio * parentWidth);
   }
 
   get height() {
@@ -41,6 +43,8 @@ export class Graph {
     this.chart = chart;
     this.series = chart.series;
     this.id = "chart-div-" + this.chart.uid;
+    this[privateSym] = {events: {}};
+    this.initData();
   }
 
   render() {
@@ -63,4 +67,57 @@ export class Graph {
 
     svg.data(this.series);
   }
+
+  get data() {
+    return this[privateSym].data;
+  }
+
+  initData() {
+    var obj = {x: "x", columns: [], colors: {}};
+    var keys = d3.map();
+    this.chart.keys.forEach( key => keys.set(key, "defined") );
+    var xs = ["x"];
+    keys.forEach( key => xs.push(moment(key.key).format("YYYY-MM-DD")) );
+    obj.columns.push(xs);
+    this.chart.series.forEach(function (series, index) {
+      var col = [series.title];
+      keys.forEach(function (key) {
+        if(series.data.has(key)) col.push(series.data.get(key).value);
+        else col.push(0);
+      });
+      obj.columns.push(col);
+      obj.colors[series.title] = series.color;
+    });
+    this[privateSym].data = obj;
+  }
+
+  get bindto() {
+    return this[privateSym].bound;
+  }
+
+  bindTo(parent) {
+    this[privateSym].bound = "#" + parent.attr("id");
+    return this;
+  }
+
+  get axis() {
+    var obj = {y: {show: true}, x: {show: true}};
+    if(this.chart.y_label) obj.y.label = {text: this.chart.y_label, position: "outer-middle"};
+    if(this.chart.x_label) obj.x.label = {text: this.chart.x_label, position: "outer-middle"};
+    obj.x.type = "timeseries";
+    obj.x.tick = {format: "%M %Y"}
+    [obj.y.min, obj.y.max] = this.chart.range;
+    return obj;
+  }
+
+  on(event, callback) {
+    this[privateSym].events[event] = callback;
+    return this;
+  }
+
+  get onclick() {return this[privateSym].events["click"];}
+  get onmouseover() {return this[privateSym].events["mouseover"];}
+  get onmouseout() {return this[privateSym].events["mouseout"];}
+  get onresize() {return this[privateSym].events["resize"];}
+  get onresized() {return this[privateSym].events["resized"];}
 }
