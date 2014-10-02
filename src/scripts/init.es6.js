@@ -1,4 +1,3 @@
-var moment = require("moment");
 export function getObjects(jsonFile, callback) {
 	d3.json(jsonFile, function (jsonData) {
 		var objs = [];

@@ -10,7 +10,7 @@ import {
 } from "./chartviz.es6.js";
 var moment = require("moment");
 var d3 = require("d3");
-var c3 = require("../c3.js");
+var nv = require("imports?d3=d3!exports?window.nv!nvd3");
 
 export class ChartContainer {
   constructor(chart, parent) {
@@ -41,9 +41,8 @@ export class Graph {
   constructor(chart) {
     this.container = new ChartContainer(chart);
     this.chart = chart;
-    this.series = chart.series;
     this.id = "chart-div-" + this.chart.uid;
-    this[privateSym] = {events: {}};
+    this[privateSym] = {};
     this.initData();
   }
 
@@ -65,7 +64,7 @@ export class Graph {
                  .style("left", "0")
                  .style("background-color", "red");
 
-    svg.data(this.series);
+    svg.data(this.chart.series);
   }
 
   get data() {
@@ -73,51 +72,94 @@ export class Graph {
   }
 
   initData() {
-    var obj = {x: "x", columns: [], colors: {}};
+    var data = [];
     var keys = d3.map();
     this.chart.keys.forEach( key => keys.set(key, "defined") );
-    var xs = ["x"];
-    keys.forEach( key => xs.push(moment(key.key).format("YYYY-MM-DD")) );
-    obj.columns.push(xs);
+    //keys.forEach( key => xs.push(moment(key.key).format("YYYY-MM-DD")) );
     this.chart.series.forEach(function (series, index) {
-      var col = [series.title];
+      var obj = {key: series.title, color: series.color, values: [], line: true}
       keys.forEach(function (key) {
-        if(series.data.has(key)) col.push(series.data.get(key).value);
-        else col.push(0);
+        var datapoint = series.data.get(key);
+        if(series.data.has(key))
+          obj.values.push({
+            x: moment(datapoint.key).valueOf(),
+            y: datapoint.value,
+            size: 2,
+            shape: "circle",
+            note: datapoint.note,
+            title: datapoint.title
+            });
       });
-      obj.columns.push(col);
-      obj.colors[series.title] = series.color;
+      data.push(obj);
     });
-    this[privateSym].data = obj;
+    this[privateSym].data = data;
   }
 
-  get bindto() {
+  get parent() {
     return this[privateSym].bound;
   }
 
   bindTo(parent) {
-    this[privateSym].bound = "#" + parent.attr("id");
+    this[privateSym].bound = d3.select(parent);
     return this;
-  }
-
-  get axis() {
-    var obj = {y: {show: true}, x: {show: true}};
-    if(this.chart.y_label) obj.y.label = {text: this.chart.y_label, position: "outer-middle"};
-    if(this.chart.x_label) obj.x.label = {text: this.chart.x_label, position: "outer-middle"};
-    obj.x.type = "timeseries";
-    obj.x.tick = {format: "%M %Y"}
-    [obj.y.min, obj.y.max] = this.chart.range;
-    return obj;
   }
 
   on(event, callback) {
-    this[privateSym].events[event] = callback;
+    this[privateSym].events = callback;
+    return this;
+  }
+}
+
+export class TimeGraph extends Graph {
+  constructor(chart) {
+    super(chart);
+    this.graph = nv.models.scatterPlusLineChart()
+    .showDistX(true).showDistY(true)
+    .y( function ({y}) { return y / 100; } );
+  }
+
+  axis() {
+  if(this.chart.x_label)
+    this.graph.xAxis.axisLabel(this.chart.x_label);
+  this.graph.xAxis.tickFormat( d => d3.time.format("%B %Y")(new Date(d)) )
+  .ticks(d3.time.months, 1);
+  if(this.chart.y_label)
+    this.graph.yAxis.axisLabel(this.chart.y_label);
+  this.graph.yAxis.tickFormat(d3.format(",.1%"));
+  this.graph.forceY(this.chart.range.map( y => y / 100 ));
+  return this;
+  }
+
+  bindData() {
+    this.parent.datum(this.data);
     return this;
   }
 
-  get onclick() {return this[privateSym].events["click"];}
-  get onmouseover() {return this[privateSym].events["mouseover"];}
-  get onmouseout() {return this[privateSym].events["mouseout"];}
-  get onresize() {return this[privateSym].events["resize"];}
-  get onresized() {return this[privateSym].events["resized"];}
+  autoResize() {
+    nv.utils.windowResize(this.graph.update);
+    return this;
+  }
+
+  transition(duration) {
+    if(duration == null) duration = 250;
+    this.parent.transition().duration(duration);
+    return this;
+  }
+
+  apply() {
+    this.parent.call(this.graph);
+    return this;
+  }
+
+  tooltips() {
+    this.graph.tooltipContent(function(seriesName, x, y, e, graph) {
+      return "<h3 style=\"font-size: 16px\">" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
+      + "<p style=\"font-size: 9px; color: lightgray; text-align: center;\">" + graph.point.title + "</p>";
+    });
+    return this;
+  }
+
+  prepare() {
+    return this.axis().tooltips().bindData().transition().apply().autoResize().graph;
+  }
 }
