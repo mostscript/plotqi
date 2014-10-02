@@ -11,6 +11,7 @@ import {
 var moment = require("moment");
 var d3 = require("d3");
 var nv = require("imports?d3=d3!exports?window.nv!nvd3");
+import {lineWithMarkersChart} from "./lineWithMarkers.es6.js";
 
 export class ChartContainer {
   constructor(chart, parent) {
@@ -113,7 +114,7 @@ export class Graph {
 export class TimeGraph extends Graph {
   constructor(chart) {
     super(chart);
-    this.graph = nv.models.scatterPlusLineChart()
+    this.graph = lineWithMarkersChart()
     .showDistX(true).showDistY(true)
     .y( function ({y}) { return y / 100; } );
   }
@@ -141,8 +142,8 @@ export class TimeGraph extends Graph {
   }
 
   transition(duration) {
-    if(duration == null) duration = 250;
-    this.parent.transition().duration(duration);
+    if(duration == null) duration = 500;
+    this.graph.transitionDuration(duration);
     return this;
   }
 
