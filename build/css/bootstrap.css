@@ -1,4 +1,12 @@
-@import "../../../c3/c3.css";
+@import "../../node_modules/nvd3/nv.d3.css";
+.nvtooltip.xy-tooltip {
+  max-width: 400px;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: pre-line;
+
+  overflow-wrap: break-word;
+  }
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
