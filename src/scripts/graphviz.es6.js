@@ -84,13 +84,14 @@ export class Graph {
         if(series.data.has(key))
           obj.values.push({
             x: moment(datapoint.key).valueOf(),
-            y: datapoint.value,
+            y: datapoint.value / 100,
             size: 2,
             shape: "circle",
             note: datapoint.note,
             title: datapoint.title
             });
       });
+      obj.values.sort( (a, b) => a.x - b.x );
       data.push(obj);
     });
     this[privateSym].data = data;
@@ -115,8 +116,8 @@ export class TimeGraph extends Graph {
   constructor(chart) {
     super(chart);
     this.graph = lineWithMarkersChart()
-    .showDistX(true).showDistY(true)
-    .y( function ({y}) { return y / 100; } );
+    .showDistX(true).showDistY(true);
+    //.y( function ({y}) { return y / 100; } );
   }
 
   axis() {
@@ -124,10 +125,13 @@ export class TimeGraph extends Graph {
     this.graph.xAxis.axisLabel(this.chart.x_label);
   this.graph.xAxis.tickFormat( d => d3.time.format("%B %Y")(new Date(d)) )
   .ticks(d3.time.months, 1);
+  this.graph.forceX(this.chart.domain.map( x => x.valueOf() ));
+  this.graph.lines.forceX(this.chart.domain.map( x => x.valueOf() ));
   if(this.chart.y_label)
     this.graph.yAxis.axisLabel(this.chart.y_label);
   this.graph.yAxis.tickFormat(d3.format(",.1%"));
   this.graph.forceY(this.chart.range.map( y => y / 100 ));
+  this.graph.lines.forceY(this.chart.range.map( y => y / 100 ));
   return this;
   }
 

@@ -255,9 +255,9 @@ export var lineWithMarkersChart = function() {
           return d.color || color(d, i);
         }).filter(function(d,i) { return !data[i].disabled && data[i].values.length > 1 }))
 
-      var linesWrap = g.select('.nv-linesWrap')
-          .datum(dataLines[0] && !dataLines[0].disabled ? dataLines : [{values:[]}] );
-      d3.transition(linesWrap).call(lines);
+      var linesWrap = wrap.select('.nv-linesWrap')
+          .datum(dataLines)/*;
+      d3.transition(linesWrap)*/.call(lines);
 
       wrap.select('.nv-scatterWrap')
           .datum(data.filter(function(d) { return !d.disabled }))
