@@ -30,6 +30,24 @@ getObjects("report.json", function (charts) {
   function renderAll() {
     graphs.forEach(function (g) {
       g.render();
+      /*
+            var div = d3.select("body")
+                //.select("#" + g.id)
+                .append("div")
+                .attr("id", g.id)
+                .classed("chart-div", true)
+                .style("position", "relative")
+                .style("width", g.container.width + "px")
+                .style("height", g.container.height + "px");
+
+    var svg = div.append("svg")
+                 .attr("width", "100%")
+                 .attr("height", "100%")
+                 .style("position", "absolute")
+                 .style("top", "0")
+                 .style("left", "0")
+    nv.addGraph( () => g.bindTo(svg.node()).prepare() );
+      */
     });
   }
   renderAll();

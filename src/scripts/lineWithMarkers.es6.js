@@ -175,7 +175,7 @@ export var lineWithMarkersChart = function() {
       // Setup containers and skeleton of chart
 
       var wrap = container.selectAll('g.nv-wrap.nv-scatterChart').data([data]);
-      var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-scatterChart nv-lineWithMarkersChart nv-chart-' + scatter.id());
+      var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-scatterChart nv-lineWithMarkersChart nv-lineChart nv-chart-' + scatter.id());
       var gEnter = wrapEnter.append('g');
       var g = wrap.select('g')
 
@@ -255,7 +255,7 @@ export var lineWithMarkersChart = function() {
           return d.color || color(d, i);
         }).filter(function(d,i) { return !data[i].disabled && data[i].values.length > 1 }))
 
-      var linesWrap = wrap.select('.nv-linesWrap')
+      var linesWrap = g.select('.nv-linesWrap')
           .datum(dataLines)/*;
       d3.transition(linesWrap)*/.call(lines);
 

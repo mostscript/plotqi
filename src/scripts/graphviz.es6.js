@@ -115,8 +115,8 @@ export class Graph {
 export class TimeGraph extends Graph {
   constructor(chart) {
     super(chart);
-    this.graph = lineWithMarkersChart()
-    .showDistX(true).showDistY(true);
+    this.graph = nv.models.lineChart()
+    //.showDistX(true).showDistY(true);
     //.y( function ({y}) { return y / 100; } );
   }
 
@@ -157,7 +157,7 @@ export class TimeGraph extends Graph {
   }
 
   tooltips() {
-    this.graph.tooltipContent(function(seriesName, x, y, e, graph) {
+    this.graph.tooltipContent(function(seriesName, x, y, graph) {
       return "<h3 style=\"font-size: 16px\">" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
       + "<p style=\"font-size: 9px; color: lightgray; text-align: center;\">" + graph.point.title + "</p>";
     });
