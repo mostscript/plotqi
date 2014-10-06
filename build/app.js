@@ -13433,6 +13433,24 @@
 	  function renderAll() {
 	    graphs.forEach(function (g) {
 	      g.render();
+	      /*
+	            var div = d3.select("body")
+	                //.select("#" + g.id)
+	                .append("div")
+	                .attr("id", g.id)
+	                .classed("chart-div", true)
+	                .style("position", "relative")
+	                .style("width", g.container.width + "px")
+	                .style("height", g.container.height + "px");
+
+	    var svg = div.append("svg")
+	                 .attr("width", "100%")
+	                 .attr("height", "100%")
+	                 .style("position", "absolute")
+	                 .style("top", "0")
+	                 .style("left", "0")
+	    nv.addGraph( () => g.bindTo(svg.node()).prepare() );
+	      */
 	    });
 	  }
 	  renderAll();
@@ -15287,8 +15305,8 @@
 
 	  function TimeGraph(chart) {
 	    $__Object$getPrototypeOf(TimeGraph.prototype).constructor.call(this, chart);
-	    this.graph = lineWithMarkersChart()
-	    .showDistX(true).showDistY(true);
+	    this.graph = nv.models.lineChart()
+	    //.showDistX(true).showDistY(true);
 	    //.y( function ({y}) { return y / 100; } );
 	  }
 
@@ -15373,7 +15391,7 @@
 
 	    tooltips: {
 	      value: function() {
-	        this.graph.tooltipContent(function(seriesName, x, y, e, graph) {
+	        this.graph.tooltipContent(function(seriesName, x, y, graph) {
 	          return "<h3 style=\"font-size: 16px\">" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
 	          + "<p style=\"font-size: 9px; color: lightgray; text-align: center;\">" + graph.point.title + "</p>";
 	        });
@@ -22830,7 +22848,7 @@
 	      // Setup containers and skeleton of chart
 
 	      var wrap = container.selectAll('g.nv-wrap.nv-scatterChart').data([data]);
-	      var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-scatterChart nv-lineWithMarkersChart nv-chart-' + scatter.id());
+	      var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-wrap nv-scatterChart nv-lineWithMarkersChart nv-lineChart nv-chart-' + scatter.id());
 	      var gEnter = wrapEnter.append('g');
 	      var g = wrap.select('g')
 
@@ -22910,7 +22928,7 @@
 	          return d.color || color(d, i);
 	        }).filter(function(d,i) { return !data[i].disabled && data[i].values.length > 1 }))
 
-	      var linesWrap = wrap.select('.nv-linesWrap')
+	      var linesWrap = g.select('.nv-linesWrap')
 	          .datum(dataLines)/*;
 	      d3.transition(linesWrap)*/.call(lines);
 
