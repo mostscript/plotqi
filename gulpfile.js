@@ -21,8 +21,8 @@ var argv = require('minimist')(process.argv.slice(2));
 var DEST = './build';                         // The build output folder
 var RELEASE = !!argv.release;                 // Minimize and optimize during a build?
 var AUTOPREFIXER_BROWSERS = [                 // https://github.com/ai/autoprefixer
-  'ie >= 10',
-  'ie_mob >= 10',
+  'ie >= 9',
+  'ie_mob >= 9',
   'ff >= 30',
   'chrome >= 34',
   'safari >= 7',
@@ -51,14 +51,6 @@ gulp.task('default', ['serve']);
 
 // Clean up
 gulp.task('clean', del.bind(null, [DEST]));
-
-// 3rd party libraries
-gulp.task('vendor', function () {
-  return merge(
-    gulp.src('./node_modules/jquery/dist/**')
-      .pipe(gulp.dest(DEST + '/vendor/jquery-' + pkgs.jquery))
-  );
-});
 
 // Static files
 gulp.task('assets', function () {
@@ -139,7 +131,7 @@ gulp.task('bundle', function (cb) {
 
 // Build the app from source code
 gulp.task('build', ['clean'], function (cb) {
-  runSequence(['vendor', 'assets', 'images', 'pages', 'styles', 'bundle'], cb);
+  runSequence(['assets', 'images', 'pages', 'styles', 'bundle'], cb);
 });
 
 // Launch a lightweight HTTP Server
