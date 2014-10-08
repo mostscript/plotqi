@@ -42,9 +42,12 @@ export class Graph {
   constructor(chart) {
     this.container = new ChartContainer(chart);
     this.chart = chart;
-    this.id = "chart-div-" + this.chart.uid;
+    this.id = this.chart.uid;
     this[privateSym] = {};
-    this.initData();
+    this.graph = nv.models.lineChart()
+    .id(this.id)
+    .showLegend(false);
+    this.graph.lines.scatter.onlyCircles(false);
   }
 
   render() {
@@ -69,23 +72,24 @@ export class Graph {
   }
 
   get data() {
-    return this[privateSym].data;
-  }
-
-  initData() {
     var data = [];
     var keys = d3.map();
     this.chart.keys.forEach( key => keys.set(key, "defined") );
     //keys.forEach( key => xs.push(moment(key.key).format("YYYY-MM-DD")) );
     this.chart.series.forEach(function (series, index) {
-      var obj = {key: series.title, color: series.color, values: [], line: true}
+      var obj = {
+        key: series.title,
+        color: series.color,
+        values: [],
+        format: d3.format(series.display_format)
+      }
       keys.forEach(function (key) {
         var datapoint = series.data.get(key);
         if(series.data.has(key))
           obj.values.push({
             x: moment(datapoint.key).valueOf(),
-            y: datapoint.value / 100,
-            size: 2,
+            y: datapoint.value,
+            size: datapoint.marker_size,
             shape: "circle",
             note: datapoint.note,
             title: datapoint.title
@@ -94,7 +98,7 @@ export class Graph {
       obj.values.sort( (a, b) => a.x - b.x );
       data.push(obj);
     });
-    this[privateSym].data = data;
+    return data;
   }
 
   get parent() {
@@ -110,29 +114,16 @@ export class Graph {
     this[privateSym].events = callback;
     return this;
   }
-}
 
-export class TimeGraph extends Graph {
-  constructor(chart) {
-    super(chart);
-    this.graph = nv.models.lineChart()
-    //.showDistX(true).showDistY(true);
-    //.y( function ({y}) { return y / 100; } );
+  apply() {
+    this.parent.call(this.graph);
+    return this;
   }
 
-  axis() {
-  if(this.chart.x_label)
-    this.graph.xAxis.axisLabel(this.chart.x_label);
-  this.graph.xAxis.tickFormat( d => d3.time.format("%B %Y")(new Date(d)) )
-  .ticks(d3.time.months, 1);
-  this.graph.forceX(this.chart.domain.map( x => x.valueOf() ));
-  this.graph.lines.forceX(this.chart.domain.map( x => x.valueOf() ));
-  if(this.chart.y_label)
-    this.graph.yAxis.axisLabel(this.chart.y_label);
-  this.graph.yAxis.tickFormat(d3.format(",.1%"));
-  this.graph.forceY(this.chart.range.map( y => y / 100 ));
-  this.graph.lines.forceY(this.chart.range.map( y => y / 100 ));
-  return this;
+  transition(duration) {
+    if(duration == null) duration = 250;
+    this.parent.transition().duration(duration);
+    return this;
   }
 
   bindData() {
@@ -145,26 +136,49 @@ export class TimeGraph extends Graph {
     return this;
   }
 
-  transition(duration) {
-    if(duration == null) duration = 500;
-    this.graph.transitionDuration(duration);
-    return this;
+  title() {
+    this.parent.select("svg")
+      .append("text")
+      .attr("x", this.parent.clientWidth / 2)
+      .attr("y", 20)
+      .attr("text-anchor", "middle")
+      .style('font-size', '9pt')
+      .text(this.chart.title);
+      return this;
+  }
+}
+
+export class TimeGraph extends Graph {
+  constructor(chart) {
+    super(chart);
+    //.showDistX(true).showDistY(true);
+    //.y( function ({y}) { return y / 100; } );
   }
 
-  apply() {
-    this.parent.call(this.graph);
-    return this;
+  axis() {
+  if(this.chart.x_label)
+    this.graph.xAxis.axisLabel(this.chart.x_label);
+  this.graph.xAxis.tickFormat( d => d3.time.format("%B")(new Date(d))[0] )
+  .tickValues(d3.time.months(...this.chart.domain).map( month => month.valueOf() ));
+  this.graph.forceX(this.chart.domain.map( x => x.valueOf() ));
+  this.graph.lines.forceX(this.chart.domain.map( x => x.valueOf() ));
+  if(this.chart.y_label)
+    this.graph.yAxis.axisLabel(this.chart.y_label);
+  this.graph.yAxis.tickFormat(d3.format(","));
+  this.graph.forceY(this.chart.range);
+  this.graph.lines.forceY(this.chart.range);
+  return this;
   }
 
   tooltips() {
     this.graph.tooltipContent(function(seriesName, x, y, graph) {
-      return "<h3 style=\"font-size: 16px\">" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
-      + "<p style=\"font-size: 9px; color: lightgray; text-align: center;\">" + graph.point.title + "</p>";
+      return "<h3>" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
+      + "<p class=\"tooltipFooter\">" + graph.point.title + ", " + graph.series.format(y / 100) + "</p>";
     });
     return this;
   }
 
   prepare() {
-    return this.axis().tooltips().bindData().transition().apply().autoResize().graph;
+    return this.axis().tooltips().bindData().transition().apply().autoResize().title().graph;
   }
 }

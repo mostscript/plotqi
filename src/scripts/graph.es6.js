@@ -54,7 +54,20 @@ getObjects("report.json", function (charts) {
   //d3.select(window).on("resize", renderAll);
   var div = d3.select("#chart-div-test_numero_dos");
   var svg = div.append("svg");
-  window.nvchart = graphs[0].bindTo(svg.node()).prepare();
-  nv.addGraph( () => nvchart );
+  window.nvchart = graphs[0].bindTo(svg.node());
+  nv.addGraph( () => {
+    var c = nvchart.prepare();
+    d3.select("#chart-div-test_numero_dos svg")
+      .append("text")
+      .attr("x", 160 / 2)
+      .attr("y", 20)
+      .attr("text-anchor", "middle")
+      .style('font-size', '8pt')
+      .style('letter-spacing', '-0.1em')
+      .attr('textLength', "160")
+      .attr("lengthAdjust", "spacingAndGlyphs")
+      .text(nvchart.chart.title);
+      return c;
+  } );
 });
 export default "hi";

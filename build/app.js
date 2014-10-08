@@ -13457,9 +13457,20 @@
 	  //d3.select(window).on("resize", renderAll);
 	  var div = d3.select("#chart-div-test_numero_dos");
 	  var svg = div.append("svg");
-	  window.nvchart = graphs[0].bindTo(svg.node()).prepare();
+	  window.nvchart = graphs[0].bindTo(svg.node());
 	  nv.addGraph( function() {
-	    return nvchart;
+	    var c = nvchart.prepare();
+	    d3.select("#chart-div-test_numero_dos svg")
+	      .append("text")
+	      .attr("x", 160 / 2)
+	      .attr("y", 20)
+	      .attr("text-anchor", "middle")
+	      .style('font-size', '8pt')
+	      .style('letter-spacing', '-0.1em')
+	      .attr('textLength', "160")
+	      .attr("lengthAdjust", "spacingAndGlyphs")
+	      .text(nvchart.chart.title);
+	      return c;
 	  } );
 	});
 	exports["default"] = "hi";
@@ -14157,11 +14168,14 @@
 	            description: 'Marker shape, selected from enumerated ' +
 	                         'vocabulary of allowable choices.',
 	            type: 'string',
+	            constraint: function (value) {
+	              if(value === "x") return "cross";
+	            },
 	            vocabulary: [
 	              'diamond',
 	              'circle',
 	              'square',
-	              'x',
+	              'cross',
 	              'plus',
 	              'dash',
 	              'filledDiamond',
@@ -14198,6 +14212,12 @@
 	            type: 'string',
 	            vocabulary: ['defer', 'omit', 'show'],
 	            defaultValue: 'defer'
+	          },
+	          display_format: {
+	            title: "Display format for y values",
+	            description: "Standard formatting string",
+	            type: "string",
+	            defaultValue: "%%.%if"
 	          }
 	        }, this);
 	  }
@@ -14237,7 +14257,12 @@
 	            'breaks continuity of contiguous points.  Ideally, ' +
 	            'any such rendering behavior avoids depending on a ' +
 	            'fixed frequency for a time-series plot.',
-	        type: 'boolean',
+	        type: 'string',
+	        constraint: function (value) {
+	          if(typeof value === "boolean")
+	            return value ? "hidden" : "solid";
+	        },
+	        vocabulary: ["hidden", "solid", "dashed"],
 	        defaultValue: true
 	      }
 	    }, this);
@@ -14561,7 +14586,7 @@
 	                         'just plain unnecessary?',
 	            type: 'string',
 	            vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly'],
-	            defaultVaue: 'monthly',
+	            defaultValue: 'monthly',
 	            required: false
 	          },
 	          start: {
@@ -15126,6 +15151,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var $__Array$prototype$slice = Array.prototype.slice;
 	var $__Object$defineProperty = Object.defineProperty;
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
@@ -15192,9 +15218,12 @@
 	  function Graph(chart) {
 	    this.container = new ChartContainer(chart);
 	    this.chart = chart;
-	    this.id = "chart-div-" + this.chart.uid;
+	    this.id = this.chart.uid;
 	    this[privateSym] = {};
-	    this.initData();
+	    this.graph = nv.models.lineChart()
+	    .id(this.id)
+	    .showLegend(false);
+	    this.graph.lines.scatter.onlyCircles(false);
 	  }
 
 	  $__Object$defineProperties(Graph.prototype, {
@@ -15226,15 +15255,6 @@
 
 	    data: {
 	      get: function() {
-	        return this[privateSym].data;
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    },
-
-	    initData: {
-	      value: function() {
 	        var data = [];
 	        var keys = d3.map();
 	        this.chart.keys.forEach( function(key) {
@@ -15242,14 +15262,19 @@
 	        } );
 	        //keys.forEach( key => xs.push(moment(key.key).format("YYYY-MM-DD")) );
 	        this.chart.series.forEach(function (series, index) {
-	          var obj = {key: series.title, color: series.color, values: [], line: true}
+	          var obj = {
+	            key: series.title,
+	            color: series.color,
+	            values: [],
+	            format: d3.format(series.display_format)
+	          }
 	          keys.forEach(function (key) {
 	            var datapoint = series.data.get(key);
 	            if(series.data.has(key))
 	              obj.values.push({
 	                x: moment(datapoint.key).valueOf(),
-	                y: datapoint.value / 100,
-	                size: 2,
+	                y: datapoint.value,
+	                size: datapoint.marker_size,
 	                shape: "circle",
 	                note: datapoint.note,
 	                title: datapoint.title
@@ -15260,11 +15285,11 @@
 	          } );
 	          data.push(obj);
 	        });
-	        this[privateSym].data = data;
+	        return data;
 	      },
 
-	      enumerable: false,
-	      writable: true
+	      enumerable: true,
+	      configurable: true
 	    },
 
 	    parent: {
@@ -15294,54 +15319,23 @@
 
 	      enumerable: false,
 	      writable: true
-	    }
-	  });
+	    },
 
-	  return Graph;
-	}();
-	exports.Graph = Graph;
-	var TimeGraph = function($__super) {
-	  "use strict";
-
-	  function TimeGraph(chart) {
-	    $__Object$getPrototypeOf(TimeGraph.prototype).constructor.call(this, chart);
-	    this.graph = nv.models.lineChart()
-	    //.showDistX(true).showDistY(true);
-	    //.y( function ({y}) { return y / 100; } );
-	  }
-
-	  TimeGraph.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  TimeGraph.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(TimeGraph.prototype, "constructor", {
-	    value: TimeGraph
-	  });
-
-	  $__Object$defineProperties(TimeGraph.prototype, {
-	    axis: {
+	    apply: {
 	      value: function() {
-	      if(this.chart.x_label)
-	        this.graph.xAxis.axisLabel(this.chart.x_label);
-	      this.graph.xAxis.tickFormat( function(d) {
-	        return d3.time.format("%B %Y")(new Date(d));
-	      } )
-	      .ticks(d3.time.months, 1);
-	      this.graph.forceX(this.chart.domain.map( function(x) {
-	        return x.valueOf();
-	      } ));
-	      this.graph.lines.forceX(this.chart.domain.map( function(x) {
-	        return x.valueOf();
-	      } ));
-	      if(this.chart.y_label)
-	        this.graph.yAxis.axisLabel(this.chart.y_label);
-	      this.graph.yAxis.tickFormat(d3.format(",.1%"));
-	      this.graph.forceY(this.chart.range.map( function(y) {
-	        return y / 100;
-	      } ));
-	      this.graph.lines.forceY(this.chart.range.map( function(y) {
-	        return y / 100;
-	      } ));
-	      return this;
+	        this.parent.call(this.graph);
+	        return this;
+	      },
+
+	      enumerable: false,
+	      writable: true
+	    },
+
+	    transition: {
+	      value: function(duration) {
+	        if(duration == null) duration = 250;
+	        this.parent.transition().duration(duration);
+	        return this;
 	      },
 
 	      enumerable: false,
@@ -15368,20 +15362,71 @@
 	      writable: true
 	    },
 
-	    transition: {
-	      value: function(duration) {
-	        if(duration == null) duration = 500;
-	        this.graph.transitionDuration(duration);
-	        return this;
+	    title: {
+	      value: function() {
+	        this.parent.select("svg")
+	          .append("text")
+	          .attr("x", this.parent.clientWidth / 2)
+	          .attr("y", 20)
+	          .attr("text-anchor", "middle")
+	          .style('font-size', '9pt')
+	          .text(this.chart.title);
+	          return this;
 	      },
 
 	      enumerable: false,
 	      writable: true
-	    },
+	    }
+	  });
 
-	    apply: {
+	  return Graph;
+	}();
+	exports.Graph = Graph;
+	var TimeGraph = function($__super) {
+	  "use strict";
+
+	  function TimeGraph(chart) {
+	    $__Object$getPrototypeOf(TimeGraph.prototype).constructor.call(this, chart);
+	    //.showDistX(true).showDistY(true);
+	    //.y( function ({y}) { return y / 100; } );
+	  }
+
+	  TimeGraph.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  TimeGraph.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(TimeGraph.prototype, "constructor", {
+	    value: TimeGraph
+	  });
+
+	  $__Object$defineProperties(TimeGraph.prototype, {
+	    axis: {
 	      value: function() {
-	        this.parent.call(this.graph);
+	        var $__0;
+
+	        if(this.chart.x_label)
+	          this.graph.xAxis.axisLabel(this.chart.x_label);
+
+	        this.graph.xAxis.tickFormat( function(d) {
+	          return d3.time.format("%B")(new Date(d))[0];
+	        } )
+	        .tickValues(($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(this.chart.domain)).map( function(month) {
+	          return month.valueOf();
+	        } ));
+
+	        this.graph.forceX(this.chart.domain.map( function(x) {
+	          return x.valueOf();
+	        } ));
+
+	        this.graph.lines.forceX(this.chart.domain.map( function(x) {
+	          return x.valueOf();
+	        } ));
+
+	        if(this.chart.y_label)
+	          this.graph.yAxis.axisLabel(this.chart.y_label);
+
+	        this.graph.yAxis.tickFormat(d3.format(","));
+	        this.graph.forceY(this.chart.range);
+	        this.graph.lines.forceY(this.chart.range);
 	        return this;
 	      },
 
@@ -15392,8 +15437,8 @@
 	    tooltips: {
 	      value: function() {
 	        this.graph.tooltipContent(function(seriesName, x, y, graph) {
-	          return "<h3 style=\"font-size: 16px\">" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
-	          + "<p style=\"font-size: 9px; color: lightgray; text-align: center;\">" + graph.point.title + "</p>";
+	          return "<h3>" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
+	          + "<p class=\"tooltipFooter\">" + graph.point.title + ", " + graph.series.format(y / 100) + "</p>";
 	        });
 	        return this;
 	      },
@@ -15404,7 +15449,7 @@
 
 	    prepare: {
 	      value: function() {
-	        return this.axis().tooltips().bindData().transition().apply().autoResize().graph;
+	        return this.axis().tooltips().bindData().transition().apply().autoResize().title().graph;
 	      },
 
 	      enumerable: false,

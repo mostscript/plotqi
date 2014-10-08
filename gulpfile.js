@@ -23,7 +23,7 @@ var RELEASE = !!argv.release;                 // Minimize and optimize during a 
 var AUTOPREFIXER_BROWSERS = [                 // https://github.com/ai/autoprefixer
   'ie >= 9',
   'ie_mob >= 9',
-  'ff >= 30',
+  'ff ESR',
   'chrome >= 34',
   'safari >= 7',
   'opera >= 23',

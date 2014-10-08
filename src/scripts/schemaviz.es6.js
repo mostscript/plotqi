@@ -132,11 +132,14 @@ export class DataSeriesSchema extends Schema {
             description: 'Marker shape, selected from enumerated ' +
                          'vocabulary of allowable choices.',
             type: 'string',
+            constraint: function (value) {
+              if(value === "x") return "cross";
+            },
             vocabulary: [
               'diamond',
               'circle',
               'square',
-              'x',
+              'cross',
               'plus',
               'dash',
               'filledDiamond',
@@ -173,6 +176,12 @@ export class DataSeriesSchema extends Schema {
             type: 'string',
             vocabulary: ['defer', 'omit', 'show'],
             defaultValue: 'defer'
+          },
+          display_format: {
+            title: "Display format for y values",
+            description: "Standard formatting string",
+            type: "string",
+            defaultValue: "%%.%if"
           }
         }, this);
   }
@@ -200,7 +209,12 @@ export class TimeDataSeriesSchema extends DataSeriesSchema {
             'breaks continuity of contiguous points.  Ideally, ' +
             'any such rendering behavior avoids depending on a ' +
             'fixed frequency for a time-series plot.',
-        type: 'boolean',
+        type: 'string',
+        constraint: function (value) {
+          if(typeof value === "boolean")
+            return value ? "hidden" : "solid";
+        },
+        vocabulary: ["hidden", "solid", "dashed"],
         defaultValue: true
       }
     }, this);
@@ -500,7 +514,7 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
                          'just plain unnecessary?',
             type: 'string',
             vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly'],
-            defaultVaue: 'monthly',
+            defaultValue: 'monthly',
             required: false
           },
           start: {

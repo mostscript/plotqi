@@ -1,3 +1,23 @@
+.nvtooltip.xy-tooltip {
+  max-width: 400px;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: pre-line;
+
+  overflow-wrap: break-word;
+  }
+.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
+  fill-opacity: 100% !important;
+  stroke-opacity: 100% !important;
+  }
+.tooltipFooter {
+  font-size: 8pt;
+  color: gray;
+  text-align: center;
+  }
+.nvtooltip > h3 {
+  font-size: 12pt;
+  }
 /********************
  * HTML CSS
  */
@@ -717,7 +737,8 @@ figure {
   }
 hr {
   height: 0;
-  box-sizing: content-box;
+  -moz-box-sizing: content-box;
+       box-sizing: content-box;
   }
 pre {
   overflow: auto;
@@ -766,7 +787,8 @@ input {
   }
 input[type="checkbox"],
 input[type="radio"] {
-  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
   padding: 0;
   }
 input[type="number"]::-webkit-inner-spin-button,
@@ -774,7 +796,8 @@ input[type="number"]::-webkit-outer-spin-button {
   height: auto;
   }
 input[type="search"] {
-  box-sizing: content-box;
+  -moz-box-sizing: content-box;
+       box-sizing: content-box;
   -webkit-appearance: textfield;
   }
 input[type="search"]::-webkit-search-cancel-button,
@@ -879,11 +902,13 @@ th {
     }
   }
 * {
-  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
   }
 *:before,
 *:after {
-  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
   }
 html {
   font-size: 10px;
@@ -2308,7 +2333,8 @@ label {
   font-weight: bold;
   }
 input[type="search"] {
-  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
   }
 input[type="radio"],
 input[type="checkbox"] {
@@ -6166,16 +6192,4 @@ button.close {
   .hidden-print {
     display: none !important;
     }
-  }
-.nvtooltip.xy-tooltip {
-  max-width: 400px;
-  overflow: hidden;
-  word-wrap: break-word;
-  white-space: pre-line;
-
-  overflow-wrap: break-word;
-  }
-.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
-  fill-opacity: 100% !important;
-  stroke-opacity: 100% !important;
   }
