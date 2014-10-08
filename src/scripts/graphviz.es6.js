@@ -46,7 +46,8 @@ export class Graph {
     this[privateSym] = {};
     this.graph = nv.models.lineChart()
     .id(this.id)
-    .showLegend(false);
+    .showLegend(false)
+    .margin({top: 10, bottom: 50, left: 30, right: 30});
     this.graph.lines.scatter.onlyCircles(false);
   }
 
@@ -66,7 +67,7 @@ export class Graph {
                  .style("position", "absolute")
                  .style("top", "0")
                  .style("left", "0")
-                 .style("background-color", "red");
+                 .style("background-color", "rgb(" + Math.round(Math.random() * 256) + "," + Math.round(Math.random() * 256) + "," + Math.round(Math.random() * 256) + ")");
 
     svg.data(this.chart.series);
   }
@@ -82,7 +83,7 @@ export class Graph {
         color: series.color,
         values: [],
         format: d3.format(series.display_format)
-      }
+      };
       keys.forEach(function (key) {
         var datapoint = series.data.get(key);
         if(series.data.has(key))

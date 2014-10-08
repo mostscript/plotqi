@@ -18,6 +18,9 @@
 .nvtooltip > h3 {
   font-size: 12pt;
   }
+.chart-div {
+  margin: 10px;
+  }
 /********************
  * HTML CSS
  */

@@ -13463,7 +13463,7 @@
 	    d3.select("#chart-div-test_numero_dos svg")
 	      .append("text")
 	      .attr("x", 160 / 2)
-	      .attr("y", 20)
+	      .attr("y", 160 - 2)
 	      .attr("text-anchor", "middle")
 	      .style('font-size', '8pt')
 	      .style('letter-spacing', '-0.1em')
@@ -15222,7 +15222,8 @@
 	    this[privateSym] = {};
 	    this.graph = nv.models.lineChart()
 	    .id(this.id)
-	    .showLegend(false);
+	    .showLegend(false)
+	    .margin({top: 10, bottom: 50, left: 30, right: 30});
 	    this.graph.lines.scatter.onlyCircles(false);
 	  }
 
@@ -15244,7 +15245,7 @@
 	                     .style("position", "absolute")
 	                     .style("top", "0")
 	                     .style("left", "0")
-	                     .style("background-color", "red");
+	                     .style("background-color", "rgb(" + Math.round(Math.random() * 256) + "," + Math.round(Math.random() * 256) + "," + Math.round(Math.random() * 256) + ")");
 
 	        svg.data(this.chart.series);
 	      },

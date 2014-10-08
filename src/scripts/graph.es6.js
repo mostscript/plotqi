@@ -60,7 +60,7 @@ getObjects("report.json", function (charts) {
     d3.select("#chart-div-test_numero_dos svg")
       .append("text")
       .attr("x", 160 / 2)
-      .attr("y", 20)
+      .attr("y", 160 - 2)
       .attr("text-anchor", "middle")
       .style('font-size', '8pt')
       .style('letter-spacing', '-0.1em')
