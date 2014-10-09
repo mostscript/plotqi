@@ -67,7 +67,8 @@ getObjects("report.json", function (charts) {
       .attr('textLength', "160")
       .attr("lengthAdjust", "spacingAndGlyphs")
       .text(nvchart.chart.title);
-      return c;
+    nvchart.goal();
+    return c;
   } );
 });
 export default "hi";

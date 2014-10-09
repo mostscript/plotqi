@@ -21,6 +21,11 @@
 .chart-div {
   margin: 10px;
   }
+.nv-goal-lbl {
+  font-size: 7pt;
+
+  stroke-opacity: 0;
+  }
 /********************
  * HTML CSS
  */

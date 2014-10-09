@@ -13470,7 +13470,8 @@
 	      .attr('textLength', "160")
 	      .attr("lengthAdjust", "spacingAndGlyphs")
 	      .text(nvchart.chart.title);
-	      return c;
+	    nvchart.goal();
+	    return c;
 	  } );
 	});
 	exports["default"] = "hi";
@@ -15267,8 +15268,8 @@
 	            key: series.title,
 	            color: series.color,
 	            values: [],
-	            format: d3.format(series.display_format)
-	          }
+	            format: d3.format(series.display_format),
+	          };
 	          keys.forEach(function (key) {
 	            var datapoint = series.data.get(key);
 	            if(series.data.has(key))
@@ -15450,7 +15451,62 @@
 
 	    prepare: {
 	      value: function() {
-	        return this.axis().tooltips().bindData().transition().apply().autoResize().title().graph;
+	        return this.axis().tooltips().bindData().transition().apply().autoResize().graph;
+	      },
+
+	      enumerable: false,
+	      writable: true
+	    },
+
+	    goal: {
+	      value: function() {
+	        var margin = this.graph.margin();
+	        var yscale = this.graph.yScale();
+	        var xscale = this.graph.xScale();
+	        var wrap = this.parent.selectAll('g.nv-distribution').data([this.chart.goal]);
+	        var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-distribution').append('g');
+	        var g = wrap.select('g');
+
+	        wrap.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+	        var goalWrap = g.selectAll('g.nv-dist')
+	            .data([this.chart.goal]);
+
+	        goalWrap.enter().append('g');
+	        goalWrap
+	            .attr('class', 'nv-dist nv-goal-line')
+	            .style('stroke', this.chart.goal_color)
+	            .style('fill', this.chart.goal_color);
+
+	        var goal = goalWrap.selectAll('line.nv-goaly')
+	            .data([this.chart.goal]);
+	        goal.enter().append('line')
+	            .attr('x1', xscale(this.chart.goal) )
+	            .attr('x2', xscale(this.chart.goal) );
+	        goalWrap.exit().selectAll('line.nv-goaly')
+	            .transition()
+	            .attr('y1', yscale(this.chart.goal) )
+	            .attr('y2', yscale(this.chart.goal) )
+	            .style('stroke-opacity', 0)
+	            .remove();
+	        goal
+	            .attr('class', 'nv-goalx nv-goal-line')
+	            .attr('x1', xscale(this.chart.domain[0].valueOf()))
+	            .attr('x2', xscale(this.chart.domain[1].valueOf()));
+	        goal
+	            .transition()
+	            .attr('y1', yscale(this.chart.goal) )
+	            .attr('y2', yscale(this.chart.goal) );
+	        goalWrap.selectAll("text.nv-goal-lbl")
+	            .data([this.chart.goal])
+	            .enter().append("text")
+	            .attr("class", "nv-goal-lbl")
+	            .attr("text-anchor", "left")
+	            .attr('x', xscale(this.chart.domain[1].valueOf()) + 3)
+	            .attr("y", yscale(this.chart.goal))
+	            .attr('textLength', margin.right - 3)
+	            .attr("lengthAdjust", "spacingAndGlyphs")
+	            .text("Goal: " + this.chart.goal);
 	      },
 
 	      enumerable: false,
