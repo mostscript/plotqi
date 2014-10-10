@@ -1,3 +1,7 @@
+.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
+  fill-opacity: 100% !important;
+  stroke-opacity: 100% !important;
+  }
 .nvtooltip.xy-tooltip {
   max-width: 400px;
   overflow: hidden;
@@ -6,16 +10,12 @@
 
   overflow-wrap: break-word;
   }
-.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
-  fill-opacity: 100% !important;
-  stroke-opacity: 100% !important;
-  }
-.tooltipFooter {
+.nvtooltip .footer {
   font-size: 8pt;
   color: gray;
   text-align: center;
   }
-.nvtooltip > h3 {
+.nvtooltip h3 {
   font-size: 12pt;
   }
 .chart-div {

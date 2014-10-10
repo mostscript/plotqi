@@ -147,6 +147,41 @@ export class Graph {
       .text(this.chart.title);
       return this;
   }
+
+  legend() {
+    var wrap = this.parent.selectAll('g.nv-legend').data(["hola"]);
+    var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-legend').append('g');
+    var g = wrap.select('g');
+    wrap.attr('transform', 'translate(' + 5 + ',' + (160 - 30) + ')');
+
+    var legendWrap = g.selectAll('g.nv-leg').data(["hola"]);
+    legendWrap.enter().append('g').attr('class', 'nv-leg');
+    
+    var legend = legendWrap.selectAll('circle.legend-pt.nv-point')
+        .data(this.chart.series.map( s => s.color ));
+    legend.enter().append('circle')
+        .attr('cx', 5 )
+        .attr('cy', (d, i) => i * 12 )
+        .attr('r', 4)
+        .style("stroke", (d) => d )
+        .style("fill", (d) => d );
+    legendWrap.exit().selectAll('circle.legend-pt.nv-point')
+        .transition()
+        .attr('cx', 0 )
+        .attr('cy', 0 )
+        .style('stroke-opacity', 0)
+        .remove();
+    legendWrap.selectAll("text.nv-goal-lbl").data(this.chart.series)
+        .enter().append("text")
+        .attr("class", "nv-goal-lbl")
+        .attr("text-anchor", "left")
+        .attr('x', 15)
+        .attr("y", (d, i) => (i * 12) + 3 )
+        .attr('dy', "0.1em")
+        //.attr('textLength', 160 - 22)
+        //.attr("lengthAdjust", "spacing")
+        .text( d => d.title );
+  }
 }
 
 export class TimeGraph extends Graph {
@@ -174,7 +209,7 @@ export class TimeGraph extends Graph {
   tooltips() {
     this.graph.tooltipContent(function(seriesName, x, y, graph) {
       return "<h3>" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
-      + "<p class=\"tooltipFooter\">" + graph.point.title + ", " + graph.series.format(y / 100) + "</p>";
+      + "<p class=\"footer\">" + graph.point.title + ", " + graph.series.format(y / 100) + "</p>";
     });
     return this;
   }
@@ -209,8 +244,8 @@ export class TimeGraph extends Graph {
         .attr('x2', xscale(this.chart.goal) );
     goalWrap.exit().selectAll('line.nv-goaly')
         .transition()
-        .attr('y1', yscale(this.chart.goal) )
-        .attr('y2', yscale(this.chart.goal) )
+        .attr('y1', Math.floor(yscale(this.chart.goal)) )
+        .attr('y2', Math.floor(yscale(this.chart.goal)) )
         .style('stroke-opacity', 0)
         .remove();
     goal
@@ -219,17 +254,18 @@ export class TimeGraph extends Graph {
         .attr('x2', xscale(this.chart.domain[1].valueOf()));
     goal
         .transition()
-        .attr('y1', yscale(this.chart.goal) )
-        .attr('y2', yscale(this.chart.goal) );
+        .attr('y1', Math.floor(yscale(this.chart.goal)) )
+        .attr('y2', Math.floor(yscale(this.chart.goal)) );
     goalWrap.selectAll("text.nv-goal-lbl")
         .data([this.chart.goal])
         .enter().append("text")
         .attr("class", "nv-goal-lbl")
         .attr("text-anchor", "left")
         .attr('x', xscale(this.chart.domain[1].valueOf()) + 3)
-        .attr("y", yscale(this.chart.goal))
+        .attr("y", Math.floor(yscale(this.chart.goal)) + 2)
         .attr('textLength', margin.right - 3)
         .attr("lengthAdjust", "spacingAndGlyphs")
         .text("Goal: " + this.chart.goal);
+    return this;
   }
 }

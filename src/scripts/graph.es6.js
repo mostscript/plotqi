@@ -68,6 +68,7 @@ getObjects("report.json", function (charts) {
       .attr("lengthAdjust", "spacingAndGlyphs")
       .text(nvchart.chart.title);
     nvchart.goal();
+    nvchart.legend();
     return c;
   } );
 });
