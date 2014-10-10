@@ -265,7 +265,7 @@ export class TimeGraph extends Graph {
         .attr("y", Math.floor(yscale(this.chart.goal)) + 2)
         .attr('textLength', margin.right - 3)
         .attr("lengthAdjust", "spacingAndGlyphs")
-        .text("Goal: " + this.chart.goal);
+        .text(this.chart.goal + " (G)");
     return this;
   }
 }

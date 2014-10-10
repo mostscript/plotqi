@@ -13465,7 +13465,7 @@
 	      .attr("x", 160 / 2)
 	      .attr("y", 160 - 2)
 	      .attr("text-anchor", "middle")
-	      .style('font-size', '8pt')
+	      //.style('font-size', '8pt')
 	      .style('letter-spacing', '-0.1em')
 	      .attr('textLength', "160")
 	      .attr("lengthAdjust", "spacingAndGlyphs")
@@ -15559,7 +15559,7 @@
 	            .attr("y", Math.floor(yscale(this.chart.goal)) + 2)
 	            .attr('textLength', margin.right - 3)
 	            .attr("lengthAdjust", "spacingAndGlyphs")
-	            .text("Goal: " + this.chart.goal);
+	            .text(this.chart.goal + " (G)");
 	        return this;
 	      },
 

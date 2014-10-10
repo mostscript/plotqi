@@ -62,7 +62,7 @@ getObjects("report.json", function (charts) {
       .attr("x", 160 / 2)
       .attr("y", 160 - 2)
       .attr("text-anchor", "middle")
-      .style('font-size', '8pt')
+      //.style('font-size', '8pt')
       .style('letter-spacing', '-0.1em')
       .attr('textLength', "160")
       .attr("lengthAdjust", "spacingAndGlyphs")

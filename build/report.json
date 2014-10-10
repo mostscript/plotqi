@@ -94,7 +94,7 @@
       "height": 100, 
       "frequency": "monthly", 
       "chart_type": "line", 
-      "goal": 80, 
+      "goal": 80.0, 
       "title": "% of patients screened for exposure of adverse events", 
       "legend_location": "e", 
       "height_units": "px", 
