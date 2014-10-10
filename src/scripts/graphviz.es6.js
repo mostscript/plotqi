@@ -47,7 +47,7 @@ export class Graph {
     this.graph = nv.models.lineChart()
     .id(this.id)
     .showLegend(false)
-    .margin({top: 10, bottom: 50, left: 30, right: 30});
+    .margin({top: 10, bottom: 60, left: 30, right: 30});
     this.graph.lines.scatter.onlyCircles(false);
   }
 
