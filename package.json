@@ -8,14 +8,8 @@
   "dependencies": {
     "bootstrap": "^3.2.0",
     "d3": "^3.4.11",
-    "es6-loader": "^0.2.0",
-    "es6-symbol": "^0.1.0",
-    "esnext-loader": "^1.0.0",
-    "exports-loader": "^0.6.2",
-    "imports-loader": "^0.6.3",
     "moment": "^2.8.3",
-    "nvd3": "^1.1.15",
-    "traceur-loader": "^0.5.2"
+    "nvd3": "^1.1.15"
   },
   "devDependencies": {
     "browser-sync": "^1.3.7",
@@ -49,7 +43,11 @@
     "run-sequence": "^0.3.6",
     "url-loader": "^0.5.5",
     "webpack": "^1.4.0-beta9",
-    "webpack-dev-server": "^1.6.4"
+    "webpack-dev-server": "^1.6.4",
+    "esnext-loader": "^1.0.0",
+    "exports-loader": "^0.6.2",
+    "imports-loader": "^0.6.3",
+    "es6-loader": "^0.2.0"
   },
   "scripts": {
     "prestart": "npm install",

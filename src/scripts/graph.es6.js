@@ -59,13 +59,13 @@ getObjects("report.json", function (charts) {
     var c = nvchart.prepare();
     d3.select("#chart-div-test_numero_dos svg")
       .append("text")
-      .attr("x", 160 / 2)
+      .attr("x", 5)
       .attr("y", 160 - 2)
-      .attr("text-anchor", "middle")
+      .attr("text-anchor", "left")
       //.style('font-size', '8pt')
       .style('letter-spacing', '-0.1em')
-      .attr('textLength', "160")
-      .attr("lengthAdjust", "spacingAndGlyphs")
+      //.attr('textLength', "160")
+      //.attr("lengthAdjust", "spacingAndGlyphs")
       .text(nvchart.chart.title);
     nvchart.goal();
     nvchart.legend();

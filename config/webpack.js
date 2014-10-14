@@ -36,7 +36,10 @@ module.exports = function (release) {
     ],
 
     resolve: {
-      extensions: ['', '.webpack.js', '.web.js', '.js']
+      extensions: ['', '.webpack.js', '.web.js', '.js', '.es6.js'],
+      alias: {
+        moment$: 'moment/min/moment.min.js'
+      }
     },
 
     module: {
