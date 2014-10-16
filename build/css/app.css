@@ -6227,10 +6227,14 @@ svg text {
   stroke: dimgray;
   }
 .nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line {
-  stroke-width: 1px;
+  stroke-width: 2px;
   stroke: dimgray;
   }
 .nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line {
-  stroke-width: 1px;
+  stroke-width: 2px;
   stroke: dimgray;
+  }
+.nv-goal-line {
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
   }

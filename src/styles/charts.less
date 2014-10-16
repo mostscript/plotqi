@@ -48,17 +48,18 @@ svg text :extend(.upiq-small-chart) {}
 }
 
 .nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line {
-  stroke-width: 1px;
+  stroke-width: 2px;
   stroke: dimgray;
 }
 
 .nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line {
-  stroke-width: 1px;
+  stroke-width: 2px;
   stroke: dimgray;
 }
 
 .nv-axisMaxMin {}
 
-.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:not(:nth-of-type(1)):not(:nth-last-of-type(1)) line::before {
-  content: "";
+.nv-goal-line {
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }

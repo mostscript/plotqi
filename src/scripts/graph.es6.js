@@ -3,6 +3,7 @@ import {Schema, Field, Klass} from "./classviz.es6.js";
 import {DataPointSchema, dataPointSchema, timeSeriesDataPointSchema} from "./schemaviz.es6.js";
 import {Chart} from "./chartviz.es6.js";
 import {ChartContainer, TimeGraph} from "./graphviz.es6.js";
+import {SmallMultiplesChart} from './smallMultiplesChart';
 //var dataviz = require("imports?moment=moment!exports?uu!../../spec/modelref/dataviz.js");
 require: "./Symbol.js";
 var d3 = require("d3");
@@ -53,8 +54,7 @@ getObjects("report.json", function (charts) {
   renderAll();
   //d3.select(window).on("resize", renderAll);
   var div = d3.select("#chart-div-test_numero_dos");
-  var svg = div.append("svg");
-  window.nvchart = graphs[0].bindTo(svg.node());
+  /*window.nvchart = graphs[0].bindTo(svg.node());
   nv.addGraph( () => {
     var c = nvchart.prepare();
     d3.select("#chart-div-test_numero_dos svg")
@@ -70,6 +70,7 @@ getObjects("report.json", function (charts) {
     nvchart.goal();
     nvchart.legend();
     return c;
-  } );
+  } );*/
+  nv.addGraph(SmallMultiplesChart(charts[0], div));
 });
 export default "hi";
