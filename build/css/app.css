@@ -6219,15 +6219,14 @@ svg text {
   font-family: 'silkscreennormal', "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 6pt;
   }
-.nv-axis text {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+/*.nv-axis text {
   font-size: 9pt;
-  }
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}*/
 .nv-y.nv-axis .nvd3.nv-wrap.nv-axis path.domain {
   stroke: dimgray;
   }
 .nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line {
-  stroke-width: 2px;
   stroke: dimgray;
   }
 .nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line {

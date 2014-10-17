@@ -9304,7 +9304,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var $__Array$prototype$slice = Array.prototype.slice;
 	var getObjects = __webpack_require__(5).getObjects;
 	var Schema = __webpack_require__(6).Schema;
 	var Field = __webpack_require__(6).Field;
@@ -9316,29 +9315,21 @@
 	var ChartContainer = __webpack_require__(9).ChartContainer;
 	var TimeGraph = __webpack_require__(9).TimeGraph;
 	var SmallMultiplesChart = __webpack_require__(10).SmallMultiplesChart;
-
 	//var dataviz = require("imports?moment=moment!exports?uu!../../spec/modelref/dataviz.js");
 	var __WEBPACK_LABELED_MODULE__4 = __webpack_require__(4), Symbol = __WEBPACK_LABELED_MODULE__4.Symbol;
-
 	var d3 = __webpack_require__(2);
 	var nv = __webpack_require__(11);
-
 	getObjects("report.json", function (charts) {
-	  var $__0;
 	  console.log(charts);
-
 	  charts = charts.map( function(graph) {
 	    return Chart(graph);
-	  } );
-
+	  } )
 	  console.log(charts);
 	  window.graph = charts[0];
-	  console.log(graph.series[0].title);
-
+	  console.log(graph.series[0].title)
 	  //let c = Chart(graph);
 	  //console.log(c);
 	  window.charts = charts;
-
 	  window.sym = new Symbol("This is unique");
 	  window.Field = Field;
 	  window.DPS = DataPointSchema;
@@ -9352,7 +9343,6 @@
 	  window.graphs = charts.map( function(chart) {
 	    return new TimeGraph(chart);
 	  } );
-
 	  function renderAll() {
 	    graphs.forEach(function (g) {
 	      g.render();
@@ -9376,12 +9366,9 @@
 	      */
 	    });
 	  }
-
 	  renderAll();
-
 	  //d3.select(window).on("resize", renderAll);
 	  var div = d3.select("#chart-div-test_numero_dos");
-
 	  /*window.nvchart = graphs[0].bindTo(svg.node());
 	  nv.addGraph( () => {
 	    var c = nvchart.prepare();
@@ -9399,15 +9386,7 @@
 	    nvchart.legend();
 	    return c;
 	  } );*/
-	  ($__0 = nv).addGraph.apply($__0, $__Array$prototype$slice.call(SmallMultiplesChart(charts[0], div)));
-	  /*d3.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
-	        .attr("y1", 0.5)
-	        .attr("y2", 0.5)
-	        .attr("x1", 0);
-	    d3.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line")
-	        .attr("y1", -0.5)
-	        .attr("y2", -0.5)
-	        .attr("x1", 0);*/;
+	  nv.addGraph(SmallMultiplesChart(charts[0], div));
 	});
 
 /***/ },
@@ -11357,10 +11336,12 @@
 	  node.style('width', width + "px")
 	      .style('height', height + "px");
 	  node = node.append("svg");
-	  var margins = {top: 10, bottom: 60, left: 30, right: 30};
+	  var margins = {top: 10, bottom: 50, left: 25, right: 30};
 	  var data = calculateMissingValues(mschart);
+	  var domain = mschart.domain;
+	  domain[1] = d3.time.month.offset(domain[1], 1);
 
-	  return [function () {
+	  return function () {
 	    var $__0;
 
 	    var chart = nv.models.lineChart()
@@ -11375,16 +11356,23 @@
 
 	    chart.lines.scatter.onlyCircles(false);
 
+	    (Math.abs(moment.fn.diff.call.apply(moment.fn.diff, mschart.domain.map( function(month) {
+	      return moment(month);
+	    }).concat("months"))) + 1);
+
 	    chart.xAxis
 	         .tickFormat( function(d) {
 	      return d3.time.format("%B")(new Date(d))[0];
 	    } )
-	         .tickValues(($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(mschart.domain)).map( function(month) {
+	         .tickValues(($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(domain)).map( function(month) {
 	      return month.valueOf();
-	    } ));
+	    } ))
+	         .showMaxMin(false)
+	         .tickPadding(3);
 
 	    chart.yAxis
-	         .tickFormat(d3.format(","));
+	         .tickFormat(d3.format(","))
+	         .showMaxMin(false);
 
 	    chart
 	         .xDomain(mschart.domain.map( function(x) {
@@ -11403,21 +11391,20 @@
 	        .style("stroke-dasharray", "5 5");
 
 	    //Fix Axis Ticks
-	    /*node.selectAll(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))")
+	    node.selectAll(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))")
 	      .append("line")
 	      .attr('y2', 0)
 	      .attr('x2', 4)
 	      .style("stroke", "dimgray");
 
 	    //Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
-	    /*node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
+	    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
 	        .attr("y1", 0.5)
-	        .attr("y2", 0.5)
-	        .attr("x1", 0);
+	        .attr("y2", 0.5);
+
 	    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line")
 	        .attr("y1", -0.5)
-	        .attr("y2", -0.5)
-	        .attr("x1", 0);*/
+	        .attr("y2", -0.5);
 
 	    //Graph Title
 	    node.append("g")
@@ -11493,26 +11480,18 @@
 	          .style('fill', mschart.goal_color);
 	    }
 
-	    console.log("2");
-	    return chart;
-	  },
-	  function (chart) {
-	    console.log("1");
-	    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
+	    /*chart.dispatch.on("changeState.fix_axes", function (e) {
+	      node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
 	        .attr("y1", 0.5)
-	        .attr("y2", 0.5)
-	        .attr("x1", 0.5);
+	        .attr("y2", 0.5);
 	    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line")
 	        .attr("y1", -0.5)
-	        .attr("y2", -0.5)
-	        .attr("x1", 0.5);
-	    node.append("line")
-	        .attr("y1", 30)
-	        .attr("y2", 50)
-	        .attr("x2", 70)
-	        .style("stroke", "red");
-	    console.log(node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line").attr("y2"))
-	  }];
+	        .attr("y2", -0.5);
+	    });*/
+	    console.log(chart);
+
+	    return chart;
+	  };
 	}
 
 	exports.SmallMultiplesChart = SmallMultiplesChart;function extractData(mschart) {

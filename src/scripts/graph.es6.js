@@ -73,4 +73,3 @@ getObjects("report.json", function (charts) {
   } );*/
   nv.addGraph(SmallMultiplesChart(charts[0], div));
 });
-export default "hi";

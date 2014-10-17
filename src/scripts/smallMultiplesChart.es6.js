@@ -20,8 +20,10 @@ export function SmallMultiplesChart(mschart, node, size) {
   node.style('width', width + "px")
       .style('height', height + "px");
   node = node.append("svg");
-  var margins = {top: 10, bottom: 60, left: 30, right: 30};
+  var margins = {top: 10, bottom: 50, left: 25, right: 30};
   var data = calculateMissingValues(mschart);
+  var domain = mschart.domain;
+  domain[1] = d3.time.month.offset(domain[1], 1);
 
   return function () {
     var chart = nv.models.lineChart()
@@ -35,11 +37,15 @@ export function SmallMultiplesChart(mschart, node, size) {
                   })
                   ;
                   chart.lines.scatter.onlyCircles(false);
+    (Math.abs(moment.fn.diff.call.apply(moment.fn.diff, mschart.domain.map( month => moment(month)).concat("months"))) + 1);
     chart.xAxis
          .tickFormat( d => d3.time.format("%B")(new Date(d))[0] )
-         .tickValues(d3.time.months(...mschart.domain).map( month => month.valueOf() ));
+         .tickValues(d3.time.months(...domain).map( month => month.valueOf() ))
+         .showMaxMin(false)
+         .tickPadding(3)
     chart.yAxis
-         .tickFormat(d3.format(","));
+         .tickFormat(d3.format(","))
+         .showMaxMin(false);
     chart
          .xDomain(mschart.domain.map( x => x.valueOf() ))
          .yDomain(mschart.range);
@@ -131,6 +137,15 @@ export function SmallMultiplesChart(mschart, node, size) {
           .style('fill', mschart.goal_color);
     }
 
+    /*chart.dispatch.on("changeState.fix_axes", function (e) {
+      node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
+        .attr("y1", 0.5)
+        .attr("y2", 0.5);
+    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line")
+        .attr("y1", -0.5)
+        .attr("y2", -0.5);
+    });*/
+    console.log(chart);
     return chart;
   };
 }
@@ -141,8 +156,12 @@ function extractData(mschart) {
   mschart.keys.forEach( key => keys.set(key, "defined"));
   keys = keys.keys();
   keys.sort( (a, b) => moment(new Date(a)).valueOf() - moment(new Date(b)).valueOf() );
-  if( moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[0] ) ) ) > 12) {
-    //stuff
+  if( moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[0] ) ) ) >= 12) {
+    var i = 0;
+    while(moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[i] ) ) ) >= 12)) {
+      i++;
+    }
+    keys = keys.slice(i);
   }
   var chart_series = mschart.series;
   if(chart_series.length > 2) chart_series = chart_series.slice(-2);
