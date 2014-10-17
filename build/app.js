@@ -11495,20 +11495,21 @@
 	}
 
 	exports.SmallMultiplesChart = SmallMultiplesChart;function extractData(mschart) {
+	  var $__1;
 	  var data = [];
-	  var keys = d3.map();
-	  mschart.keys.forEach( function(key) {
-	    return keys.set(key, "defined");
-	  });
-	  keys = keys.keys();
-	  keys.sort( function(a, b) {
-	    return moment(new Date(a)).valueOf() - moment(new Date(b)).valueOf();
-	  } );
-	  if( moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[0] ) ) ) > 12) {
-	    //stuff
+	  var keys = ($__1 = d3.time.month).range.apply($__1, $__Array$prototype$slice.call(mschart.domain));
+
+	  if( moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[0] ) ) ) >= 12) {
+	    var i = 0;
+	    while(moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[i] ) ) ) >= 12) {
+	      i++;
+	    }
+	    //keys = keys.slice(i);
 	  }
+
 	  var chart_series = mschart.series;
 	  if(chart_series.length > 2) chart_series = chart_series.slice(-2);
+
 	  chart_series.forEach(function (series, index) {
 	    var obj = {
 	      key: series.title,
@@ -11536,6 +11537,7 @@
 	    });
 	    data.push(obj);
 	  });
+
 	  return data;
 	}
 

@@ -152,16 +152,13 @@ export function SmallMultiplesChart(mschart, node, size) {
 
 function extractData(mschart) {
   var data = [];
-  var keys = d3.map();
-  mschart.keys.forEach( key => keys.set(key, "defined"));
-  keys = keys.keys();
-  keys.sort( (a, b) => moment(new Date(a)).valueOf() - moment(new Date(b)).valueOf() );
+  var keys = d3.time.month.range(...mschart.domain);
   if( moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[0] ) ) ) >= 12) {
     var i = 0;
     while(moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[i] ) ) ) >= 12) {
       i++;
     }
-    keys = keys.slice(i);
+    //keys = keys.slice(i);
   }
   var chart_series = mschart.series;
   if(chart_series.length > 2) chart_series = chart_series.slice(-2);
