@@ -83,6 +83,15 @@
               }
             ],
             [
+              "2015-07-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 75, 
+                "key": "2015-07-01T00:00:00", 
+                "title": "2015-07-01"
+              }
+            ],
+            [
               "2015-08-01T00:00:00", 
               {
                 "note": "Average of 8 values found.", 

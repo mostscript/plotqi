@@ -22,11 +22,7 @@ export function SmallMultiplesChart(mschart, node, size) {
   node = node.append("svg");
   var margins = {top: 10, bottom: 50, left: 25, right: 30};
   var data = calculateMissingValues(mschart);
-  var domain = mschart.domain;
-  if( moment(domain[1]).diff(moment(domain[0]), "months") > 12) {
-    domain[0] = d3.time.month.offset(domain[1], -12)
-  }
-
+  var domain = calcDomain(mschart);
   var tick_domain = domain.slice();
   tick_domain[1] = d3.time.month.offset(domain[1], 1);
 
@@ -154,12 +150,18 @@ export function SmallMultiplesChart(mschart, node, size) {
   };
 }
 
-function extractData(mschart) {
-  var data = [];
+function calcDomain(mschart) {
   var domain = mschart.domain;
   if( moment(domain[1]).diff(moment(domain[0]), "months") > 12) {
     domain[0] = d3.time.month.offset(domain[1], -12)
   }
+  return domain;
+}
+
+function extractData(mschart) {
+  var data = [];
+  var domain = calcDomain(mschart);
+  domain[1] = d3.time.month.offset(domain[1], 2);
   var keys = d3.time.month.range(...domain);
   var chart_series = mschart.series;
   if(chart_series.length > 2) chart_series = chart_series.slice(-2);
@@ -212,7 +214,7 @@ function calculateMissingValues(mschart) {
           poly_set.push(poly_line);
           poly_line = [ pt ];
         }
-        if(i === (series.values.length - 1)) {
+        if(i === (series.values.length)) {
           poly_set.push(poly_line);
         }
       }
