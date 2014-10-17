@@ -23,7 +23,12 @@ export function SmallMultiplesChart(mschart, node, size) {
   var margins = {top: 10, bottom: 50, left: 25, right: 30};
   var data = calculateMissingValues(mschart);
   var domain = mschart.domain;
-  domain[1] = d3.time.month.offset(domain[1], 1);
+  if( moment(domain[1]).diff(moment(domain[0]), "months") > 12) {
+    domain[0] = d3.time.month.offset(domain[1], -12)
+  }
+
+  var tick_domain = domain.slice();
+  tick_domain[1] = d3.time.month.offset(domain[1], 1);
 
   return function () {
     var chart = nv.models.lineChart()
@@ -37,17 +42,16 @@ export function SmallMultiplesChart(mschart, node, size) {
                   })
                   ;
                   chart.lines.scatter.onlyCircles(false);
-    (Math.abs(moment.fn.diff.call.apply(moment.fn.diff, mschart.domain.map( month => moment(month)).concat("months"))) + 1);
     chart.xAxis
          .tickFormat( d => d3.time.format("%B")(new Date(d))[0] )
-         .tickValues(d3.time.months(...domain).map( month => month.valueOf() ))
+         .tickValues(d3.time.months(...tick_domain).map( month => month.valueOf() ))
          .showMaxMin(false)
          .tickPadding(3)
     chart.yAxis
          .tickFormat(d3.format(","))
          .showMaxMin(false);
     chart
-         .xDomain(mschart.domain.map( x => x.valueOf() ))
+         .xDomain(domain.map( x => x.valueOf() ))
          .yDomain(mschart.range);
 
     node.datum(data).call(chart);
@@ -121,15 +125,15 @@ export function SmallMultiplesChart(mschart, node, size) {
                      .attr('class', 'nv-dist nv-goal');
       goal.append('line')
           .attr('class', 'nv-goal-line')
-          .attr('x1', xscale(mschart.domain[0].valueOf()))
-          .attr('x2', xscale(mschart.domain[1].valueOf()))
+          .attr('x1', xscale(domain[0].valueOf()))
+          .attr('x2', xscale(domain[1].valueOf()))
           .attr('y1', Math.floor(yscale(mschart.goal)) )
           .attr('y2', Math.floor(yscale(mschart.goal)) )
           .style('stroke', mschart.goal_color);
       goal.append("text")
           .attr("class", "nv-goal-lbl")
           .attr("text-anchor", "left")
-          .attr('x', xscale(mschart.domain[1].valueOf()) + 3)
+          .attr('x', xscale(domain[1].valueOf()) + 3)
           .attr("y", Math.floor(yscale(mschart.goal)) + 2)
           //.attr('textLength', margins.right - 3)
           //.attr("lengthAdjust", "spacingAndGlyphs")
@@ -152,14 +156,11 @@ export function SmallMultiplesChart(mschart, node, size) {
 
 function extractData(mschart) {
   var data = [];
-  var keys = d3.time.month.range(...mschart.domain);
-  if( moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[0] ) ) ) >= 12) {
-    var i = 0;
-    while(moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[i] ) ) ) >= 12) {
-      i++;
-    }
-    //keys = keys.slice(i);
+  var domain = mschart.domain;
+  if( moment(domain[1]).diff(moment(domain[0]), "months") > 12) {
+    domain[0] = d3.time.month.offset(domain[1], -12)
   }
+  var keys = d3.time.month.range(...domain);
   var chart_series = mschart.series;
   if(chart_series.length > 2) chart_series = chart_series.slice(-2);
   chart_series.forEach(function (series, index) {

@@ -11339,7 +11339,12 @@
 	  var margins = {top: 10, bottom: 50, left: 25, right: 30};
 	  var data = calculateMissingValues(mschart);
 	  var domain = mschart.domain;
-	  domain[1] = d3.time.month.offset(domain[1], 1);
+	  if( moment(domain[1]).diff(moment(domain[0]), "months") > 12) {
+	    domain[0] = d3.time.month.offset(domain[1], -12)
+	  }
+
+	  var tick_domain = domain.slice();
+	  tick_domain[1] = d3.time.month.offset(domain[1], 1);
 
 	  return function () {
 	    var $__0;
@@ -11356,15 +11361,11 @@
 
 	    chart.lines.scatter.onlyCircles(false);
 
-	    (Math.abs(moment.fn.diff.call.apply(moment.fn.diff, mschart.domain.map( function(month) {
-	      return moment(month);
-	    }).concat("months"))) + 1);
-
 	    chart.xAxis
 	         .tickFormat( function(d) {
 	      return d3.time.format("%B")(new Date(d))[0];
 	    } )
-	         .tickValues(($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(domain)).map( function(month) {
+	         .tickValues(($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(tick_domain)).map( function(month) {
 	      return month.valueOf();
 	    } ))
 	         .showMaxMin(false)
@@ -11375,7 +11376,7 @@
 	         .showMaxMin(false);
 
 	    chart
-	         .xDomain(mschart.domain.map( function(x) {
+	         .xDomain(domain.map( function(x) {
 	      return x.valueOf();
 	    } ))
 	         .yDomain(mschart.range);
@@ -11464,15 +11465,15 @@
 	                     .attr('class', 'nv-dist nv-goal');
 	      goal.append('line')
 	          .attr('class', 'nv-goal-line')
-	          .attr('x1', xscale(mschart.domain[0].valueOf()))
-	          .attr('x2', xscale(mschart.domain[1].valueOf()))
+	          .attr('x1', xscale(domain[0].valueOf()))
+	          .attr('x2', xscale(domain[1].valueOf()))
 	          .attr('y1', Math.floor(yscale(mschart.goal)) )
 	          .attr('y2', Math.floor(yscale(mschart.goal)) )
 	          .style('stroke', mschart.goal_color);
 	      goal.append("text")
 	          .attr("class", "nv-goal-lbl")
 	          .attr("text-anchor", "left")
-	          .attr('x', xscale(mschart.domain[1].valueOf()) + 3)
+	          .attr('x', xscale(domain[1].valueOf()) + 3)
 	          .attr("y", Math.floor(yscale(mschart.goal)) + 2)
 	          //.attr('textLength', margins.right - 3)
 	          //.attr("lengthAdjust", "spacingAndGlyphs")
@@ -11497,16 +11498,13 @@
 	exports.SmallMultiplesChart = SmallMultiplesChart;function extractData(mschart) {
 	  var $__1;
 	  var data = [];
-	  var keys = ($__1 = d3.time.month).range.apply($__1, $__Array$prototype$slice.call(mschart.domain));
+	  var domain = mschart.domain;
 
-	  if( moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[0] ) ) ) >= 12) {
-	    var i = 0;
-	    while(moment( new Date(keys[keys.length - 1]) ).diff( moment( new Date(keys[i] ) ) ) >= 12) {
-	      i++;
-	    }
-	    //keys = keys.slice(i);
+	  if( moment(domain[1]).diff(moment(domain[0]), "months") > 12) {
+	    domain[0] = d3.time.month.offset(domain[1], -12)
 	  }
 
+	  var keys = ($__1 = d3.time.month).range.apply($__1, $__Array$prototype$slice.call(domain));
 	  var chart_series = mschart.series;
 	  if(chart_series.length > 2) chart_series = chart_series.slice(-2);
 
