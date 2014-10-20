@@ -1,7 +1,7 @@
-import {Klass} from "./classviz.es6.js";
-require: "./Symbol.js";
+import {Klass} from './classviz.es6.js';
+require: './Symbol.js';
 var dataSym = new Symbol();
-var d3 = require("d3");
+var d3 = require('d3');
 import {
   dataPointSchema,
   timeDataPointSchema,
@@ -9,12 +9,12 @@ import {
   timeDataSeriesSchema,
   multiSeriesChartSchema,
   timeSeriesChartSchema
-} from "./schemaviz.es6.js";
-var moment = require("moment");
+} from './schemaviz.es6.js';
+var moment = require('moment');
 
 export class DataPoint extends Klass {
   constructor(obj) {
-    obj = obj || {key: "[none]"};
+    obj = obj || {key: '[none]'};
     obj.schema = obj.schema || dataPointSchema;
     super(obj);
   }
@@ -33,7 +33,7 @@ export class DataSeries extends Klass {
     obj = obj || {};
     obj.schema = obj.schema || dataSeriesSchema;
     super(obj);
-    /*Object.defineProperty(this, "data", function () {
+    /*Object.defineProperty(this, 'data', function () {
       var data = [];
       return {
         enumerable: true,
@@ -166,5 +166,5 @@ export class TimeSeriesChart extends MultiSeriesChart {
 }
 
 export function Chart(data) {
-  return data.x_axis_type === "date" ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
+  return data.x_axis_type === 'date' ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
 }

@@ -11394,14 +11394,13 @@
 	      .attr('x2', 4)
 	      .style("stroke", "dimgray");
 
-	    //Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
+	    /*//Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
 	    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
 	        .attr("y1", 0.5)
 	        .attr("y2", 0.5);
-
 	    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line")
 	        .attr("y1", -0.5)
-	        .attr("y2", -0.5);
+	        .attr("y2", -0.5);*/
 
 	    //Graph Title
 	    node.append("g")
@@ -11475,6 +11474,31 @@
 	          //.attr("lengthAdjust", "spacingAndGlyphs")
 	          .text(mschart.goal + " (G)")
 	          .style('fill', mschart.goal_color);
+	    }
+
+	    //Year Labels
+	    var yrs = node.append('g')
+	                   .attr('class', 'nvd3 nv-years')
+	                   .attr('transform', 'translate(' + margins.left + ', 0)')
+	                   .selectAll("line.nv-goal")
+	                   .data([true])
+	                   .enter().append('g')
+	                   .attr('class', 'nv-yrs nv-year1');
+
+	    yrs.append('text')
+	       .attr('class', 'nv-year-lbl')
+	       .attr('text-anchor', 'left')
+	       .attr('x', xscale(domain[0].valueOf()))
+	       .attr('y', margins.top - 5)
+	       .text(domain[0].getFullYear());
+
+	    if(domain[1].getFullYear() !== domain[0].getFullYear()) {
+	      yrs.append('text')
+	         .attr('class', 'nv-year-lbl')
+	         .attr('text-anchor', 'end')
+	         .attr('x', xscale(domain[1].valueOf()))
+	         .attr('y', margins.top - 5)
+	         .text(domain[1].getFullYear());
 	    }
 
 	    /*chart.dispatch.on("changeState.fix_axes", function (e) {

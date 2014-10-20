@@ -1,4 +1,4 @@
-require: "./Symbol.js";
+require: './Symbol.js';
 var privateSym = new Symbol();
 import {
   DataPoint,
@@ -7,19 +7,19 @@ import {
   TimeDataSeries,
   MultiSeriesChart,
   TimeSeriesChartSchema
-} from "./chartviz.es6.js";
-var moment = require("moment");
-var d3 = require("d3");
-var nv = require("imports?d3=d3!exports?window.nv!nvd3");
+} from './chartviz.es6.js';
+var moment = require('moment');
+var d3 = require('d3');
+var nv = require('imports?d3=d3!exports?window.nv!nvd3');
 
 export function SmallMultiplesChart(mschart, node, size) {
   node = node || d3.select('body').append('div').attr('id', 'small-chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
   size = size || [160, 160]
   var width = size[0] || 160;
   var height = size[1] || 160;
-  node.style('width', width + "px")
-      .style('height', height + "px");
-  node = node.append("svg");
+  node.style('width', width + 'px')
+      .style('height', height + 'px');
+  node = node.append('svg');
   var margins = {top: 10, bottom: 50, left: 25, right: 30};
   var data = calculateMissingValues(mschart);
   var domain = calcDomain(mschart);
@@ -33,18 +33,18 @@ export function SmallMultiplesChart(mschart, node, size) {
                   .margin(margins)
                   .transitionDuration(500)
                   .tooltipContent(function(seriesName, x, y, graph) {
-                    return "<h3>" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
-                    + "<p class=\"footer\">" + graph.point.title + ", " + graph.series.format(y / 100) + "</p>";
+                    return '<h3>' + seriesName + '</h3>' + '<p>' + graph.point.note + '</p>'
+                    + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
                   })
                   ;
                   chart.lines.scatter.onlyCircles(false);
     chart.xAxis
-         .tickFormat( d => d3.time.format("%B")(new Date(d))[0] )
+         .tickFormat( d => d3.time.format('%B')(new Date(d))[0] )
          .tickValues(d3.time.months(...tick_domain).map( month => month.valueOf() ))
          .showMaxMin(false)
          .tickPadding(3)
     chart.yAxis
-         .tickFormat(d3.format(","))
+         .tickFormat(d3.format(','))
          .showMaxMin(false);
     chart
          .xDomain(domain.map( x => x.valueOf() ))
@@ -56,31 +56,31 @@ export function SmallMultiplesChart(mschart, node, size) {
     var xscale = chart.xScale();
 
     //Dashed lines for all missing areas
-    node.selectAll(".nv-wrap.nv-line > g > g.nv-groups .nv-group").filter( d => d.dashed )
-        .style("stroke-dasharray", "5 5");
+    node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group').filter( d => d.dashed )
+        .style('stroke-dasharray', '5 5');
 
     //Fix Axis Ticks
-    node.selectAll(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))")
-      .append("line")
+    node.selectAll('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))')
+      .append('line')
       .attr('y2', 0)
       .attr('x2', 4)
-      .style("stroke", "dimgray");
+      .style('stroke', 'dimgray');
 
-    //Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
-    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
-        .attr("y1", 0.5)
-        .attr("y2", 0.5);
-    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line")
-        .attr("y1", -0.5)
-        .attr("y2", -0.5);
+    /*//Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
+    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
+        .attr('y1', 0.5)
+        .attr('y2', 0.5);
+    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
+        .attr('y1', -0.5)
+        .attr('y2', -0.5);*/
 
     //Graph Title
-    node.append("g")
+    node.append('g')
         .attr('class', 'nvd3 nv-small-chart nv-chart-title')
-        .append("text")
-        .attr("class", "nv-small-chart nv-title")
-        .attr("x", 5)
-        .attr("y", height - 2)
+        .append('text')
+        .attr('class', 'nv-small-chart nv-title')
+        .attr('x', 5)
+        .attr('y', height - 2)
         .text(mschart.title);
 
     var legend = node.append('g')
@@ -98,16 +98,16 @@ export function SmallMultiplesChart(mschart, node, size) {
           .attr('cx', 5 )
           .attr('cy', (d, i) => i * 12 )
           .attr('r', 4)
-          .style("stroke", d => d.color )
+          .style('stroke', d => d.color )
           .style('stroke-opacity', 1)
-          .style("fill", d => d.color )
+          .style('fill', d => d.color )
           .style('fill-opacity', 0.5);
-    legend.append("text")
-          .attr("class", "nv-goal-lbl")
-          .attr("text-anchor", "left")
+    legend.append('text')
+          .attr('class', 'nv-goal-lbl')
+          .attr('text-anchor', 'start')
           .attr('x', 15)
-          .attr("y", (d, i) => (i * 12) + 3 )
-          .attr('dy', "0.1em")
+          .attr('y', (d, i) => (i * 12) + 3 )
+          .attr('dy', '0.1em')
           .text( d => d.title );
 
     //Goal Line
@@ -115,7 +115,7 @@ export function SmallMultiplesChart(mschart, node, size) {
       var goal = node.append('g')
                      .attr('class', 'nvd3 nv-distribution')
                      .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')')
-                     .selectAll("line.nv-goal")
+                     .selectAll('line.nv-goal')
                      .data([mschart.goal])
                      .enter().append('g')
                      .attr('class', 'nv-dist nv-goal');
@@ -126,24 +126,47 @@ export function SmallMultiplesChart(mschart, node, size) {
           .attr('y1', Math.floor(yscale(mschart.goal)) )
           .attr('y2', Math.floor(yscale(mschart.goal)) )
           .style('stroke', mschart.goal_color);
-      goal.append("text")
-          .attr("class", "nv-goal-lbl")
-          .attr("text-anchor", "left")
+      goal.append('text')
+          .attr('class', 'nv-goal-lbl')
+          .attr('text-anchor', 'start')
           .attr('x', xscale(domain[1].valueOf()) + 3)
-          .attr("y", Math.floor(yscale(mschart.goal)) + 2)
+          .attr('y', Math.floor(yscale(mschart.goal)) + 2)
           //.attr('textLength', margins.right - 3)
-          //.attr("lengthAdjust", "spacingAndGlyphs")
-          .text(mschart.goal + " (G)")
+          //.attr('lengthAdjust', 'spacingAndGlyphs')
+          .text(mschart.goal + ' (G)')
           .style('fill', mschart.goal_color);
     }
 
-    /*chart.dispatch.on("changeState.fix_axes", function (e) {
-      node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
-        .attr("y1", 0.5)
-        .attr("y2", 0.5);
-    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line")
-        .attr("y1", -0.5)
-        .attr("y2", -0.5);
+    //Year Labels
+    var yrs = node.append('g')
+                   .attr('class', 'nvd3 nv-years')
+                   .attr('transform', 'translate(' + margins.left + ', 0)')
+                   .selectAll('line.nv-goal')
+                   .data([true])
+                   .enter().append('g')
+                   .attr('class', 'nv-yrs nv-year1');
+    yrs.append('text')
+       .attr('class', 'nv-year-lbl')
+       .attr('text-anchor', 'start')
+       .attr('x', xscale(domain[0].valueOf()))
+       .attr('y', margins.top - 5)
+       .text(domain[0].getFullYear());
+    if(domain[1].getFullYear() !== domain[0].getFullYear()) {
+      yrs.append('text')
+         .attr('class', 'nv-year-lbl')
+         .attr('text-anchor', 'end')
+         .attr('x', xscale(domain[1].valueOf()))
+         .attr('y', margins.top - 5)
+         .text(domain[1].getFullYear());
+    }
+
+    /*chart.dispatch.on('changeState.fix_axes', function (e) {
+      node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
+        .attr('y1', 0.5)
+        .attr('y2', 0.5);
+    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
+        .attr('y1', -0.5)
+        .attr('y2', -0.5);
     });*/
     console.log(chart);
     return chart;
@@ -152,7 +175,7 @@ export function SmallMultiplesChart(mschart, node, size) {
 
 function calcDomain(mschart) {
   var domain = mschart.domain;
-  if( moment(domain[1]).diff(moment(domain[0]), "months") > 12) {
+  if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
     domain[0] = d3.time.month.offset(domain[1], -12)
   }
   return domain;
@@ -180,7 +203,7 @@ function extractData(mschart) {
           x: moment(datapoint.key).valueOf(),
           y: datapoint.value,
           size: datapoint.marker_size,
-          shape: "circle",
+          shape: 'circle',
           note: datapoint.note,
           title: datapoint.title
           });
@@ -229,7 +252,7 @@ function calculateMissingValues(mschart) {
 
     poly_set.forEach(function (poly_line, i) {
       data.push({
-        key: series.key + "$#" + i,
+        key: series.key + '$#' + i,
         color: series.color,
         values: poly_line,
         format: series.format,

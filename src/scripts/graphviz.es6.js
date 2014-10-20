@@ -1,4 +1,4 @@
-require: "./Symbol.js";
+require: './Symbol.js';
 var privateSym = new Symbol();
 import {
   DataPoint,
@@ -7,10 +7,10 @@ import {
   TimeDataSeries,
   MultiSeriesChart,
   TimeSeriesChartSchema
-} from "./chartviz";
-var moment = require("moment");
-var d3 = require("d3");
-var nv = require("imports?d3=d3!exports?window.nv!nvd3");
+} from './chartviz';
+var moment = require('moment');
+var d3 = require('d3');
+var nv = require('imports?d3=d3!exports?window.nv!nvd3');
 
 export class ChartContainer {
   constructor(chart, parent) {
@@ -19,7 +19,7 @@ export class ChartContainer {
   }
 
   get width() {
-    if(this.chart.width_units === "px")
+    if(this.chart.width_units === 'px')
       return this.chart.width;
     var parentWidth = this.parent.clientWidth;
     var ratio = this.chart.width / 100;
@@ -27,9 +27,9 @@ export class ChartContainer {
   }
 
   get height() {
-    if(this.chart.height_units === "px")
+    if(this.chart.height_units === 'px')
       return this.chart.height;
-    else if(this.chart.height_units === "%")
+    else if(this.chart.height_units === '%')
       var ratio = this.chart.height / 100;
     else if(this.chart.aspect_ratio)
       var ratio = this.chart.aspect_ratio[1] / this.chart.aspect_ratio[0];
@@ -51,22 +51,22 @@ export class Graph {
   }
 
   render() {
-    var div = d3.select("body")
-                //.select("#" + this.id)
-                .append("div")
-                .attr("id", this.id)
-                .classed("chart-div", true)
-                .style("position", "relative")
-                .style("width", this.container.width + "px")
-                .style("height", this.container.height + "px");
+    var div = d3.select('body')
+                //.select('#' + this.id)
+                .append('div')
+                .attr('id', this.id)
+                .classed('chart-div', true)
+                .style('position', 'relative')
+                .style('width', this.container.width + 'px')
+                .style('height', this.container.height + 'px');
 
-    var svg = div.append("svg")
-                 .attr("width", "100%")
-                 .attr("height", "100%")
-                 .style("position", "absolute")
-                 .style("top", "0")
-                 .style("left", "0")
-                 .style("background-color", "rgb(" + Math.round(Math.random() * 256) + "," + Math.round(Math.random() * 256) + "," + Math.round(Math.random() * 256) + ")");
+    var svg = div.append('svg')
+                 .attr('width', '100%')
+                 .attr('height', '100%')
+                 .style('position', 'absolute')
+                 .style('top', '0')
+                 .style('left', '0')
+                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
 
     svg.data(this.chart.series);
   }
@@ -74,7 +74,7 @@ export class Graph {
   get data() {
     var data = [];
     var keys = d3.map();
-    this.chart.keys.forEach( key => keys.set(key, "defined"));
+    this.chart.keys.forEach( key => keys.set(key, 'defined'));
     keys = keys.keys();
     keys.sort( (a, b) => moment(new Date(a)).valueOf() - moment(new Date(b)).valueOf() );
     this.chart.series.forEach(function (series, index) {
@@ -91,7 +91,7 @@ export class Graph {
             x: moment(datapoint.key).valueOf(),
             y: datapoint.value,
             size: datapoint.marker_size,
-            shape: "circle",
+            shape: 'circle',
             note: datapoint.note,
             title: datapoint.title
             });
@@ -140,23 +140,23 @@ export class Graph {
   }
 
   title() {
-    this.parent.select("svg")
-      .append("text")
-      .attr("x", this.parent.clientWidth / 2)
-      .attr("y", 20)
-      .attr("text-anchor", "middle")
+    this.parent.select('svg')
+      .append('text')
+      .attr('x', this.parent.clientWidth / 2)
+      .attr('y', 20)
+      .attr('text-anchor', 'middle')
       .style('font-size', '9pt')
       .text(this.chart.title);
       return this;
   }
 
   legend() {
-    var wrap = this.parent.selectAll('g.nv-legend').data(["hola"]);
+    var wrap = this.parent.selectAll('g.nv-legend').data(['hola']);
     var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-legend').append('g');
     var g = wrap.select('g');
     wrap.attr('transform', 'translate(' + 5 + ',' + (160 - 30) + ')');
 
-    var legendWrap = g.selectAll('g.nv-leg').data(["hola"]);
+    var legendWrap = g.selectAll('g.nv-leg').data(['hola']);
     legendWrap.enter().append('g').attr('class', 'nv-leg');
     
     var legend = legendWrap.selectAll('circle.legend-pt.nv-point')
@@ -165,23 +165,23 @@ export class Graph {
         .attr('cx', 5 )
         .attr('cy', (d, i) => i * 12 )
         .attr('r', 4)
-        .style("stroke", (d) => d )
-        .style("fill", (d) => d );
+        .style('stroke', (d) => d )
+        .style('fill', (d) => d );
     legendWrap.exit().selectAll('circle.legend-pt.nv-point')
         .transition()
         .attr('cx', 0 )
         .attr('cy', 0 )
         .style('stroke-opacity', 0)
         .remove();
-    legendWrap.selectAll("text.nv-goal-lbl").data(this.chart.series)
-        .enter().append("text")
-        .attr("class", "nv-goal-lbl")
-        .attr("text-anchor", "left")
+    legendWrap.selectAll('text.nv-goal-lbl').data(this.chart.series)
+        .enter().append('text')
+        .attr('class', 'nv-goal-lbl')
+        .attr('text-anchor', 'left')
         .attr('x', 15)
-        .attr("y", (d, i) => (i * 12) + 3 )
-        .attr('dy', "0.1em")
+        .attr('y', (d, i) => (i * 12) + 3 )
+        .attr('dy', '0.1em')
         //.attr('textLength', 160 - 22)
-        //.attr("lengthAdjust", "spacing")
+        //.attr('lengthAdjust', 'spacing')
         .text( d => d.title );
   }
 }
@@ -196,13 +196,13 @@ export class TimeGraph extends Graph {
   axis() {
   if(this.chart.x_label)
     this.graph.xAxis.axisLabel(this.chart.x_label);
-  this.graph.xAxis.tickFormat( d => d3.time.format("%B")(new Date(d))[0] )
+  this.graph.xAxis.tickFormat( d => d3.time.format('%B')(new Date(d))[0] )
   .tickValues(d3.time.months(...this.chart.domain).map( month => month.valueOf() ));
   this.graph.xDomain(this.chart.domain.map( x => x.valueOf() )).yDomain(this.chart.range);
   //this.graph.lines.xDomain(this.chart.domain.map( x => x.valueOf() ));
   if(this.chart.y_label)
     this.graph.yAxis.axisLabel(this.chart.y_label);
-  this.graph.yAxis.tickFormat(d3.format(","));
+  this.graph.yAxis.tickFormat(d3.format(','));
   //this.graph.yDomain(this.chart.range);
   //this.graph.lines.yDomain(this.chart.range);
   return this;
@@ -210,8 +210,8 @@ export class TimeGraph extends Graph {
 
   tooltips() {
     this.graph.tooltipContent(function(seriesName, x, y, graph) {
-      return "<h3>" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
-      + "<p class=\"footer\">" + graph.point.title + ", " + graph.series.format(y / 100) + "</p>";
+      return '<h3>' + seriesName + '</h3>' + '<p>' + graph.point.note + '</p>'
+      + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
     });
     return this;
   }
@@ -258,16 +258,16 @@ export class TimeGraph extends Graph {
         .transition()
         .attr('y1', Math.floor(yscale(this.chart.goal)) )
         .attr('y2', Math.floor(yscale(this.chart.goal)) );
-    goalWrap.selectAll("text.nv-goal-lbl")
+    goalWrap.selectAll('text.nv-goal-lbl')
         .data([this.chart.goal])
-        .enter().append("text")
-        .attr("class", "nv-goal-lbl")
-        .attr("text-anchor", "left")
+        .enter().append('text')
+        .attr('class', 'nv-goal-lbl')
+        .attr('text-anchor', 'left')
         .attr('x', xscale(this.chart.domain[1].valueOf()) + 3)
-        .attr("y", Math.floor(yscale(this.chart.goal)) + 2)
+        .attr('y', Math.floor(yscale(this.chart.goal)) + 2)
         .attr('textLength', margin.right - 3)
-        .attr("lengthAdjust", "spacingAndGlyphs")
-        .text(this.chart.goal + " (G)");
+        .attr('lengthAdjust', 'spacingAndGlyphs')
+        .text(this.chart.goal + ' (G)');
     return this;
   }
 }

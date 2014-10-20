@@ -1,5 +1,5 @@
-import {Schema, schematize, ValidationError, ValidationTypeError} from "./classviz.es6.js";
-var moment = require("moment");
+import {Schema, schematize, ValidationError, ValidationTypeError} from './classviz.es6.js';
+var moment = require('moment');
 
 function dateTypeConstraint(value) {
   var m = moment(value);
@@ -94,7 +94,7 @@ export class DataSeriesSchema extends Schema {
           color: {
             title: 'Line/bar color',
             description: 'Primary series color name or HTML color code; ' +
-                         'if unspecified ("Auto" default), defer to ' +
+                         'if unspecified ('Auto' default), defer to ' +
                          'automatic default color palette choices.',
             type: 'string',
             defaultValue: 'auto',
@@ -103,7 +103,7 @@ export class DataSeriesSchema extends Schema {
           marker_color: {
             title: 'Point marker fill color',
             description: 'Data point marker color name or code; ' +
-                         'if unspecified ("Auto" default), defer to ' +
+                         'if unspecified ('Auto' default), defer to ' +
                          'match the line/bar color.',
             type: 'string',
             defaultValue: 'Auto',
@@ -133,7 +133,7 @@ export class DataSeriesSchema extends Schema {
                          'vocabulary of allowable choices.',
             type: 'string',
             constraint: function (value) {
-              if(value === "x") return "cross";
+              if(value === 'x') return 'cross';
             },
             vocabulary: [
               'diamond',
@@ -162,7 +162,7 @@ export class DataSeriesSchema extends Schema {
           trend_color: {
             title: 'Trend line color, if applicable',
             description: 'Trend line color name or code; ' +
-                         'if unspecified ("Auto" default), defer to ' +
+                         'if unspecified ('Auto' default), defer to ' +
                          'match the line/bar color.',
             type: 'string',
             defaultValue: 'Auto'
@@ -178,10 +178,10 @@ export class DataSeriesSchema extends Schema {
             defaultValue: 'defer'
           },
           display_format: {
-            title: "Display format for y values",
-            description: "Standard formatting string",
-            type: "string",
-            defaultValue: "%%.%if"
+            title: 'Display format for y values',
+            description: 'Standard formatting string',
+            type: 'string',
+            defaultValue: '%%.%if'
           }
         }, this);
   }
@@ -201,7 +201,7 @@ export class TimeDataSeriesSchema extends DataSeriesSchema {
             'value?  This defaults to true, which means that ' +
             'no line will run from adjacent values through the ' +
             'missing value.  For purposes of tabular legend, ' +
-            'any value without a data-source should render "--" ' +
+            'any value without a data-source should render '--' ' +
             'and any null value (specifying N/A or NaN value) ' +
             'should display as N/A.  At future date, we may ' +
             'wish to add other options for this case, such as ' +
@@ -211,10 +211,10 @@ export class TimeDataSeriesSchema extends DataSeriesSchema {
             'fixed frequency for a time-series plot.',
         type: 'string',
         constraint: function (value) {
-          if(typeof value === "boolean")
-            return value ? "hidden" : "solid";
+          if(typeof value === 'boolean')
+            return value ? 'hidden' : 'solid';
         },
-        vocabulary: ["hidden", "solid", "dashed"],
+        vocabulary: ['hidden', 'solid', 'dashed'],
         defaultValue: true
       }
     }, this);
@@ -339,9 +339,9 @@ export class MultiSeriesChartSchema extends Schema {
               constraint: function (value) {
                 // validate that value is indeed a two-item Array of num.
                 if (value.length !== 2)
-                  throw new ValidationError(this, value, "Aspect ratio must be a two element Array");
+                  throw new ValidationError(this, value, 'Aspect ratio must be a two element Array');
                 if (typeof value[0] !== 'number' || typeof value[1] !== 'number')
-                  throw new ValidationTypeError(this, (typeof value[0]) + " " + (typeof value[1]), "Both elements of aspect ratio must be numbers");
+                  throw new ValidationTypeError(this, (typeof value[0]) + ' ' + (typeof value[1]), 'Both elements of aspect ratio must be numbers');
             }
           },
           range_min: {
@@ -352,7 +352,7 @@ export class MultiSeriesChartSchema extends Schema {
             type: 'number',
             constraint: function(value, obj) {
               var max = (obj.range_max != null) ? obj.range_max : null;
-              if(value > max) throw new ValidationError(this, value, "range_min must be less than or equal to range_max");
+              if(value > max) throw new ValidationError(this, value, 'range_min must be less than or equal to range_max');
               return value;
             },
             required: false
@@ -365,7 +365,7 @@ export class MultiSeriesChartSchema extends Schema {
             type: 'number',
             constraint: function(value, obj) {
               var min = (obj.range_min != null) ? obj.range_min : null;
-              if(value < min) throw new ValidationError(this, value, "range_max must be greater than or equal to range_min");
+              if(value < min) throw new ValidationError(this, value, 'range_max must be greater than or equal to range_min');
               return value;
             },
             required: false
@@ -499,7 +499,7 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
                          'handling the default date-label choices, ' +
                          'where month names are often stand-ins for ' +
                          'an exemplar date value for the month, e.g. ' +
-                         '2014-06-01 may be represented as "Jun 2014". ' +
+                         '2014-06-01 may be represented as 'Jun 2014'. ' +
                          'THIS MAY BE YAGNI if we do not need to draw ' +
                          'vertical lines at X-axis tick labels, or just ' +
                          'rely on scales and explicit data-labels in ' +
@@ -528,7 +528,7 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
               value = dateTypeConstraint(value);
               var end = obj.end;
               if(end == null) return value;
-              if(value > end) throw new ValidationError(this, value, "Start date cannot be after end date");
+              if(value > end) throw new ValidationError(this, value, 'Start date cannot be after end date');
               return value;
             },
             required: false
@@ -544,7 +544,7 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
               value = dateTypeConstraint(value);
               var start = obj.start;
               if(start == null) return value;
-              if(value < start) throw new ValidationError(this, value, "End date cannot be before start date");
+              if(value < start) throw new ValidationError(this, value, 'End date cannot be before start date');
               return value;
             },
             required: false

@@ -6230,7 +6230,6 @@ svg text {
   stroke: dimgray;
   }
 .nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line {
-  stroke-width: 2px;
   stroke: dimgray;
   }
 .nv-goal-line {

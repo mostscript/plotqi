@@ -1,5 +1,5 @@
-"use strict";
-var moment = require("moment");
+'use strict';
+var moment = require('moment');
 export class Schema {
   constructor() {}
 }
@@ -21,14 +21,14 @@ export function schematize(fields, schema) {
 
 export class Field {
   constructor(name, descriptor) {
-    if(name == null) throw new Error("Field must be named");
+    if(name == null) throw new Error('Field must be named');
     descriptor = descriptor || {};
     this.name = name; //field name, REQUIRED
     this.title = descriptor.title; //label for the field
     this.description = descriptor.description;
     this.type = descriptor.type; //constrain to specific type, either pass in a class or a typeof. undefined means ignored
     this.vocabulary = descriptor.vocabulary; //constrain field to specific set of values.
-    this.constraint = descriptor.constraint; //a callback function which can throw a ValidationError or return a normalized value. the field is passed in as "this"
+    this.constraint = descriptor.constraint; //a callback function which can throw a ValidationError or return a normalized value. the field is passed in as 'this'
     this.required = descriptor.required || false; //ValidationError thrown if this field is not set
     this.defaultValue = descriptor.defaultValue; //when there is no value stored, the getter will return this value
   }
@@ -39,19 +39,19 @@ export class Field {
     if(value != null) normalized = this.constraint ? (this.constraint.call(this, value, obj) || value) : value;
 
     if(this.type && (normalized != null)) {
-      if(typeof this.type === "string") {
-        if(typeof normalized !== this.type) throw new ValidationTypeError(this, (typeof normalized), "Expected type: [" + this.type + "]");
-      } else if (typeof this.type === "function") {
-        if(! (normalized instanceof this.type)) throw new ValidationTypeError(this, (typeof normalized), "Expected type: [" + this.type + "]");
+      if(typeof this.type === 'string') {
+        if(typeof normalized !== this.type) throw new ValidationTypeError(this, (typeof normalized), 'Expected type: [' + this.type + ']');
+      } else if (typeof this.type === 'function') {
+        if(! (normalized instanceof this.type)) throw new ValidationTypeError(this, (typeof normalized), 'Expected type: [' + this.type + ']');
       }
     }
 
     if(this.required && (normalized == null)) {
       if(this.defaultValue != null) normalized = this.defaultValue;
-      else throw new ValidationError(this, normalized, "Required fields cannot be null");
+      else throw new ValidationError(this, normalized, 'Required fields cannot be null');
     }
 
-    if(this.vocabulary && this.vocabulary.indexOf(normalized) === -1) throw new ValidationError(this, normalized, "Allowed values: " + this.vocabulary);
+    if(this.vocabulary && this.vocabulary.indexOf(normalized) === -1) throw new ValidationError(this, normalized, 'Allowed values: ' + this.vocabulary);
 
     return normalized;
   }
@@ -60,16 +60,16 @@ export class Field {
 export class ValidationError extends Error {
   constructor(field, value, msg) {
     super();
-    this.message = "Invalid value: " + value + " on field: " + field.name + (msg ? "! (" + msg + ")" : "!");
-    this.name = "ValidationError";
+    this.message = 'Invalid value: ' + value + ' on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+    this.name = 'ValidationError';
   }
 }
 
 export class ValidationTypeError extends TypeError {
   constructor(field, type, msg) {
     super();
-    this.message = "Invalid type: [" + type + "] on field: " + field.name + (msg ? "! (" + msg + ")" : "!");
-    this.name = "ValidationTypeError";
+    this.message = 'Invalid type: [' + type + '] on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+    this.name = 'ValidationTypeError';
   }
 }
 
