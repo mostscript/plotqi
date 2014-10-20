@@ -41,8 +41,8 @@ export function SmallMultiplesChart(mschart, node, size) {
                     return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
                     + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
                   })
+                  ;
                   chart.lines.scatter.onlyCircles(false);
-                  
     chart.xAxis
          .tickFormat( d => d3.time.format('%B')(new Date(d))[0] )
          .tickValues(tickVals)
@@ -94,7 +94,7 @@ export function SmallMultiplesChart(mschart, node, size) {
                      .append('g')
                      .attr('class', 'nv-leg')
                      .selectAll('circle.legend-pt.nv-point')
-                     .data(mschart.series.slice(0, 2))
+                     .data(mschart.series)
                      .enter().append('g');
 
     //Graph Legend
@@ -221,8 +221,8 @@ function extractData(mschart) {
         obj.values.push({
           x: moment(datapoint.key).valueOf(),
           y: datapoint.value,
-          size: series.marker_size,
-          shape: series.marker_style,
+          size: datapoint.marker_size,
+          shape: 'circle',
           note: datapoint.note,
           title: datapoint.title
           });

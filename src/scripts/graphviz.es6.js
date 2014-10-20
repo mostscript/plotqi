@@ -90,8 +90,8 @@ export class Graph {
           obj.values.push({
             x: moment(datapoint.key).valueOf(),
             y: datapoint.value,
-            size: datapoint.marker_size,
-            shape: 'circle',
+            size: series.marker_size,
+            shape: series.marker_style,
             note: datapoint.note,
             title: datapoint.title
             });

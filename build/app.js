@@ -9908,6 +9908,15 @@
 	            type: 'string',
 	            constraint: function (value) {
 	              if(value === 'x') return 'cross';
+	              if(value === 'filledCircle') {
+	                return 'circle';
+	              }
+	              if(value === 'filledSquare') {
+	                return 'square';
+	              }
+	              if(value === 'filledDiamond') {
+	                return 'diamond';
+	              }
 	            },
 	            vocabulary: [
 	              'diamond',
@@ -11015,8 +11024,8 @@
 	              obj.values.push({
 	                x: moment(datapoint.key).valueOf(),
 	                y: datapoint.value,
-	                size: datapoint.marker_size,
-	                shape: 'circle',
+	                size: series.marker_size,
+	                shape: series.marker_style,
 	                note: datapoint.note,
 	                title: datapoint.title
 	                });
@@ -11363,8 +11372,8 @@
 	                    return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
 	                    + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
 	                  })
-	                  ;
 	                  chart.lines.scatter.onlyCircles(false);
+	                  
 	    chart.xAxis
 	         .tickFormat( function(d) {
 	      return d3.time.format('%B')(new Date(d))[0];
@@ -11422,7 +11431,7 @@
 	                     .append('g')
 	                     .attr('class', 'nv-leg')
 	                     .selectAll('circle.legend-pt.nv-point')
-	                     .data(mschart.series)
+	                     .data(mschart.series.slice(0, 2))
 	                     .enter().append('g');
 
 	    //Graph Legend
@@ -11569,8 +11578,8 @@
 	        obj.values.push({
 	          x: moment(datapoint.key).valueOf(),
 	          y: datapoint.value,
-	          size: datapoint.marker_size,
-	          shape: 'circle',
+	          size: series.marker_size,
+	          shape: series.marker_style,
 	          note: datapoint.note,
 	          title: datapoint.title
 	          });

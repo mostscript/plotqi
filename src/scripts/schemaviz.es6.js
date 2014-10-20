@@ -134,6 +134,15 @@ export class DataSeriesSchema extends Schema {
             type: 'string',
             constraint: function (value) {
               if(value === 'x') return 'cross';
+              if(value === 'filledCircle') {
+                return 'circle';
+              }
+              if(value === 'filledSquare') {
+                return 'square';
+              }
+              if(value === 'filledDiamond') {
+                return 'diamond';
+              }
             },
             vocabulary: [
               'diamond',
