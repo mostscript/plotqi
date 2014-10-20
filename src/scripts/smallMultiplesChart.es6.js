@@ -42,7 +42,7 @@ export function SmallMultiplesChart(mschart, node, size) {
                     + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
                   })
                   chart.lines.scatter.onlyCircles(false);
-                  
+
     chart.xAxis
          .tickFormat( d => d3.time.format('%B')(new Date(d))[0] )
          .tickValues(tickVals)
@@ -279,6 +279,5 @@ function calculateMissingValues(mschart) {
       });
     });
   });
-  console.log(data);
   return data;
 }
