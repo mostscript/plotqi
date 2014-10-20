@@ -11373,7 +11373,7 @@
 	                    + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
 	                  })
 	                  chart.lines.scatter.onlyCircles(false);
-	                  
+
 	    chart.xAxis
 	         .tickFormat( function(d) {
 	      return d3.time.format('%B')(new Date(d))[0];
@@ -11400,6 +11400,10 @@
 	      return d.dashed;
 	    } )
 	        .style('stroke-dasharray', '3 3');
+	    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( function(d) {
+	      return d.dashed;
+	    } )
+	        .attr('visibility', 'hidden');
 
 	    //Fix Axis Ticks
 	    node.selectAll('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))')
@@ -11637,7 +11641,6 @@
 	      });
 	    });
 	  });
-	  console.log(data);
 	  return data;
 	}
 
