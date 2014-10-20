@@ -25,22 +25,27 @@ export function SmallMultiplesChart(mschart, node, size) {
   var domain = calcDomain(mschart);
   var tick_domain = domain.slice();
   tick_domain[1] = d3.time.month.offset(domain[1], 1);
+  var tickVals = d3.time.months(...tick_domain).map( month => month.valueOf() );
 
   return function () {
+    node.append('g')
+    .attr('class', 'nv-background')
+    .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
+
     var chart = nv.models.lineChart()
                   .id(mschart.uid)
                   .showLegend(false)
                   .margin(margins)
                   .transitionDuration(500)
                   .tooltipContent(function(seriesName, x, y, graph) {
-                    return '<h3>' + seriesName + '</h3>' + '<p>' + graph.point.note + '</p>'
+                    return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
                     + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
                   })
                   ;
                   chart.lines.scatter.onlyCircles(false);
     chart.xAxis
          .tickFormat( d => d3.time.format('%B')(new Date(d))[0] )
-         .tickValues(d3.time.months(...tick_domain).map( month => month.valueOf() ))
+         .tickValues(tickVals)
          .showMaxMin(false)
          .tickPadding(3)
     chart.yAxis
@@ -57,7 +62,7 @@ export function SmallMultiplesChart(mschart, node, size) {
 
     //Dashed lines for all missing areas
     node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group').filter( d => d.dashed )
-        .style('stroke-dasharray', '5 5');
+        .style('stroke-dasharray', '3 3');
 
     //Fix Axis Ticks
     node.selectAll('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))')
@@ -139,12 +144,12 @@ export function SmallMultiplesChart(mschart, node, size) {
 
     //Year Labels
     var yrs = node.append('g')
-                   .attr('class', 'nvd3 nv-years')
-                   .attr('transform', 'translate(' + margins.left + ', 0)')
+                   .attr('class', 'nvd3 nv-year-wrap')
+                   .attr('transform', 'translate(' + margins.left + ',0)')
                    .selectAll('line.nv-goal')
                    .data([true])
                    .enter().append('g')
-                   .attr('class', 'nv-yrs nv-year1');
+                   .attr('class', 'nv-years');
     yrs.append('text')
        .attr('class', 'nv-year-lbl')
        .attr('text-anchor', 'start')
@@ -159,6 +164,20 @@ export function SmallMultiplesChart(mschart, node, size) {
          .attr('y', margins.top - 5)
          .text(domain[1].getFullYear());
     }
+
+    //Zebra striped background
+    var tickDiff = xscale(tickVals[1]) - xscale(tickVals[0]);
+    var bg = node.select('.nv-background')
+                 .selectAll("rect.nv-zebra")
+                 .data(tickVals)
+                 .enter().append('rect')
+                 .attr('y', 0)
+                 .attr('x', d => xscale(d))
+                 .attr('height', yscale(mschart.range[0]))
+                 .attr('width', tickDiff)
+                 .attr('visibility', (d, i) => i !== (tickVals.length - 1) ? 'visible' : 'hidden' )
+                 .style('fill', d => new Date(d).getFullYear() === domain[0].getFullYear() ? '#E6F0FF' : '#F3EBFF' )
+                 .style('opacity', (d, i) => i % 2 === 0 ? 0.60 : 1.0 );
 
     /*chart.dispatch.on('changeState.fix_axes', function (e) {
       node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
@@ -252,7 +271,7 @@ function calculateMissingValues(mschart) {
 
     poly_set.forEach(function (poly_line, i) {
       data.push({
-        key: series.key + '$#' + i,
+        key: series.key + '::' + i,
         color: series.color,
         values: poly_line,
         format: series.format,

@@ -94,7 +94,7 @@ export class DataSeriesSchema extends Schema {
           color: {
             title: 'Line/bar color',
             description: 'Primary series color name or HTML color code; ' +
-                         'if unspecified ('Auto' default), defer to ' +
+                         'if unspecified ("Auto" default), defer to ' +
                          'automatic default color palette choices.',
             type: 'string',
             defaultValue: 'auto',
@@ -103,10 +103,10 @@ export class DataSeriesSchema extends Schema {
           marker_color: {
             title: 'Point marker fill color',
             description: 'Data point marker color name or code; ' +
-                         'if unspecified ('Auto' default), defer to ' +
+                         'if unspecified ("Auto" default), defer to ' +
                          'match the line/bar color.',
             type: 'string',
-            defaultValue: 'Auto',
+            defaultValue: "Auto",
             required: false
           },
           marker_size: {
@@ -162,10 +162,10 @@ export class DataSeriesSchema extends Schema {
           trend_color: {
             title: 'Trend line color, if applicable',
             description: 'Trend line color name or code; ' +
-                         'if unspecified ('Auto' default), defer to ' +
+                         'if unspecified ("Auto" default), defer to ' +
                          'match the line/bar color.',
             type: 'string',
-            defaultValue: 'Auto'
+            defaultValue: "Auto"
           },
           point_labels: {
             title: 'Show point labels?',
@@ -201,7 +201,7 @@ export class TimeDataSeriesSchema extends DataSeriesSchema {
             'value?  This defaults to true, which means that ' +
             'no line will run from adjacent values through the ' +
             'missing value.  For purposes of tabular legend, ' +
-            'any value without a data-source should render '--' ' +
+            'any value without a data-source should render "--" ' +
             'and any null value (specifying N/A or NaN value) ' +
             'should display as N/A.  At future date, we may ' +
             'wish to add other options for this case, such as ' +
@@ -410,7 +410,7 @@ export class MultiSeriesChartSchema extends Schema {
             description: 'If omitted, color will be selected from ' +
                          'defaults.',
             type: 'string',
-            defaultValue: 'Auto',
+            defaultValue: "Auto",
             required: false
           },
           // Legend configuration:
@@ -499,7 +499,7 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
                          'handling the default date-label choices, ' +
                          'where month names are often stand-ins for ' +
                          'an exemplar date value for the month, e.g. ' +
-                         '2014-06-01 may be represented as 'Jun 2014'. ' +
+                         '2014-06-01 may be represented as "Jun 2014". ' +
                          'THIS MAY BE YAGNI if we do not need to draw ' +
                          'vertical lines at X-axis tick labels, or just ' +
                          'rely on scales and explicit data-labels in ' +

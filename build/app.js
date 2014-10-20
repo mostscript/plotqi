@@ -9315,11 +9315,11 @@
 	var ChartContainer = __webpack_require__(9).ChartContainer;
 	var TimeGraph = __webpack_require__(9).TimeGraph;
 	var SmallMultiplesChart = __webpack_require__(10).SmallMultiplesChart;
-	//var dataviz = require("imports?moment=moment!exports?uu!../../spec/modelref/dataviz.js");
+	//var dataviz = require('imports?moment=moment!exports?uu!../../spec/modelref/dataviz.js');
 	var __WEBPACK_LABELED_MODULE__4 = __webpack_require__(4), Symbol = __WEBPACK_LABELED_MODULE__4.Symbol;
 	var d3 = __webpack_require__(2);
 	var nv = __webpack_require__(11);
-	getObjects("report.json", function (charts) {
+	getObjects('report.json', function (charts) {
 	  console.log(charts);
 	  charts = charts.map( function(graph) {
 	    return Chart(graph);
@@ -9330,7 +9330,7 @@
 	  //let c = Chart(graph);
 	  //console.log(c);
 	  window.charts = charts;
-	  window.sym = new Symbol("This is unique");
+	  window.sym = new Symbol('This is unique');
 	  window.Field = Field;
 	  window.DPS = DataPointSchema;
 	  window.dps = dataPointSchema;
@@ -9338,7 +9338,7 @@
 	  window.Klass = Klass;
 	  window.myObj = {};
 	  window.container = ChartContainer;
-	  myObj[sym] = "HEHEHE THIS IS HIDDEN";
+	  myObj[sym] = 'HEHEHE THIS IS HIDDEN';
 
 	  window.graphs = charts.map( function(chart) {
 	    return new TimeGraph(chart);
@@ -9347,40 +9347,40 @@
 	    graphs.forEach(function (g) {
 	      g.render();
 	      /*
-	            var div = d3.select("body")
-	                //.select("#" + g.id)
-	                .append("div")
-	                .attr("id", g.id)
-	                .classed("chart-div", true)
-	                .style("position", "relative")
-	                .style("width", g.container.width + "px")
-	                .style("height", g.container.height + "px");
+	            var div = d3.select('body')
+	                //.select('#' + g.id)
+	                .append('div')
+	                .attr('id', g.id)
+	                .classed('chart-div', true)
+	                .style('position', 'relative')
+	                .style('width', g.container.width + 'px')
+	                .style('height', g.container.height + 'px');
 
-	    var svg = div.append("svg")
-	                 .attr("width", "100%")
-	                 .attr("height", "100%")
-	                 .style("position", "absolute")
-	                 .style("top", "0")
-	                 .style("left", "0")
+	    var svg = div.append('svg')
+	                 .attr('width', '100%')
+	                 .attr('height', '100%')
+	                 .style('position', 'absolute')
+	                 .style('top', '0')
+	                 .style('left', '0')
 	    nv.addGraph( () => g.bindTo(svg.node()).prepare() );
 	      */
 	    });
 	  }
 	  renderAll();
-	  //d3.select(window).on("resize", renderAll);
-	  var div = d3.select("#chart-div-test_numero_dos");
+	  //d3.select(window).on('resize', renderAll);
+	  var div = d3.select('#chart-div-test_numero_dos');
 	  /*window.nvchart = graphs[0].bindTo(svg.node());
 	  nv.addGraph( () => {
 	    var c = nvchart.prepare();
-	    d3.select("#chart-div-test_numero_dos svg")
-	      .append("text")
-	      .attr("x", 5)
-	      .attr("y", 160 - 2)
-	      .attr("text-anchor", "left")
+	    d3.select('#chart-div-test_numero_dos svg')
+	      .append('text')
+	      .attr('x', 5)
+	      .attr('y', 160 - 2)
+	      .attr('text-anchor', 'left')
 	      //.style('font-size', '8pt')
 	      .style('letter-spacing', '-0.1em')
-	      //.attr('textLength', "160")
-	      //.attr("lengthAdjust", "spacingAndGlyphs")
+	      //.attr('textLength', '160')
+	      //.attr('lengthAdjust', 'spacingAndGlyphs')
 	      .text(nvchart.chart.title);
 	    nvchart.goal();
 	    nvchart.legend();
@@ -9591,7 +9591,7 @@
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
 	var $__Object$defineProperties = Object.defineProperties;
-	"use strict";
+	'use strict';
 	var moment = __webpack_require__(1);
 
 	var Schema = function() {
@@ -9619,14 +9619,14 @@
 	  "use strict";
 
 	  function Field(name, descriptor) {
-	    if(name == null) throw new Error("Field must be named");
+	    if(name == null) throw new Error('Field must be named');
 	    descriptor = descriptor || {};
 	    this.name = name; //field name, REQUIRED
 	    this.title = descriptor.title; //label for the field
 	    this.description = descriptor.description;
 	    this.type = descriptor.type; //constrain to specific type, either pass in a class or a typeof. undefined means ignored
 	    this.vocabulary = descriptor.vocabulary; //constrain field to specific set of values.
-	    this.constraint = descriptor.constraint; //a callback function which can throw a ValidationError or return a normalized value. the field is passed in as "this"
+	    this.constraint = descriptor.constraint; //a callback function which can throw a ValidationError or return a normalized value. the field is passed in as 'this'
 	    this.required = descriptor.required || false; //ValidationError thrown if this field is not set
 	    this.defaultValue = descriptor.defaultValue; //when there is no value stored, the getter will return this value
 	  }
@@ -9639,19 +9639,19 @@
 	        if(value != null) normalized = this.constraint ? (this.constraint.call(this, value, obj) || value) : value;
 
 	        if(this.type && (normalized != null)) {
-	          if(typeof this.type === "string") {
-	            if(typeof normalized !== this.type) throw new ValidationTypeError(this, (typeof normalized), "Expected type: [" + this.type + "]");
-	          } else if (typeof this.type === "function") {
-	            if(! (normalized instanceof this.type)) throw new ValidationTypeError(this, (typeof normalized), "Expected type: [" + this.type + "]");
+	          if(typeof this.type === 'string') {
+	            if(typeof normalized !== this.type) throw new ValidationTypeError(this, (typeof normalized), 'Expected type: [' + this.type + ']');
+	          } else if (typeof this.type === 'function') {
+	            if(! (normalized instanceof this.type)) throw new ValidationTypeError(this, (typeof normalized), 'Expected type: [' + this.type + ']');
 	          }
 	        }
 
 	        if(this.required && (normalized == null)) {
 	          if(this.defaultValue != null) normalized = this.defaultValue;
-	          else throw new ValidationError(this, normalized, "Required fields cannot be null");
+	          else throw new ValidationError(this, normalized, 'Required fields cannot be null');
 	        }
 
-	        if(this.vocabulary && this.vocabulary.indexOf(normalized) === -1) throw new ValidationError(this, normalized, "Allowed values: " + this.vocabulary);
+	        if(this.vocabulary && this.vocabulary.indexOf(normalized) === -1) throw new ValidationError(this, normalized, 'Allowed values: ' + this.vocabulary);
 
 	        return normalized;
 	      },
@@ -9669,8 +9669,8 @@
 
 	  function ValidationError(field, value, msg) {
 	    $__Object$getPrototypeOf(ValidationError.prototype).constructor.call(this);
-	    this.message = "Invalid value: " + value + " on field: " + field.name + (msg ? "! (" + msg + ")" : "!");
-	    this.name = "ValidationError";
+	    this.message = 'Invalid value: ' + value + ' on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+	    this.name = 'ValidationError';
 	  }
 
 	  ValidationError.__proto__ = ($__super !== null ? $__super : Function.prototype);
@@ -9688,8 +9688,8 @@
 
 	  function ValidationTypeError(field, type, msg) {
 	    $__Object$getPrototypeOf(ValidationTypeError.prototype).constructor.call(this);
-	    this.message = "Invalid type: [" + type + "] on field: " + field.name + (msg ? "! (" + msg + ")" : "!");
-	    this.name = "ValidationTypeError";
+	    this.message = 'Invalid type: [' + type + '] on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+	    this.name = 'ValidationTypeError';
 	  }
 
 	  ValidationTypeError.__proto__ = ($__super !== null ? $__super : Function.prototype);
@@ -9880,7 +9880,7 @@
 	                         'if unspecified ("Auto" default), defer to ' +
 	                         'match the line/bar color.',
 	            type: 'string',
-	            defaultValue: 'Auto',
+	            defaultValue: "Auto",
 	            required: false
 	          },
 	          marker_size: {
@@ -9907,7 +9907,7 @@
 	                         'vocabulary of allowable choices.',
 	            type: 'string',
 	            constraint: function (value) {
-	              if(value === "x") return "cross";
+	              if(value === 'x') return 'cross';
 	            },
 	            vocabulary: [
 	              'diamond',
@@ -9939,7 +9939,7 @@
 	                         'if unspecified ("Auto" default), defer to ' +
 	                         'match the line/bar color.',
 	            type: 'string',
-	            defaultValue: 'Auto'
+	            defaultValue: "Auto"
 	          },
 	          point_labels: {
 	            title: 'Show point labels?',
@@ -9952,10 +9952,10 @@
 	            defaultValue: 'defer'
 	          },
 	          display_format: {
-	            title: "Display format for y values",
-	            description: "Standard formatting string",
-	            type: "string",
-	            defaultValue: "%%.%if"
+	            title: 'Display format for y values',
+	            description: 'Standard formatting string',
+	            type: 'string',
+	            defaultValue: '%%.%if'
 	          }
 	        }, this);
 	  }
@@ -9997,10 +9997,10 @@
 	            'fixed frequency for a time-series plot.',
 	        type: 'string',
 	        constraint: function (value) {
-	          if(typeof value === "boolean")
-	            return value ? "hidden" : "solid";
+	          if(typeof value === 'boolean')
+	            return value ? 'hidden' : 'solid';
 	        },
-	        vocabulary: ["hidden", "solid", "dashed"],
+	        vocabulary: ['hidden', 'solid', 'dashed'],
 	        defaultValue: true
 	      }
 	    }, this);
@@ -10137,9 +10137,9 @@
 	              constraint: function (value) {
 	                // validate that value is indeed a two-item Array of num.
 	                if (value.length !== 2)
-	                  throw new ValidationError(this, value, "Aspect ratio must be a two element Array");
+	                  throw new ValidationError(this, value, 'Aspect ratio must be a two element Array');
 	                if (typeof value[0] !== 'number' || typeof value[1] !== 'number')
-	                  throw new ValidationTypeError(this, (typeof value[0]) + " " + (typeof value[1]), "Both elements of aspect ratio must be numbers");
+	                  throw new ValidationTypeError(this, (typeof value[0]) + ' ' + (typeof value[1]), 'Both elements of aspect ratio must be numbers');
 	            }
 	          },
 	          range_min: {
@@ -10150,7 +10150,7 @@
 	            type: 'number',
 	            constraint: function(value, obj) {
 	              var max = (obj.range_max != null) ? obj.range_max : null;
-	              if(value > max) throw new ValidationError(this, value, "range_min must be less than or equal to range_max");
+	              if(value > max) throw new ValidationError(this, value, 'range_min must be less than or equal to range_max');
 	              return value;
 	            },
 	            required: false
@@ -10163,7 +10163,7 @@
 	            type: 'number',
 	            constraint: function(value, obj) {
 	              var min = (obj.range_min != null) ? obj.range_min : null;
-	              if(value < min) throw new ValidationError(this, value, "range_max must be greater than or equal to range_min");
+	              if(value < min) throw new ValidationError(this, value, 'range_max must be greater than or equal to range_min');
 	              return value;
 	            },
 	            required: false
@@ -10208,7 +10208,7 @@
 	            description: 'If omitted, color will be selected from ' +
 	                         'defaults.',
 	            type: 'string',
-	            defaultValue: 'Auto',
+	            defaultValue: "Auto",
 	            required: false
 	          },
 	          // Legend configuration:
@@ -10338,7 +10338,7 @@
 	              value = dateTypeConstraint(value);
 	              var end = obj.end;
 	              if(end == null) return value;
-	              if(value > end) throw new ValidationError(this, value, "Start date cannot be after end date");
+	              if(value > end) throw new ValidationError(this, value, 'Start date cannot be after end date');
 	              return value;
 	            },
 	            required: false
@@ -10354,7 +10354,7 @@
 	              value = dateTypeConstraint(value);
 	              var start = obj.start;
 	              if(start == null) return value;
-	              if(value < start) throw new ValidationError(this, value, "End date cannot be before start date");
+	              if(value < start) throw new ValidationError(this, value, 'End date cannot be before start date');
 	              return value;
 	            },
 	            required: false
@@ -10499,7 +10499,7 @@
 	  "use strict";
 
 	  function DataPoint(obj) {
-	    obj = obj || {key: "[none]"};
+	    obj = obj || {key: '[none]'};
 	    obj.schema = obj.schema || dataPointSchema;
 	    $__Object$getPrototypeOf(DataPoint.prototype).constructor.call(this, obj);
 	  }
@@ -10540,7 +10540,7 @@
 	    obj = obj || {};
 	    obj.schema = obj.schema || dataSeriesSchema;
 	    $__Object$getPrototypeOf(DataSeries.prototype).constructor.call(this, obj);
-	    /*Object.defineProperty(this, "data", function () {
+	    /*Object.defineProperty(this, 'data', function () {
 	      var data = [];
 	      return {
 	        enumerable: true,
@@ -10880,7 +10880,7 @@
 	}(MultiSeriesChart);
 	exports.TimeSeriesChart = TimeSeriesChart;
 	function Chart(data) {
-	  return data.x_axis_type === "date" ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
+	  return data.x_axis_type === 'date' ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
 	}
 	exports.Chart = Chart;
 
@@ -10919,7 +10919,7 @@
 	  $__Object$defineProperties(ChartContainer.prototype, {
 	    width: {
 	      get: function() {
-	        if(this.chart.width_units === "px")
+	        if(this.chart.width_units === 'px')
 	          return this.chart.width;
 	        var parentWidth = this.parent.clientWidth;
 	        var ratio = this.chart.width / 100;
@@ -10932,9 +10932,9 @@
 
 	    height: {
 	      get: function() {
-	        if(this.chart.height_units === "px")
+	        if(this.chart.height_units === 'px')
 	          return this.chart.height;
-	        else if(this.chart.height_units === "%")
+	        else if(this.chart.height_units === '%')
 	          var ratio = this.chart.height / 100;
 	        else if(this.chart.aspect_ratio)
 	          var ratio = this.chart.aspect_ratio[1] / this.chart.aspect_ratio[0];
@@ -10967,22 +10967,22 @@
 	  $__Object$defineProperties(Graph.prototype, {
 	    render: {
 	      value: function() {
-	        var div = d3.select("body")
-	                    //.select("#" + this.id)
-	                    .append("div")
-	                    .attr("id", this.id)
-	                    .classed("chart-div", true)
-	                    .style("position", "relative")
-	                    .style("width", this.container.width + "px")
-	                    .style("height", this.container.height + "px");
+	        var div = d3.select('body')
+	                    //.select('#' + this.id)
+	                    .append('div')
+	                    .attr('id', this.id)
+	                    .classed('chart-div', true)
+	                    .style('position', 'relative')
+	                    .style('width', this.container.width + 'px')
+	                    .style('height', this.container.height + 'px');
 
-	        var svg = div.append("svg")
-	                     .attr("width", "100%")
-	                     .attr("height", "100%")
-	                     .style("position", "absolute")
-	                     .style("top", "0")
-	                     .style("left", "0")
-	                     .style("background-color", "rgb(" + Math.round(Math.random() * 256) + "," + Math.round(Math.random() * 256) + "," + Math.round(Math.random() * 256) + ")");
+	        var svg = div.append('svg')
+	                     .attr('width', '100%')
+	                     .attr('height', '100%')
+	                     .style('position', 'absolute')
+	                     .style('top', '0')
+	                     .style('left', '0')
+	                     .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
 
 	        svg.data(this.chart.series);
 	      },
@@ -10996,7 +10996,7 @@
 	        var data = [];
 	        var keys = d3.map();
 	        this.chart.keys.forEach( function(key) {
-	          return keys.set(key, "defined");
+	          return keys.set(key, 'defined');
 	        });
 	        keys = keys.keys();
 	        keys.sort( function(a, b) {
@@ -11016,7 +11016,7 @@
 	                x: moment(datapoint.key).valueOf(),
 	                y: datapoint.value,
 	                size: datapoint.marker_size,
-	                shape: "circle",
+	                shape: 'circle',
 	                note: datapoint.note,
 	                title: datapoint.title
 	                });
@@ -11105,11 +11105,11 @@
 
 	    title: {
 	      value: function() {
-	        this.parent.select("svg")
-	          .append("text")
-	          .attr("x", this.parent.clientWidth / 2)
-	          .attr("y", 20)
-	          .attr("text-anchor", "middle")
+	        this.parent.select('svg')
+	          .append('text')
+	          .attr('x', this.parent.clientWidth / 2)
+	          .attr('y', 20)
+	          .attr('text-anchor', 'middle')
 	          .style('font-size', '9pt')
 	          .text(this.chart.title);
 	          return this;
@@ -11121,12 +11121,12 @@
 
 	    legend: {
 	      value: function() {
-	        var wrap = this.parent.selectAll('g.nv-legend').data(["hola"]);
+	        var wrap = this.parent.selectAll('g.nv-legend').data(['hola']);
 	        var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-legend').append('g');
 	        var g = wrap.select('g');
 	        wrap.attr('transform', 'translate(' + 5 + ',' + (160 - 30) + ')');
 
-	        var legendWrap = g.selectAll('g.nv-leg').data(["hola"]);
+	        var legendWrap = g.selectAll('g.nv-leg').data(['hola']);
 	        legendWrap.enter().append('g').attr('class', 'nv-leg');
 	        
 	        var legend = legendWrap.selectAll('circle.legend-pt.nv-point')
@@ -11139,10 +11139,10 @@
 	          return i * 12;
 	        } )
 	            .attr('r', 4)
-	            .style("stroke", function(d) {
+	            .style('stroke', function(d) {
 	          return d;
 	        } )
-	            .style("fill", function(d) {
+	            .style('fill', function(d) {
 	          return d;
 	        } );
 	        legendWrap.exit().selectAll('circle.legend-pt.nv-point')
@@ -11151,17 +11151,17 @@
 	            .attr('cy', 0 )
 	            .style('stroke-opacity', 0)
 	            .remove();
-	        legendWrap.selectAll("text.nv-goal-lbl").data(this.chart.series)
-	            .enter().append("text")
-	            .attr("class", "nv-goal-lbl")
-	            .attr("text-anchor", "left")
+	        legendWrap.selectAll('text.nv-goal-lbl').data(this.chart.series)
+	            .enter().append('text')
+	            .attr('class', 'nv-goal-lbl')
+	            .attr('text-anchor', 'left')
 	            .attr('x', 15)
-	            .attr("y", function(d, i) {
+	            .attr('y', function(d, i) {
 	          return (i * 12) + 3;
 	        } )
-	            .attr('dy', "0.1em")
+	            .attr('dy', '0.1em')
 	            //.attr('textLength', 160 - 22)
-	            //.attr("lengthAdjust", "spacing")
+	            //.attr('lengthAdjust', 'spacing')
 	            .text( function(d) {
 	          return d.title;
 	        } );
@@ -11200,7 +11200,7 @@
 	          this.graph.xAxis.axisLabel(this.chart.x_label);
 
 	        this.graph.xAxis.tickFormat( function(d) {
-	          return d3.time.format("%B")(new Date(d))[0];
+	          return d3.time.format('%B')(new Date(d))[0];
 	        } )
 	        .tickValues(($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(this.chart.domain)).map( function(month) {
 	          return month.valueOf();
@@ -11214,7 +11214,7 @@
 	        if(this.chart.y_label)
 	          this.graph.yAxis.axisLabel(this.chart.y_label);
 
-	        this.graph.yAxis.tickFormat(d3.format(","));
+	        this.graph.yAxis.tickFormat(d3.format(','));
 
 	        //this.graph.yDomain(this.chart.range);
 	        //this.graph.lines.yDomain(this.chart.range);
@@ -11228,8 +11228,8 @@
 	    tooltips: {
 	      value: function() {
 	        this.graph.tooltipContent(function(seriesName, x, y, graph) {
-	          return "<h3>" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
-	          + "<p class=\"footer\">" + graph.point.title + ", " + graph.series.format(y / 100) + "</p>";
+	          return '<h3>' + seriesName + '</h3>' + '<p>' + graph.point.note + '</p>'
+	          + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
 	        });
 	        return this;
 	      },
@@ -11286,16 +11286,16 @@
 	            .transition()
 	            .attr('y1', Math.floor(yscale(this.chart.goal)) )
 	            .attr('y2', Math.floor(yscale(this.chart.goal)) );
-	        goalWrap.selectAll("text.nv-goal-lbl")
+	        goalWrap.selectAll('text.nv-goal-lbl')
 	            .data([this.chart.goal])
-	            .enter().append("text")
-	            .attr("class", "nv-goal-lbl")
-	            .attr("text-anchor", "left")
+	            .enter().append('text')
+	            .attr('class', 'nv-goal-lbl')
+	            .attr('text-anchor', 'left')
 	            .attr('x', xscale(this.chart.domain[1].valueOf()) + 3)
-	            .attr("y", Math.floor(yscale(this.chart.goal)) + 2)
+	            .attr('y', Math.floor(yscale(this.chart.goal)) + 2)
 	            .attr('textLength', margin.right - 3)
-	            .attr("lengthAdjust", "spacingAndGlyphs")
-	            .text(this.chart.goal + " (G)");
+	            .attr('lengthAdjust', 'spacingAndGlyphs')
+	            .text(this.chart.goal + ' (G)');
 	        return this;
 	      },
 
@@ -11329,21 +11329,30 @@
 	var nv = __webpack_require__(11);
 
 	function SmallMultiplesChart(mschart, node, size) {
+	  var $__0;
 	  node = node || d3.select('body').append('div').attr('id', 'small-chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
-	  size = size || [160, 160]
+	  size = size || [160, 160];
 	  var width = size[0] || 160;
 	  var height = size[1] || 160;
-	  node.style('width', width + "px")
-	      .style('height', height + "px");
-	  node = node.append("svg");
+
+	  node.style('width', width + 'px')
+	      .style('height', height + 'px');
+
+	  node = node.append('svg');
 	  var margins = {top: 10, bottom: 50, left: 25, right: 30};
 	  var data = calculateMissingValues(mschart);
 	  var domain = calcDomain(mschart);
 	  var tick_domain = domain.slice();
 	  tick_domain[1] = d3.time.month.offset(domain[1], 1);
 
+	  var tickVals = ($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(tick_domain)).map( function(month) {
+	    return month.valueOf();
+	  } );
+
 	  return function () {
-	    var $__0;
+	    node.append('g')
+	    .attr('class', 'nv-background')
+	    .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
 
 	    var chart = nv.models.lineChart()
 	                  .id(mschart.uid)
@@ -11351,26 +11360,21 @@
 	                  .margin(margins)
 	                  .transitionDuration(500)
 	                  .tooltipContent(function(seriesName, x, y, graph) {
-	                    return "<h3>" + seriesName + "</h3>" + "<p>" + graph.point.note + "</p>"
-	                    + "<p class=\"footer\">" + graph.point.title + ", " + graph.series.format(y / 100) + "</p>";
-	                  });
-
-	    chart.lines.scatter.onlyCircles(false);
-
+	                    return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
+	                    + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
+	                  })
+	                  ;
+	                  chart.lines.scatter.onlyCircles(false);
 	    chart.xAxis
 	         .tickFormat( function(d) {
-	      return d3.time.format("%B")(new Date(d))[0];
+	      return d3.time.format('%B')(new Date(d))[0];
 	    } )
-	         .tickValues(($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(tick_domain)).map( function(month) {
-	      return month.valueOf();
-	    } ))
+	         .tickValues(tickVals)
 	         .showMaxMin(false)
-	         .tickPadding(3);
-
+	         .tickPadding(3)
 	    chart.yAxis
-	         .tickFormat(d3.format(","))
+	         .tickFormat(d3.format(','))
 	         .showMaxMin(false);
-
 	    chart
 	         .xDomain(domain.map( function(x) {
 	      return x.valueOf();
@@ -11378,37 +11382,38 @@
 	         .yDomain(mschart.range);
 
 	    node.datum(data).call(chart);
+
 	    var yscale = chart.yScale();
 	    var xscale = chart.xScale();
 
 	    //Dashed lines for all missing areas
-	    node.selectAll(".nv-wrap.nv-line > g > g.nv-groups .nv-group").filter( function(d) {
+	    node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group').filter( function(d) {
 	      return d.dashed;
 	    } )
-	        .style("stroke-dasharray", "5 5");
+	        .style('stroke-dasharray', '3 3');
 
 	    //Fix Axis Ticks
-	    node.selectAll(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))")
-	      .append("line")
+	    node.selectAll('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))')
+	      .append('line')
 	      .attr('y2', 0)
 	      .attr('x2', 4)
-	      .style("stroke", "dimgray");
+	      .style('stroke', 'dimgray');
 
 	    /*//Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
-	    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
-	        .attr("y1", 0.5)
-	        .attr("y2", 0.5);
-	    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line")
-	        .attr("y1", -0.5)
-	        .attr("y2", -0.5);*/
+	    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
+	        .attr('y1', 0.5)
+	        .attr('y2', 0.5);
+	    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
+	        .attr('y1', -0.5)
+	        .attr('y2', -0.5);*/
 
 	    //Graph Title
-	    node.append("g")
+	    node.append('g')
 	        .attr('class', 'nvd3 nv-small-chart nv-chart-title')
-	        .append("text")
-	        .attr("class", "nv-small-chart nv-title")
-	        .attr("x", 5)
-	        .attr("y", height - 2)
+	        .append('text')
+	        .attr('class', 'nv-small-chart nv-title')
+	        .attr('x', 5)
+	        .attr('y', height - 2)
 	        .text(mschart.title);
 
 	    var legend = node.append('g')
@@ -11428,23 +11433,22 @@
 	      return i * 12;
 	    } )
 	          .attr('r', 4)
-	          .style("stroke", function(d) {
+	          .style('stroke', function(d) {
 	      return d.color;
 	    } )
 	          .style('stroke-opacity', 1)
-	          .style("fill", function(d) {
+	          .style('fill', function(d) {
 	      return d.color;
 	    } )
 	          .style('fill-opacity', 0.5);
-
-	    legend.append("text")
-	          .attr("class", "nv-goal-lbl")
-	          .attr("text-anchor", "left")
+	    legend.append('text')
+	          .attr('class', 'nv-goal-lbl')
+	          .attr('text-anchor', 'start')
 	          .attr('x', 15)
-	          .attr("y", function(d, i) {
+	          .attr('y', function(d, i) {
 	      return (i * 12) + 3;
 	    } )
-	          .attr('dy', "0.1em")
+	          .attr('dy', '0.1em')
 	          .text( function(d) {
 	      return d.title;
 	    } );
@@ -11454,7 +11458,7 @@
 	      var goal = node.append('g')
 	                     .attr('class', 'nvd3 nv-distribution')
 	                     .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')')
-	                     .selectAll("line.nv-goal")
+	                     .selectAll('line.nv-goal')
 	                     .data([mschart.goal])
 	                     .enter().append('g')
 	                     .attr('class', 'nv-dist nv-goal');
@@ -11465,33 +11469,31 @@
 	          .attr('y1', Math.floor(yscale(mschart.goal)) )
 	          .attr('y2', Math.floor(yscale(mschart.goal)) )
 	          .style('stroke', mschart.goal_color);
-	      goal.append("text")
-	          .attr("class", "nv-goal-lbl")
-	          .attr("text-anchor", "left")
+	      goal.append('text')
+	          .attr('class', 'nv-goal-lbl')
+	          .attr('text-anchor', 'start')
 	          .attr('x', xscale(domain[1].valueOf()) + 3)
-	          .attr("y", Math.floor(yscale(mschart.goal)) + 2)
+	          .attr('y', Math.floor(yscale(mschart.goal)) + 2)
 	          //.attr('textLength', margins.right - 3)
-	          //.attr("lengthAdjust", "spacingAndGlyphs")
-	          .text(mschart.goal + " (G)")
+	          //.attr('lengthAdjust', 'spacingAndGlyphs')
+	          .text(mschart.goal + ' (G)')
 	          .style('fill', mschart.goal_color);
 	    }
 
 	    //Year Labels
 	    var yrs = node.append('g')
-	                   .attr('class', 'nvd3 nv-years')
-	                   .attr('transform', 'translate(' + margins.left + ', 0)')
-	                   .selectAll("line.nv-goal")
+	                   .attr('class', 'nvd3 nv-year-wrap')
+	                   .attr('transform', 'translate(' + margins.left + ',0)')
+	                   .selectAll('line.nv-goal')
 	                   .data([true])
 	                   .enter().append('g')
-	                   .attr('class', 'nv-yrs nv-year1');
-
+	                   .attr('class', 'nv-years');
 	    yrs.append('text')
 	       .attr('class', 'nv-year-lbl')
-	       .attr('text-anchor', 'left')
+	       .attr('text-anchor', 'start')
 	       .attr('x', xscale(domain[0].valueOf()))
 	       .attr('y', margins.top - 5)
 	       .text(domain[0].getFullYear());
-
 	    if(domain[1].getFullYear() !== domain[0].getFullYear()) {
 	      yrs.append('text')
 	         .attr('class', 'nv-year-lbl')
@@ -11501,23 +11503,44 @@
 	         .text(domain[1].getFullYear());
 	    }
 
-	    /*chart.dispatch.on("changeState.fix_axes", function (e) {
-	      node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line")
-	        .attr("y1", 0.5)
-	        .attr("y2", 0.5);
-	    node.select(".nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line")
-	        .attr("y1", -0.5)
-	        .attr("y2", -0.5);
+	    //Zebra striped background
+	    var tickDiff = xscale(tickVals[1]) - xscale(tickVals[0]);
+	    var bg = node.select('.nv-background')
+	                 .selectAll("rect.nv-zebra")
+	                 .data(tickVals)
+	                 .enter().append('rect')
+	                 .attr('y', 0)
+	                 .attr('x', function(d) {
+	      return xscale(d);
+	    })
+	                 .attr('height', yscale(mschart.range[0]))
+	                 .attr('width', tickDiff)
+	                 .attr('visibility', function(d, i) {
+	      return i !== (tickVals.length - 1) ? 'visible' : 'hidden';
+	    } )
+	                 .style('fill', function(d) {
+	      return new Date(d).getFullYear() === domain[0].getFullYear() ? '#E6F0FF' : '#F3EBFF';
+	    } )
+	                 .style('opacity', function(d, i) {
+	      return i % 2 === 0 ? 0.60 : 1.0;
+	    } );
+
+	    /*chart.dispatch.on('changeState.fix_axes', function (e) {
+	      node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
+	        .attr('y1', 0.5)
+	        .attr('y2', 0.5);
+	    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
+	        .attr('y1', -0.5)
+	        .attr('y2', -0.5);
 	    });*/
 	    console.log(chart);
-
 	    return chart;
 	  };
 	}
 
 	exports.SmallMultiplesChart = SmallMultiplesChart;function calcDomain(mschart) {
 	  var domain = mschart.domain;
-	  if( moment(domain[1]).diff(moment(domain[0]), "months") > 12) {
+	  if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
 	    domain[0] = d3.time.month.offset(domain[1], -12)
 	  }
 	  return domain;
@@ -11547,7 +11570,7 @@
 	          x: moment(datapoint.key).valueOf(),
 	          y: datapoint.value,
 	          size: datapoint.marker_size,
-	          shape: "circle",
+	          shape: 'circle',
 	          note: datapoint.note,
 	          title: datapoint.title
 	          });
@@ -11597,7 +11620,7 @@
 
 	    poly_set.forEach(function (poly_line, i) {
 	      data.push({
-	        key: series.key + "$#" + i,
+	        key: series.key + '::' + i,
 	        color: series.color,
 	        values: poly_line,
 	        format: series.format,
