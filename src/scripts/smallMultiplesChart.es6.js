@@ -7,21 +7,24 @@ import {
   TimeDataSeries,
   MultiSeriesChart,
   TimeSeriesChartSchema
-} from './chartviz.es6.js';
+} from './chartviz';
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
+import {extractData, calcDomain} from './init'
 
 export function SmallMultiplesChart(mschart, node, size) {
   node = node || d3.select('body').append('div').attr('id', 'small-chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
+  node.classed('chart-div', true);
   size = size || [160, 160]
   var width = size[0] || 160;
   var height = size[1] || 160;
   node.style('width', width + 'px')
       .style('height', height + 'px');
-  node = node.append('svg');
+  node = node.append('svg')
+             .attr('class', 'upiq-small-chart chart-svg');
   var margins = {top: 10, bottom: 50, left: 25, right: 30};
-  var data = calculateMissingValues(mschart);
+  var data = extractData(mschart);
   var domain = calcDomain(mschart);
   var tick_domain = domain.slice();
   tick_domain[1] = d3.time.month.offset(domain[1], 1);
@@ -33,7 +36,7 @@ export function SmallMultiplesChart(mschart, node, size) {
     .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
 
     var chart = nv.models.lineChart()
-                  .id(mschart.uid)
+                  .id('small-' + mschart.uid)
                   .showLegend(false)
                   .margin(margins)
                   .transitionDuration(500)
@@ -178,7 +181,7 @@ export function SmallMultiplesChart(mschart, node, size) {
                  .attr('height', yscale(mschart.range[0]))
                  .attr('width', tickDiff)
                  .attr('visibility', (d, i) => i !== (tickVals.length - 1) ? 'visible' : 'hidden' )
-                 .style('fill', d => new Date(d).getFullYear() === domain[0].getFullYear() ? '#E6F0FF' : '#F3EBFF' )
+                 .style('fill', d => new Date(d).getFullYear() === domain[0].getFullYear() ? '#E6F0FF' : '#FFEBF5' )
                  .style('opacity', (d, i) => i % 2 === 0 ? 0.60 : 1.0 );
 
     /*chart.dispatch.on('changeState.fix_axes', function (e) {
@@ -192,94 +195,4 @@ export function SmallMultiplesChart(mschart, node, size) {
     console.log(chart);
     return chart;
   };
-}
-
-function calcDomain(mschart) {
-  var domain = mschart.domain;
-  if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
-    domain[0] = d3.time.month.offset(domain[1], -12)
-  }
-  return domain;
-}
-
-function extractData(mschart) {
-  var data = [];
-  var domain = calcDomain(mschart);
-  domain[1] = d3.time.month.offset(domain[1], 2);
-  var keys = d3.time.month.range(...domain);
-  var chart_series = mschart.series;
-  if(chart_series.length > 2) chart_series = chart_series.slice(-2);
-  chart_series.forEach(function (series, index) {
-    var obj = {
-      key: series.title,
-      color: series.color,
-      values: [],
-      format: d3.format(series.display_format),
-    };
-
-    keys.forEach(function (key) {
-      var datapoint = series.data.get(key);
-      if(series.data.has(key))
-        obj.values.push({
-          x: moment(datapoint.key).valueOf(),
-          y: datapoint.value,
-          size: series.marker_size,
-          shape: series.marker_style,
-          note: datapoint.note,
-          title: datapoint.title
-          });
-      else
-        obj.values.push({
-          x: moment(new Date(key)).valueOf(),
-          missing: true
-        });
-    });
-    data.push(obj);
-  });
-  return data;
-}
-
-function calculateMissingValues(mschart) {
-  var data = [];
-  var oldData = extractData(mschart);
-  oldData.forEach(function (series, i) {
-    var poly_set = [];
-    var poly_line, prev_pt = {missing: true};
-    series.values.forEach(function (pt, i) {
-      if(!pt.missing) {
-        if(!poly_line) {
-          poly_line = [];
-          prev_pt = pt;
-        }
-         if(!prev_pt.missing) {
-          poly_line.push(pt);
-        } else {
-          poly_line.push(pt);
-          poly_set.push(poly_line);
-          poly_line = [ pt ];
-        }
-        if(i === (series.values.length)) {
-          poly_set.push(poly_line);
-        }
-      }
-      if(pt.missing) {
-         if(!prev_pt.missing) {
-          poly_set.push(poly_line);
-          poly_line = [ prev_pt ];
-        }
-      }
-      prev_pt = pt;
-    });
-
-    poly_set.forEach(function (poly_line, i) {
-      data.push({
-        key: series.key + '::' + i,
-        color: series.color,
-        values: poly_line,
-        format: series.format,
-        dashed: i % 2 == 1
-      });
-    });
-  });
-  return data;
 }

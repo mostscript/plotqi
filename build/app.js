@@ -9304,19 +9304,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var getObjects = __webpack_require__(5).getObjects;
-	var Schema = __webpack_require__(6).Schema;
-	var Field = __webpack_require__(6).Field;
-	var Klass = __webpack_require__(6).Klass;
-	var DataPointSchema = __webpack_require__(7).DataPointSchema;
-	var dataPointSchema = __webpack_require__(7).dataPointSchema;
-	var timeSeriesDataPointSchema = __webpack_require__(7).timeSeriesDataPointSchema;
-	var Chart = __webpack_require__(8).Chart;
-	var ChartContainer = __webpack_require__(9).ChartContainer;
-	var TimeGraph = __webpack_require__(9).TimeGraph;
-	var SmallMultiplesChart = __webpack_require__(10).SmallMultiplesChart;
-	//var dataviz = require('imports?moment=moment!exports?uu!../../spec/modelref/dataviz.js');
-	var __WEBPACK_LABELED_MODULE__4 = __webpack_require__(4), Symbol = __WEBPACK_LABELED_MODULE__4.Symbol;
+	var getObjects = __webpack_require__(4).getObjects;
+	var Chart = __webpack_require__(5).Chart;
+	var SmallMultiplesChart = __webpack_require__(6).SmallMultiplesChart;
+	var LargeChart = __webpack_require__(7).LargeChart;
 	var d3 = __webpack_require__(2);
 	var nv = __webpack_require__(11);
 	getObjects('report.json', function (charts) {
@@ -9324,31 +9315,12 @@
 	  charts = charts.map( function(graph) {
 	    return Chart(graph);
 	  } )
-	  console.log(charts);
-	  window.graph = charts[0];
-	  console.log(graph.series[0].title)
-	  //let c = Chart(graph);
-	  //console.log(c);
 	  window.charts = charts;
-	  window.sym = new Symbol('This is unique');
-	  window.Field = Field;
-	  window.DPS = DataPointSchema;
-	  window.dps = dataPointSchema;
-	  window.tps = timeSeriesDataPointSchema;
-	  window.Klass = Klass;
-	  window.myObj = {};
-	  window.container = ChartContainer;
-	  myObj[sym] = 'HEHEHE THIS IS HIDDEN';
-
-	  window.graphs = charts.map( function(chart) {
-	    return new TimeGraph(chart);
-	  } );
+	  /* window.container = ChartContainer;
+	  window.graphs = charts.map( chart => new TimeGraph(chart) );
 	  function renderAll() {
 	    graphs.forEach(function (g) {
-	      g.render();
-	      /*
-	            var div = d3.select('body')
-	                //.select('#' + g.id)
+	    var div = d3.select('body')
 	                .append('div')
 	                .attr('id', g.id)
 	                .classed('chart-div', true)
@@ -9362,13 +9334,15 @@
 	                 .style('position', 'absolute')
 	                 .style('top', '0')
 	                 .style('left', '0')
-	    nv.addGraph( () => g.bindTo(svg.node()).prepare() );
-	      */
+	                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
+
+	    svg.data(g.chart.series);
 	    });
 	  }
 	  renderAll();
-	  //d3.select(window).on('resize', renderAll);
-	  var div = d3.select('#chart-div-test_numero_dos');
+	  //d3.select(window).on('resize', renderAll);*/
+	  var small_div = d3.select('#small-chart-div-test_numero_dos');
+	  var lg_div = d3.select('#chart-div-test_numero_dos');
 	  /*window.nvchart = graphs[0].bindTo(svg.node());
 	  nv.addGraph( () => {
 	    var c = nvchart.prepare();
@@ -9386,142 +9360,93 @@
 	    nvchart.legend();
 	    return c;
 	  } );*/
-	  nv.addGraph(SmallMultiplesChart(charts[0], div));
+	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
+	  nv.addGraph(LargeChart(charts[0], lg_div));
 	});
 
 /***/ },
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol;
-	if (!Symbol) {
-	Symbol = (function(Object){
-	 
-	// (C) WebReflection Mit Style License
-	 
-	var ObjectPrototype = Object.prototype,
-	defineProperty = Object.defineProperty,
-	prefix = '__simbol' + Math.random() + '__',
-	id = 0;
-	 
-	function get(){/*avoid set w/out get prob*/}
-	 
-	function Symbol() {
-	var __symbol__ = prefix + id++;
-	defineProperty(
-	ObjectPrototype,
-	this._ = __symbol__,
-	{
-	enumerable: false,
-	configurable: false,
-	get: get, // undefined
-	set: function (value) {
-	defineProperty(this, __symbol__, {
-	enumerable: false,
-	configurable: true,
-	writable: true,
-	value: value
-	});
-	}
-	}
-	);
-	}
-	 
-	defineProperty(Symbol.prototype, 'toString', {
-	enumerable: false,
-	configurable: false,
-	writable: false,
-	value: function toString() {
-	return this._;
-	}
-	});
-	 
-	return Symbol;
-	 
-	}(Object));
-	}
-	exports: exports["Symbol"] = Symbol;
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
 	"use strict";
 	var $__getIteratorRange = function(iterator, index, begin, len) {
-	    if (index > begin) {
-	        throw new RangeError();
+	  if (index > begin) {
+	    throw new RangeError();
+	  }
+
+	  if (typeof len === "undefined") {
+	    len = Infinity;
+	  }
+
+	  var range = [], end = begin + len;
+
+	  while (index < end) {
+	    var next = iterator.next();
+
+	    if (next.done) {
+	      break;
 	    }
 
-	    if (typeof len === "undefined") {
-	        len = Infinity;
+	    if (index >= begin) {
+	      range.push(next.value);
 	    }
 
-	    var range = [], end = begin + len;
+	    index++;
+	  }
 
-	    while (index < end) {
-	        var next = iterator.next();
-
-	        if (next.done) {
-	            break;
-	        }
-
-	        if (index >= begin) {
-	            range.push(next.value);
-	        }
-
-	        index++;
-	    }
-
-	    return {
-	        range: range,
-	        index: index
-	    };
+	  return {
+	    range: range,
+	    index: index
+	  };
 	};
 
 	var $__getIterator = function(iterable) {
-	    var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
 
-	    if (typeof iterable[sym] === "function") {
-	        return iterable[sym]();
-	    } else if (typeof iterable === "object" || typeof iterable === "function") {
-	        return $__getArrayIterator(iterable);
-	    } else {
-	        throw new TypeError();
-	    }
+	  if (typeof iterable[sym] === "function") {
+	    return iterable[sym]();
+	  } else if (typeof iterable === "object" || typeof iterable === "function") {
+	    return $__getArrayIterator(iterable);
+	  } else {
+	    throw new TypeError();
+	  }
 	};
 
 	var $__getArrayIterator = function(array) {
-	    var index = 0;
+	  var index = 0;
 
-	    return {
-	        next: function() {
-	            if (index < array.length) {
-	                return {
-	                    done: false,
-	                    value: array[index++]
-	                };
-	            } else {
-	                return {
-	                    done: true,
-	                    value: void 0
-	                };
-	            }
-	        }
-	    };
+	  return {
+	    next: function() {
+	      if (index < array.length) {
+	        return {
+	          done: false,
+	          value: array[index++]
+	        };
+	      } else {
+	        return {
+	          done: true,
+	          value: void 0
+	        };
+	      }
+	    }
+	  };
 	};
+
+	var $__Array$prototype$slice = Array.prototype.slice;
+	var moment = __webpack_require__(1);
 
 	function getObjects(jsonFile, callback) {
 		d3.json(jsonFile, function (jsonData) {
 			var objs = [];
 			if(jsonData.length)
 				objs = jsonData.map( function(arg$0) {
-	                var iterator$0 = $__getIterator(arg$0),
-	                    iteratorValue$0 = {
-	                        index: 0
-	                    },
-	                    obj = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, 1), iteratorValue$0.range[0]);
+	              var iterator$0 = $__getIterator(arg$0),
+	                  iteratorValue$0 = {
+	                    index: 0
+	                  },
+	                  obj = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, 1), iteratorValue$0.range[0]);
 
-	                return obj;
+	              return obj;
 	            } );
 			else //if the JSON payload wasn't an array
 				objs = [ jsonData ]; //then we were given a single object
@@ -9534,17 +9459,17 @@
 				}, this[index].series);
 			}, objs);*/
 	    objs.forEach( function(obj) {
-	        return obj.series.forEach( function(serum) {
-	            return serum.data = serum.data.map( function(arg$1) {
-	                var iterator$1 = $__getIterator(arg$1),
-	                    iteratorValue$1 = {
-	                        index: 0
-	                    },
-	                    datum = (iteratorValue$1 = $__getIteratorRange(iterator$1, iteratorValue$1.index, 1, 1), iteratorValue$1.range[0]);
+	      return obj.series.forEach( function(serum) {
+	        return serum.data = serum.data.map( function(arg$1) {
+	          var iterator$1 = $__getIterator(arg$1),
+	              iteratorValue$1 = {
+	                index: 0
+	              },
+	              datum = (iteratorValue$1 = $__getIteratorRange(iterator$1, iteratorValue$1.index, 1, 1), iteratorValue$1.range[0]);
 
-	                return datum;
-	            } );
+	          return datum;
 	        } );
+	      } );
 	    } );
 			callback(objs);
 		});
@@ -9580,10 +9505,1074 @@
 	    styleSheet.insertRule(selector + '{' + propStr + '}', styleSheet.cssRules.length);
 	  }
 	}
-	exports.addStylesheetRules = addStylesheetRules;
+
+	exports.addStylesheetRules = addStylesheetRules;function calcDomain(mschart) {
+	  var domain = mschart.domain;
+	  if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
+	    domain[0] = d3.time.month.offset(domain[1], -12)
+	  }
+	  return domain;
+	}
+
+	exports.calcDomain = calcDomain;function preprocessData(mschart) {
+	  var $__0;
+	  var data = [];
+	  var domain = calcDomain(mschart);
+	  domain[1] = d3.time.month.offset(domain[1], 2);
+	  var keys = ($__0 = d3.time.month).range.apply($__0, $__Array$prototype$slice.call(domain));
+	  var chart_series = mschart.series;
+	  if(chart_series.length > 2) chart_series = chart_series.slice(-2);
+
+	  chart_series.forEach(function (series, index) {
+	    var obj = {
+	      key: series.title,
+	      color: series.color,
+	      values: [],
+	      format: d3.format(series.display_format),
+	    };
+
+	    keys.forEach(function (key) {
+	      var datapoint = series.data.get(key);
+	      if(series.data.has(key))
+	        obj.values.push({
+	          x: moment(datapoint.key).valueOf(),
+	          y: datapoint.value,
+	          size: series.marker_size,
+	          shape: series.marker_style,
+	          note: datapoint.note,
+	          title: datapoint.title
+	          });
+	      else
+	        obj.values.push({
+	          x: moment(new Date(key)).valueOf(),
+	          missing: true
+	        });
+	    });
+	    data.push(obj);
+	  });
+
+	  return data;
+	}
+
+	function extractData(mschart) {
+	  var data = [];
+	  var oldData = preprocessData(mschart);
+	  oldData.forEach(function (series, i) {
+	    var poly_set = [];
+	    var poly_line, prev_pt = {missing: true};
+	    series.values.forEach(function (pt, i) {
+	      if(!pt.missing) {
+	        if(!poly_line) {
+	          poly_line = [];
+	          prev_pt = pt;
+	        }
+	         if(!prev_pt.missing) {
+	          poly_line.push(pt);
+	        } else {
+	          poly_line.push(pt);
+	          poly_set.push(poly_line);
+	          poly_line = [ pt ];
+	        }
+	        if(i === (series.values.length)) {
+	          poly_set.push(poly_line);
+	        }
+	      }
+	      if(pt.missing) {
+	         if(!prev_pt.missing) {
+	          poly_set.push(poly_line);
+	          poly_line = [ prev_pt ];
+	        }
+	      }
+	      prev_pt = pt;
+	    });
+
+	    poly_set.forEach(function (poly_line, i) {
+	      data.push({
+	        key: series.key + '::' + i,
+	        color: series.color,
+	        values: poly_line,
+	        format: series.format,
+	        dashed: i % 2 == 1
+	      });
+	    });
+	  });
+	  return data;
+	}
+	exports.extractData = extractData;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var $__getIteratorRange = function(iterator, index, begin, len) {
+	  if (index > begin) {
+	    throw new RangeError();
+	  }
+
+	  if (typeof len === "undefined") {
+	    len = Infinity;
+	  }
+
+	  var range = [], end = begin + len;
+
+	  while (index < end) {
+	    var next = iterator.next();
+
+	    if (next.done) {
+	      break;
+	    }
+
+	    if (index >= begin) {
+	      range.push(next.value);
+	    }
+
+	    index++;
+	  }
+
+	  return {
+	    range: range,
+	    index: index
+	  };
+	};
+
+	var $__getIterator = function(iterable) {
+	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+
+	  if (typeof iterable[sym] === "function") {
+	    return iterable[sym]();
+	  } else if (typeof iterable === "object" || typeof iterable === "function") {
+	    return $__getArrayIterator(iterable);
+	  } else {
+	    throw new TypeError();
+	  }
+	};
+
+	var $__getArrayIterator = function(array) {
+	  var index = 0;
+
+	  return {
+	    next: function() {
+	      if (index < array.length) {
+	        return {
+	          done: false,
+	          value: array[index++]
+	        };
+	      } else {
+	        return {
+	          done: true,
+	          value: void 0
+	        };
+	      }
+	    }
+	  };
+	};
+
+	var $__Array$prototype$slice = Array.prototype.slice;
+	var $__Object$defineProperties = Object.defineProperties;
+	var $__Object$defineProperty = Object.defineProperty;
+	var $__Object$create = Object.create;
+	var $__Object$getPrototypeOf = Object.getPrototypeOf;
+	var Klass = __webpack_require__(8).Klass;
+	var __WEBPACK_LABELED_MODULE__9 = __webpack_require__(9), Symbol = __WEBPACK_LABELED_MODULE__9.Symbol;
+	var dataSym = new Symbol();
+	var d3 = __webpack_require__(2);
+
+	var dataPointSchema = __webpack_require__(10).dataPointSchema;
+	var timeDataPointSchema = __webpack_require__(10).timeDataPointSchema;
+	var dataSeriesSchema = __webpack_require__(10).dataSeriesSchema;
+	var timeDataSeriesSchema = __webpack_require__(10).timeDataSeriesSchema;
+	var multiSeriesChartSchema = __webpack_require__(10).multiSeriesChartSchema;
+	var timeSeriesChartSchema = __webpack_require__(10).timeSeriesChartSchema;
+
+	var moment = __webpack_require__(1);
+
+	var DataPoint = function($__super) {
+	  "use strict";
+
+	  function DataPoint(obj) {
+	    obj = obj || {key: '[none]'};
+	    obj.schema = obj.schema || dataPointSchema;
+	    $__Object$getPrototypeOf(DataPoint.prototype).constructor.call(this, obj);
+	  }
+
+	  DataPoint.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  DataPoint.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(DataPoint.prototype, "constructor", {
+	    value: DataPoint
+	  });
+
+	  return DataPoint;
+	}(Klass);
+	exports.DataPoint = DataPoint;
+	var TimeDataPoint = function($__super) {
+	  "use strict";
+
+	  function TimeDataPoint(obj) {
+	    obj = obj || {key: new Date()};
+	    obj.schema = obj.schema || timeDataPointSchema;
+	    $__Object$getPrototypeOf(TimeDataPoint.prototype).constructor.call(this, obj);
+	  }
+
+	  TimeDataPoint.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  TimeDataPoint.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(TimeDataPoint.prototype, "constructor", {
+	    value: TimeDataPoint
+	  });
+
+	  return TimeDataPoint;
+	}(DataPoint);
+	exports.TimeDataPoint = TimeDataPoint;
+	var DataSeries = function($__super) {
+	  "use strict";
+
+	  function DataSeries(obj) {
+	    obj = obj || {};
+	    obj.schema = obj.schema || dataSeriesSchema;
+	    $__Object$getPrototypeOf(DataSeries.prototype).constructor.call(this, obj);
+	    /*Object.defineProperty(this, 'data', function () {
+	      var data = [];
+	      return {
+	        enumerable: true,
+	        configurable: true,
+	        get: () => data,
+	        set: function (d) {
+	          data = d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
+	          .filter( (v, i) => (i === 0 || v.key != d[i-1].key) )
+	          .map( datum => new DataPoint(datum) );
+	        }
+	      };
+	    }());*/
+	    this.data = obj.data || [];
+	  }
+
+	  DataSeries.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  DataSeries.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(DataSeries.prototype, "constructor", {
+	    value: DataSeries
+	  });
+
+	  $__Object$defineProperties(DataSeries.prototype, {
+	    data: {
+	      get: function() {
+	        return this[dataSym];
+	      },
+
+	      set: function(d) {
+	        var data = d3.map();
+	        d.sort( function(a, b) {
+	          return (a.key > b.key) ? 1 : -1;
+	        } )
+	        .filter( function(v, i) {
+	          return i === 0 || v.key != d[i-1].key;
+	        } )
+	        .map( function(datum) {
+	          return new DataPoint(datum);
+	        } )
+	        .forEach( function(datum) {
+	          return data.set(datum.key, datum);
+	        } );
+	        this[dataSym] = data;
+	      },
+
+	      enumerable: true,
+	      configurable: true
+	    },
+
+	    range: {
+	      get: function() {
+	        return d3.extent(this.data.values(), function(d) {
+	          return d.value;
+	        }) || [-Infinity, Infinity];
+	      },
+
+	      enumerable: true,
+	      configurable: true
+	    }
+	  });
+
+	  return DataSeries;
+	}(Klass);
+	exports.DataSeries = DataSeries;
+	var TimeDataSeries = function($__super) {
+	  "use strict";
+
+	  function TimeDataSeries(obj) {
+	    obj = obj || {};
+	    obj.schema = obj.schema || timeDataSeriesSchema;
+	    $__Object$getPrototypeOf(TimeDataSeries.prototype).constructor.call(this, obj);
+	    this.data = obj.data || [];
+	  }
+
+	  TimeDataSeries.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  TimeDataSeries.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(TimeDataSeries.prototype, "constructor", {
+	    value: TimeDataSeries
+	  });
+
+	  $__Object$defineProperties(TimeDataSeries.prototype, {
+	    data: {
+	      get: function() {
+	        return this[dataSym];
+	      },
+
+	      set: function(d) {
+	        var data = d3.map();
+	        d.sort( function(a, b) {
+	          return (a.key > b.key) ? 1 : -1;
+	        } )
+	        .filter( function(v, i) {
+	          return i === 0 || v.key.toString() != d[i-1].key.toString();
+	        } )
+	        .map( function(datum) {
+	          return new TimeDataPoint(datum);
+	        } )
+	        .forEach( function(datum) {
+	          return data.set(datum.key, datum);
+	        } );
+	        this[dataSym] = data;
+	      },
+
+	      enumerable: true,
+	      configurable: true
+	    },
+
+	    domain: {
+	      get: function() {
+	        var $__1;
+	        var $__0;
+
+	        var min = ($__0 = moment).min.apply($__0, $__Array$prototype$slice.call(this.data.values().map( function(d) {
+	          return moment(d.key);
+	        } ))).toDate();
+
+	        var max = ($__1 = moment).max.apply($__1, $__Array$prototype$slice.call(this.data.values().map( function(d) {
+	          return moment(d.key);
+	        } ))).toDate();
+
+	        return [min, max];
+	      },
+
+	      enumerable: true,
+	      configurable: true
+	    },
+
+	    croppedDomain: {
+	      get: function() {
+	        var $__3;
+	        var $__2;
+
+	        var data = this.data.values().filter( function(datum) {
+	          return datum.value != null;
+	        } );
+
+	        var min = ($__2 = moment).min.apply($__2, $__Array$prototype$slice.call(data.map( function(d) {
+	          return moment(d.key);
+	        } ))).toDate();
+
+	        var max = ($__3 = moment).max.apply($__3, $__Array$prototype$slice.call(data.map( function(d) {
+	          return moment(d.key);
+	        } ))).toDate();
+
+	        return [min, max];
+	      },
+
+	      enumerable: true,
+	      configurable: true
+	    }
+	  });
+
+	  return TimeDataSeries;
+	}(DataSeries);
+	exports.TimeDataSeries = TimeDataSeries;
+	var MultiSeriesChart = function($__super) {
+	  "use strict";
+
+	  function MultiSeriesChart(obj) {
+	    obj = obj || {};
+	    obj.schema = obj.schema || multiSeriesChartSchema;
+	    $__Object$getPrototypeOf(MultiSeriesChart.prototype).constructor.call(this, obj);
+	    this.series = obj.series || [];
+	  }
+
+	  MultiSeriesChart.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  MultiSeriesChart.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(MultiSeriesChart.prototype, "constructor", {
+	    value: MultiSeriesChart
+	  });
+
+	  $__Object$defineProperties(MultiSeriesChart.prototype, {
+	    series: {
+	      get: function() {
+	        return this[dataSym];
+	      },
+
+	      set: function(s) {
+	        this[dataSym] = s.map( function(serum) {
+	          return new DataSeries(serum);
+	        } );
+	      },
+
+	      enumerable: true,
+	      configurable: true
+	    },
+
+	    range: {
+	      get: function() {
+	        if(this.range_min != null && this.range_max != null)
+	          return [this.range_min, this.range_max];
+	        var ranges = this.series.map( function(serum) {
+	          return serum.range;
+	        } );
+	        return [
+	          d3.min(ranges, function(arg$0) {
+	            var iterator$0 = $__getIterator(arg$0),
+	                iteratorValue$0 = {
+	                  index: 0
+	                },
+	                min = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]);
+
+	            return min;
+	          } ),
+	          d3.max(ranges, function(arg$1) {
+	            var iterator$1 = $__getIterator(arg$1),
+	                iteratorValue$1 = {
+	                  index: 0
+	                },
+	                max = (iteratorValue$1 = $__getIteratorRange(iterator$1, iteratorValue$1.index, 1, 1), iteratorValue$1.range[0]);
+
+	            return max;
+	          } )
+	        ];
+	      },
+
+	      enumerable: true,
+	      configurable: true
+	    },
+
+	    keys: {
+	      get: function() {
+	        var data = this.series.map( function(serum) {
+	          return serum.data;
+	        } )
+	        .map( function(datum) {
+	          return datum.values();
+	        } );
+	        data = d3.merge(data);
+	        return data.map( function(datum) {
+	          return datum.key;
+	        } )
+	      },
+
+	      enumerable: true,
+	      configurable: true
+	    }
+	  });
+
+	  return MultiSeriesChart;
+	}(Klass);
+	exports.MultiSeriesChart = MultiSeriesChart;
+	var TimeSeriesChart = function($__super) {
+	  "use strict";
+
+	  function TimeSeriesChart(obj) {
+	    obj = obj || {};
+	    obj.schema = obj.schema || timeSeriesChartSchema;
+	    $__Object$getPrototypeOf(TimeSeriesChart.prototype).constructor.call(this, obj);
+	    this.series = obj.series || [];
+	  }
+
+	  TimeSeriesChart.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  TimeSeriesChart.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(TimeSeriesChart.prototype, "constructor", {
+	    value: TimeSeriesChart
+	  });
+
+	  $__Object$defineProperties(TimeSeriesChart.prototype, {
+	    series: {
+	      get: function() {
+	        return this[dataSym];
+	      },
+
+	      set: function(s) {
+	        this[dataSym] = s.map( function(serum) {
+	          return new TimeDataSeries(serum);
+	        } );
+	      },
+
+	      enumerable: true,
+	      configurable: true
+	    },
+
+	    domain: {
+	      get: function() {
+	        var $__5;
+	        var $__4;
+	        var start, end;
+
+	        var var$0 = [this.start || undefined, this.end || undefined],
+	            iterator$2 = $__getIterator(var$0),
+	            iteratorValue$2 = {
+	              index: 0
+	            },
+	            start = (iteratorValue$2 = $__getIteratorRange(iterator$2, iteratorValue$2.index, 0, 1), iteratorValue$2.range[0]),
+	            end = (iteratorValue$2 = $__getIteratorRange(iterator$2, iteratorValue$2.index, 1, 1), iteratorValue$2.range[0]);;
+
+	        var domains = this.series.map( function(serum) {
+	          return this.auto_crop ? serum.croppedDomain : serum.domain;
+	        }.bind(this) );
+
+	        if(!domains) return [start || new Date(), end || new Date()];
+
+	        domains = domains.map( function(arg$2) {
+	          var iterator$3 = $__getIterator(arg$2),
+	              iteratorValue$3 = {
+	                index: 0
+	              },
+	              a = (iteratorValue$3 = $__getIteratorRange(iterator$3, iteratorValue$3.index, 0, 1), iteratorValue$3.range[0]),
+	              b = (iteratorValue$3 = $__getIteratorRange(iterator$3, iteratorValue$3.index, 1, 1), iteratorValue$3.range[0]);
+
+	          return [moment(a), moment(b)];
+	        } );
+
+	        return [
+	          start || ($__4 = moment).min.apply($__4, $__Array$prototype$slice.call(domains.map( function(arg$3) {
+	            var iterator$4 = $__getIterator(arg$3),
+	                iteratorValue$4 = {
+	                  index: 0
+	                },
+	                min = (iteratorValue$4 = $__getIteratorRange(iterator$4, iteratorValue$4.index, 0, 1), iteratorValue$4.range[0]);
+
+	            return min;
+	          } ))).toDate(),
+	          end || ($__5 = moment).max.apply($__5, $__Array$prototype$slice.call(domains.map( function(arg$4) {
+	            var iterator$5 = $__getIterator(arg$4),
+	                iteratorValue$5 = {
+	                  index: 0
+	                },
+	                max = (iteratorValue$5 = $__getIteratorRange(iterator$5, iteratorValue$5.index, 1, 1), iteratorValue$5.range[0]);
+
+	            return max;
+	          } ))).toDate()
+	        ];
+	      },
+
+	      enumerable: true,
+	      configurable: true
+	    }
+	  });
+
+	  return TimeSeriesChart;
+	}(MultiSeriesChart);
+	exports.TimeSeriesChart = TimeSeriesChart;
+	function Chart(data) {
+	  return data.x_axis_type === 'date' ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
+	}
+	exports.Chart = Chart;
 
 /***/ },
 /* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var $__Array$prototype$slice = Array.prototype.slice;
+	var __WEBPACK_LABELED_MODULE__9 = __webpack_require__(9), Symbol = __WEBPACK_LABELED_MODULE__9.Symbol;
+	var privateSym = new Symbol();
+
+	var DataPoint = __webpack_require__(5).DataPoint;
+	var TimeDataPoint = __webpack_require__(5).TimeDataPoint;
+	var DataSeries = __webpack_require__(5).DataSeries;
+	var TimeDataSeries = __webpack_require__(5).TimeDataSeries;
+	var MultiSeriesChart = __webpack_require__(5).MultiSeriesChart;
+	var TimeSeriesChartSchema = __webpack_require__(5).TimeSeriesChartSchema;
+
+	var moment = __webpack_require__(1);
+	var d3 = __webpack_require__(2);
+	var nv = __webpack_require__(11);
+	var extractData = __webpack_require__(4).extractData;
+	var calcDomain = __webpack_require__(4).calcDomain;
+
+	function SmallMultiplesChart(mschart, node, size) {
+	    var $__0;
+	    node = node || d3.select('body').append('div').attr('id', 'small-chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
+	    node.classed('chart-div', true);
+	    size = size || [160, 160];
+	    var width = size[0] || 160;
+	    var height = size[1] || 160;
+
+	    node.style('width', width + 'px')
+	        .style('height', height + 'px');
+
+	    node = node.append('svg')
+	               .attr('class', 'upiq-small-chart chart-svg');
+
+	    var margins = {top: 10, bottom: 50, left: 25, right: 30};
+	    var data = extractData(mschart);
+	    var domain = calcDomain(mschart);
+	    var tick_domain = domain.slice();
+	    tick_domain[1] = d3.time.month.offset(domain[1], 1);
+
+	    var tickVals = ($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(tick_domain)).map( function(month) {
+	        return month.valueOf();
+	    } );
+
+	    return function () {
+	      node.append('g')
+	      .attr('class', 'nv-background')
+	      .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
+
+	      var chart = nv.models.lineChart()
+	                    .id('small-' + mschart.uid)
+	                    .showLegend(false)
+	                    .margin(margins)
+	                    .transitionDuration(500)
+	                    .tooltipContent(function(seriesName, x, y, graph) {
+	                      return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
+	                      + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
+	                    })
+	                    chart.lines.scatter.onlyCircles(false);
+
+	      chart.xAxis
+	           .tickFormat( function(d) {
+	          return d3.time.format('%B')(new Date(d))[0];
+	      } )
+	           .tickValues(tickVals)
+	           .showMaxMin(false)
+	           .tickPadding(3)
+	      chart.yAxis
+	           .tickFormat(d3.format(','))
+	           .showMaxMin(false);
+	      chart
+	           .xDomain(domain.map( function(x) {
+	          return x.valueOf();
+	      } ))
+	           .yDomain(mschart.range);
+
+	      node.datum(data).call(chart);
+
+	      var yscale = chart.yScale();
+	      var xscale = chart.xScale();
+
+	      //Dashed lines for all missing areas
+	      node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group').filter( function(d) {
+	          return d.dashed;
+	      } )
+	          .style('stroke-dasharray', '3 3');
+	      node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( function(d) {
+	          return d.dashed;
+	      } )
+	          .attr('visibility', 'hidden');
+
+	      //Fix Axis Ticks
+	      node.selectAll('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))')
+	        .append('line')
+	        .attr('y2', 0)
+	        .attr('x2', 4)
+	        .style('stroke', 'dimgray');
+
+	      /*//Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
+	      node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
+	          .attr('y1', 0.5)
+	          .attr('y2', 0.5);
+	      node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
+	          .attr('y1', -0.5)
+	          .attr('y2', -0.5);*/
+
+	      //Graph Title
+	      node.append('g')
+	          .attr('class', 'nvd3 nv-small-chart nv-chart-title')
+	          .append('text')
+	          .attr('class', 'nv-small-chart nv-title')
+	          .attr('x', 5)
+	          .attr('y', height - 2)
+	          .text(mschart.title);
+
+	      var legend = node.append('g')
+	                       .attr('class', 'nvd3 nv-legend')
+	                       .attr('transform', 'translate(' + 5 + ',' + (height - 30) + ')')
+	                       .append('g')
+	                       .attr('class', 'nv-leg')
+	                       .selectAll('circle.legend-pt.nv-point')
+	                       .data(mschart.series.slice(0, 2))
+	                       .enter().append('g');
+
+	      //Graph Legend
+	      legend.append('circle')
+	            .attr('class', 'nv-legendpt nv-point')
+	            .attr('cx', 5 )
+	            .attr('cy', function(d, i) {
+	          return i * 12;
+	      } )
+	            .attr('r', 4)
+	            .style('stroke', function(d) {
+	          return d.color;
+	      } )
+	            .style('stroke-opacity', 1)
+	            .style('fill', function(d) {
+	          return d.color;
+	      } )
+	            .style('fill-opacity', 0.5);
+	      legend.append('text')
+	            .attr('class', 'nv-goal-lbl')
+	            .attr('text-anchor', 'start')
+	            .attr('x', 15)
+	            .attr('y', function(d, i) {
+	          return (i * 12) + 3;
+	      } )
+	            .attr('dy', '0.1em')
+	            .text( function(d) {
+	          return d.title;
+	      } );
+
+	      //Goal Line
+	      if(mschart.goal) {
+	        var goal = node.append('g')
+	                       .attr('class', 'nvd3 nv-distribution')
+	                       .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')')
+	                       .selectAll('line.nv-goal')
+	                       .data([mschart.goal])
+	                       .enter().append('g')
+	                       .attr('class', 'nv-dist nv-goal');
+	        goal.append('line')
+	            .attr('class', 'nv-goal-line')
+	            .attr('x1', xscale(domain[0].valueOf()))
+	            .attr('x2', xscale(domain[1].valueOf()))
+	            .attr('y1', Math.floor(yscale(mschart.goal)) )
+	            .attr('y2', Math.floor(yscale(mschart.goal)) )
+	            .style('stroke', mschart.goal_color);
+	        goal.append('text')
+	            .attr('class', 'nv-goal-lbl')
+	            .attr('text-anchor', 'start')
+	            .attr('x', xscale(domain[1].valueOf()) + 3)
+	            .attr('y', Math.floor(yscale(mschart.goal)) + 2)
+	            //.attr('textLength', margins.right - 3)
+	            //.attr('lengthAdjust', 'spacingAndGlyphs')
+	            .text(mschart.goal + ' (G)')
+	            .style('fill', mschart.goal_color);
+	      }
+
+	      //Year Labels
+	      var yrs = node.append('g')
+	                     .attr('class', 'nvd3 nv-year-wrap')
+	                     .attr('transform', 'translate(' + margins.left + ',0)')
+	                     .selectAll('line.nv-goal')
+	                     .data([true])
+	                     .enter().append('g')
+	                     .attr('class', 'nv-years');
+	      yrs.append('text')
+	         .attr('class', 'nv-year-lbl')
+	         .attr('text-anchor', 'start')
+	         .attr('x', xscale(domain[0].valueOf()))
+	         .attr('y', margins.top - 5)
+	         .text(domain[0].getFullYear());
+	      if(domain[1].getFullYear() !== domain[0].getFullYear()) {
+	        yrs.append('text')
+	           .attr('class', 'nv-year-lbl')
+	           .attr('text-anchor', 'end')
+	           .attr('x', xscale(domain[1].valueOf()))
+	           .attr('y', margins.top - 5)
+	           .text(domain[1].getFullYear());
+	      }
+
+	      //Zebra striped background
+	      var tickDiff = xscale(tickVals[1]) - xscale(tickVals[0]);
+	      var bg = node.select('.nv-background')
+	                   .selectAll("rect.nv-zebra")
+	                   .data(tickVals)
+	                   .enter().append('rect')
+	                   .attr('y', 0)
+	                   .attr('x', function(d) {
+	          return xscale(d);
+	      })
+	                   .attr('height', yscale(mschart.range[0]))
+	                   .attr('width', tickDiff)
+	                   .attr('visibility', function(d, i) {
+	          return i !== (tickVals.length - 1) ? 'visible' : 'hidden';
+	      } )
+	                   .style('fill', function(d) {
+	          return new Date(d).getFullYear() === domain[0].getFullYear() ? '#E6F0FF' : '#FFEBF5';
+	      } )
+	                   .style('opacity', function(d, i) {
+	          return i % 2 === 0 ? 0.60 : 1.0;
+	      } );
+
+	      /*chart.dispatch.on('changeState.fix_axes', function (e) {
+	        node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
+	          .attr('y1', 0.5)
+	          .attr('y2', 0.5);
+	      node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
+	          .attr('y1', -0.5)
+	          .attr('y2', -0.5);
+	      });*/
+	      console.log(chart);
+	      return chart;
+	    };
+	}
+	exports.SmallMultiplesChart = SmallMultiplesChart;
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var $__Array$prototype$slice = Array.prototype.slice;
+	var __WEBPACK_LABELED_MODULE__9 = __webpack_require__(9), Symbol = __WEBPACK_LABELED_MODULE__9.Symbol;
+	var privateSym = new Symbol();
+
+	var DataPoint = __webpack_require__(5).DataPoint;
+	var TimeDataPoint = __webpack_require__(5).TimeDataPoint;
+	var DataSeries = __webpack_require__(5).DataSeries;
+	var TimeDataSeries = __webpack_require__(5).TimeDataSeries;
+	var MultiSeriesChart = __webpack_require__(5).MultiSeriesChart;
+	var TimeSeriesChartSchema = __webpack_require__(5).TimeSeriesChartSchema;
+
+	var moment = __webpack_require__(1);
+	var d3 = __webpack_require__(2);
+	var nv = __webpack_require__(11);
+	var addStylesheetRules = __webpack_require__(4).addStylesheetRules;
+	var extractData = __webpack_require__(4).extractData;
+	var calcDomain = __webpack_require__(4).calcDomain;
+
+	function LargeChart(mschart, node) {
+	  var $__0;
+	  node = node || d3.select('body').append('div').attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
+
+	  node.classed('chart-div', true)
+	      .style("width", mschart.width + mschart.width_units);
+
+	  var relative = (mschart.width_units == '%');
+	  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : undefined;
+	  var yMax, xMax;
+
+	  if(relative) {
+	    yMax = mschart.range_max - mschart.range_min;
+	    xMax = ratio * (mschart.range_max - mschart.range_min);
+	  } else {
+	    if(!ratio) {
+	      yMax = mschart.height;
+	      xMax = mschart.width;
+	    } else {
+	      yMax = ratio * mschart.width;
+	      xMax = mschart.width;
+	    }
+	  }
+
+	  if(relative) {
+	    addStylesheetRules([
+	      ['#' + node.attr('id') + ':after',
+	        ['content', '""'],
+	        ['display', 'block'],
+	        ['margin-top', (ratio * 100) + '%']
+	      ]
+	    ]);
+	  } else {
+	    if(!ratio)
+	      node.style('height', mschart.height + mschart.height_units);
+	    else
+	      node.style('height', (ratio * mschart.width) + 'px')
+	  }
+
+	  node = node.append('svg')
+	             .attr('class', 'upiq-chart chart-svg');
+
+	  var margins = {top: 10, bottom: 50, left: 25, right: 30};
+	  var data = extractData(mschart);
+	  var domain = calcDomain(mschart);
+	  var tick_domain = domain.slice();
+	  tick_domain[1] = d3.time.month.offset(domain[1], 1);
+
+	  var tickVals = ($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(tick_domain)).map( function(month) {
+	    return month.valueOf();
+	  } );
+
+	  return function () {
+	    node.append('g')
+	    .attr('class', 'nv-background')
+	    .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
+
+	    var chart = nv.models.lineChart()
+	                  .id(mschart.uid)
+	                  .showLegend(false)
+	                  .margin(margins)
+	                  .transitionDuration(500)
+	                  .tooltipContent(function(seriesName, x, y, graph) {
+	                    return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
+	                    + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
+	                  })
+	                  chart.lines.scatter.onlyCircles(false);
+
+	    chart.xAxis
+	         .tickFormat( function(d) {
+	      return d3.time.format('%B')(new Date(d))[0];
+	    } )
+	         .tickValues(tickVals)
+	         .showMaxMin(false)
+	         .tickPadding(3)
+	    chart.yAxis
+	         .tickFormat(d3.format(','))
+	         .showMaxMin(false);
+	    chart
+	         .xDomain(domain.map( function(x) {
+	      return x.valueOf();
+	    } ))
+	         .yDomain(mschart.range);
+
+	    node.datum(data).call(chart);
+
+	    var yscale = chart.yScale();
+	    var xscale = chart.xScale();
+
+	    //Dashed lines for all missing areas
+	    node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group').filter( function(d) {
+	      return d.dashed;
+	    } )
+	        .style('stroke-dasharray', '3 3');
+	    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( function(d) {
+	      return d.dashed;
+	    } )
+	        .attr('visibility', 'hidden');
+
+	    //Fix Axis Ticks
+	    node.selectAll('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))')
+	      .append('line')
+	      .attr('y2', 0)
+	      .attr('x2', 4)
+	      .style('stroke', 'dimgray');
+
+	    /*//Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
+	    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
+	        .attr('y1', 0.5)
+	        .attr('y2', 0.5);
+	    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
+	        .attr('y1', -0.5)
+	        .attr('y2', -0.5);*/
+	    /*
+	    //Graph Title
+	    node.append('g')
+	        .attr('class', 'nvd3 nv-small-chart nv-chart-title')
+	        .append('text')
+	        .attr('class', 'nv-small-chart nv-title')
+	        .attr('x', 5)
+	        .attr('y', 10)
+	        .text(mschart.title);
+
+	    var legend = node.append('g')
+	                     .attr('class', 'nvd3 nv-legend')
+	                     .attr('transform', 'translate(' + 5 + ',' + '100' + ')')
+	                     .append('g')
+	                     .attr('class', 'nv-leg')
+	                     .selectAll('circle.legend-pt.nv-point')
+	                     .data(mschart.series.slice(0, 2))
+	                     .enter().append('g');
+
+	    //Graph Legend
+	    legend.append('circle')
+	          .attr('class', 'nv-legendpt nv-point')
+	          .attr('cx', 5 )
+	          .attr('cy', (d, i) => i * 12 )
+	          .attr('r', 4)
+	          .style('stroke', d => d.color )
+	          .style('stroke-opacity', 1)
+	          .style('fill', d => d.color )
+	          .style('fill-opacity', 0.5);
+	    legend.append('text')
+	          .attr('class', 'nv-goal-lbl')
+	          .attr('text-anchor', 'start')
+	          .attr('x', 15)
+	          .attr('y', (d, i) => (i * 12) + 3 )
+	          .attr('dy', '0.1em')
+	          .text( d => d.title );
+
+	    //Goal Line
+	    if(mschart.goal) {
+	      var goal = node.append('g')
+	                     .attr('class', 'nvd3 nv-distribution')
+	                     .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')')
+	                     .selectAll('line.nv-goal')
+	                     .data([mschart.goal])
+	                     .enter().append('g')
+	                     .attr('class', 'nv-dist nv-goal');
+	      goal.append('line')
+	          .attr('class', 'nv-goal-line')
+	          .attr('x1', xscale(domain[0].valueOf()))
+	          .attr('x2', xscale(domain[1].valueOf()))
+	          .attr('y1', Math.floor(yscale(mschart.goal)) )
+	          .attr('y2', Math.floor(yscale(mschart.goal)) )
+	          .style('stroke', mschart.goal_color);
+	      goal.append('text')
+	          .attr('class', 'nv-goal-lbl')
+	          .attr('text-anchor', 'start')
+	          .attr('x', xscale(domain[1].valueOf()) + 3)
+	          .attr('y', Math.floor(yscale(mschart.goal)) + 2)
+	          //.attr('textLength', margins.right - 3)
+	          //.attr('lengthAdjust', 'spacingAndGlyphs')
+	          .text(mschart.goal + ' (G)')
+	          .style('fill', mschart.goal_color);
+	    }
+
+	    //Year Labels
+	    var yrs = node.append('g')
+	                   .attr('class', 'nvd3 nv-year-wrap')
+	                   .attr('transform', 'translate(' + margins.left + ',0)')
+	                   .selectAll('line.nv-goal')
+	                   .data([true])
+	                   .enter().append('g')
+	                   .attr('class', 'nv-years');
+	    yrs.append('text')
+	       .attr('class', 'nv-year-lbl')
+	       .attr('text-anchor', 'start')
+	       .attr('x', xscale(domain[0].valueOf()))
+	       .attr('y', margins.top - 5)
+	       .text(domain[0].getFullYear());
+	    if(domain[1].getFullYear() !== domain[0].getFullYear()) {
+	      yrs.append('text')
+	         .attr('class', 'nv-year-lbl')
+	         .attr('text-anchor', 'end')
+	         .attr('x', xscale(domain[1].valueOf()))
+	         .attr('y', margins.top - 5)
+	         .text(domain[1].getFullYear());
+	    }
+
+	    //Zebra striped background
+	    var tickDiff = xscale(tickVals[1]) - xscale(tickVals[0]);
+	    var bg = node.select('.nv-background')
+	                 .selectAll('rect.nv-zebra')
+	                 .data(tickVals)
+	                 .enter().append('rect')
+	                 .attr('y', 0)
+	                 .attr('x', d => xscale(d))
+	                 .attr('height', yscale(mschart.range[0]))
+	                 .attr('width', tickDiff)
+	                 .attr('visibility', (d, i) => i !== (tickVals.length - 1) ? 'visible' : 'hidden' )
+	                 .style('fill', d => new Date(d).getFullYear() === domain[0].getFullYear() ? '#E6F0FF' : '#FFEBF5' )
+	                 .style('opacity', (d, i) => i % 2 === 0 ? 0.55 : 1.0 );
+
+	    /*chart.dispatch.on('changeState.fix_axes', function (e) {
+	      node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
+	        .attr('y1', 0.5)
+	        .attr('y2', 0.5);
+	    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
+	        .attr('y1', -0.5)
+	        .attr('y2', -0.5);
+	    });*/
+	    console.log(chart);
+	    if(relative)
+	      nv.utils.windowResize( function() {
+	        return chart.update();
+	      } );
+	    return chart;
+	  };
+	}
+	exports.LargeChart = LargeChart;
+
+/***/ },
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9736,17 +10725,70 @@
 	exports.Klass = Klass;
 
 /***/ },
-/* 7 */
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Symbol;
+	if (!Symbol) {
+	Symbol = (function(Object){
+	 
+	// (C) WebReflection Mit Style License
+	 
+	var ObjectPrototype = Object.prototype,
+	defineProperty = Object.defineProperty,
+	prefix = '__simbol' + Math.random() + '__',
+	id = 0;
+	 
+	function get(){/*avoid set w/out get prob*/}
+	 
+	function Symbol() {
+	var __symbol__ = prefix + id++;
+	defineProperty(
+	ObjectPrototype,
+	this._ = __symbol__,
+	{
+	enumerable: false,
+	configurable: false,
+	get: get, // undefined
+	set: function (value) {
+	defineProperty(this, __symbol__, {
+	enumerable: false,
+	configurable: true,
+	writable: true,
+	value: value
+	});
+	}
+	}
+	);
+	}
+	 
+	defineProperty(Symbol.prototype, 'toString', {
+	enumerable: false,
+	configurable: false,
+	writable: false,
+	value: function toString() {
+	return this._;
+	}
+	});
+	 
+	return Symbol;
+	 
+	}(Object));
+	}
+	exports: exports["Symbol"] = Symbol;
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var $__Object$defineProperty = Object.defineProperty;
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
-	var Schema = __webpack_require__(6).Schema;
-	var schematize = __webpack_require__(6).schematize;
-	var ValidationError = __webpack_require__(6).ValidationError;
-	var ValidationTypeError = __webpack_require__(6).ValidationTypeError;
+	var Schema = __webpack_require__(8).Schema;
+	var schematize = __webpack_require__(8).schematize;
+	var ValidationError = __webpack_require__(8).ValidationError;
+	var ValidationTypeError = __webpack_require__(8).ValidationTypeError;
 	var moment = __webpack_require__(1);
 
 	function dateTypeConstraint(value) {
@@ -10416,1233 +11458,6 @@
 	exports.TimeSeriesChartSchema = TimeSeriesChartSchema;
 	var timeSeriesChartSchema = new TimeSeriesChartSchema();
 	exports.timeSeriesChartSchema = timeSeriesChartSchema;
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var $__getIteratorRange = function(iterator, index, begin, len) {
-	  if (index > begin) {
-	    throw new RangeError();
-	  }
-
-	  if (typeof len === "undefined") {
-	    len = Infinity;
-	  }
-
-	  var range = [], end = begin + len;
-
-	  while (index < end) {
-	    var next = iterator.next();
-
-	    if (next.done) {
-	      break;
-	    }
-
-	    if (index >= begin) {
-	      range.push(next.value);
-	    }
-
-	    index++;
-	  }
-
-	  return {
-	    range: range,
-	    index: index
-	  };
-	};
-
-	var $__getIterator = function(iterable) {
-	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
-
-	  if (typeof iterable[sym] === "function") {
-	    return iterable[sym]();
-	  } else if (typeof iterable === "object" || typeof iterable === "function") {
-	    return $__getArrayIterator(iterable);
-	  } else {
-	    throw new TypeError();
-	  }
-	};
-
-	var $__getArrayIterator = function(array) {
-	  var index = 0;
-
-	  return {
-	    next: function() {
-	      if (index < array.length) {
-	        return {
-	          done: false,
-	          value: array[index++]
-	        };
-	      } else {
-	        return {
-	          done: true,
-	          value: void 0
-	        };
-	      }
-	    }
-	  };
-	};
-
-	var $__Array$prototype$slice = Array.prototype.slice;
-	var $__Object$defineProperties = Object.defineProperties;
-	var $__Object$defineProperty = Object.defineProperty;
-	var $__Object$create = Object.create;
-	var $__Object$getPrototypeOf = Object.getPrototypeOf;
-	var Klass = __webpack_require__(6).Klass;
-	var __WEBPACK_LABELED_MODULE__4 = __webpack_require__(4), Symbol = __WEBPACK_LABELED_MODULE__4.Symbol;
-	var dataSym = new Symbol();
-	var d3 = __webpack_require__(2);
-
-	var dataPointSchema = __webpack_require__(7).dataPointSchema;
-	var timeDataPointSchema = __webpack_require__(7).timeDataPointSchema;
-	var dataSeriesSchema = __webpack_require__(7).dataSeriesSchema;
-	var timeDataSeriesSchema = __webpack_require__(7).timeDataSeriesSchema;
-	var multiSeriesChartSchema = __webpack_require__(7).multiSeriesChartSchema;
-	var timeSeriesChartSchema = __webpack_require__(7).timeSeriesChartSchema;
-
-	var moment = __webpack_require__(1);
-
-	var DataPoint = function($__super) {
-	  "use strict";
-
-	  function DataPoint(obj) {
-	    obj = obj || {key: '[none]'};
-	    obj.schema = obj.schema || dataPointSchema;
-	    $__Object$getPrototypeOf(DataPoint.prototype).constructor.call(this, obj);
-	  }
-
-	  DataPoint.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  DataPoint.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(DataPoint.prototype, "constructor", {
-	    value: DataPoint
-	  });
-
-	  return DataPoint;
-	}(Klass);
-	exports.DataPoint = DataPoint;
-	var TimeDataPoint = function($__super) {
-	  "use strict";
-
-	  function TimeDataPoint(obj) {
-	    obj = obj || {key: new Date()};
-	    obj.schema = obj.schema || timeDataPointSchema;
-	    $__Object$getPrototypeOf(TimeDataPoint.prototype).constructor.call(this, obj);
-	  }
-
-	  TimeDataPoint.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  TimeDataPoint.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(TimeDataPoint.prototype, "constructor", {
-	    value: TimeDataPoint
-	  });
-
-	  return TimeDataPoint;
-	}(DataPoint);
-	exports.TimeDataPoint = TimeDataPoint;
-	var DataSeries = function($__super) {
-	  "use strict";
-
-	  function DataSeries(obj) {
-	    obj = obj || {};
-	    obj.schema = obj.schema || dataSeriesSchema;
-	    $__Object$getPrototypeOf(DataSeries.prototype).constructor.call(this, obj);
-	    /*Object.defineProperty(this, 'data', function () {
-	      var data = [];
-	      return {
-	        enumerable: true,
-	        configurable: true,
-	        get: () => data,
-	        set: function (d) {
-	          data = d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
-	          .filter( (v, i) => (i === 0 || v.key != d[i-1].key) )
-	          .map( datum => new DataPoint(datum) );
-	        }
-	      };
-	    }());*/
-	    this.data = obj.data || [];
-	  }
-
-	  DataSeries.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  DataSeries.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(DataSeries.prototype, "constructor", {
-	    value: DataSeries
-	  });
-
-	  $__Object$defineProperties(DataSeries.prototype, {
-	    data: {
-	      get: function() {
-	        return this[dataSym];
-	      },
-
-	      set: function(d) {
-	        var data = d3.map();
-	        d.sort( function(a, b) {
-	          return (a.key > b.key) ? 1 : -1;
-	        } )
-	        .filter( function(v, i) {
-	          return i === 0 || v.key != d[i-1].key;
-	        } )
-	        .map( function(datum) {
-	          return new DataPoint(datum);
-	        } )
-	        .forEach( function(datum) {
-	          return data.set(datum.key, datum);
-	        } );
-	        this[dataSym] = data;
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    },
-
-	    range: {
-	      get: function() {
-	        return d3.extent(this.data.values(), function(d) {
-	          return d.value;
-	        }) || [-Infinity, Infinity];
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-
-	  return DataSeries;
-	}(Klass);
-	exports.DataSeries = DataSeries;
-	var TimeDataSeries = function($__super) {
-	  "use strict";
-
-	  function TimeDataSeries(obj) {
-	    obj = obj || {};
-	    obj.schema = obj.schema || timeDataSeriesSchema;
-	    $__Object$getPrototypeOf(TimeDataSeries.prototype).constructor.call(this, obj);
-	    this.data = obj.data || [];
-	  }
-
-	  TimeDataSeries.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  TimeDataSeries.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(TimeDataSeries.prototype, "constructor", {
-	    value: TimeDataSeries
-	  });
-
-	  $__Object$defineProperties(TimeDataSeries.prototype, {
-	    data: {
-	      get: function() {
-	        return this[dataSym];
-	      },
-
-	      set: function(d) {
-	        var data = d3.map();
-	        d.sort( function(a, b) {
-	          return (a.key > b.key) ? 1 : -1;
-	        } )
-	        .filter( function(v, i) {
-	          return i === 0 || v.key.toString() != d[i-1].key.toString();
-	        } )
-	        .map( function(datum) {
-	          return new TimeDataPoint(datum);
-	        } )
-	        .forEach( function(datum) {
-	          return data.set(datum.key, datum);
-	        } );
-	        this[dataSym] = data;
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    },
-
-	    domain: {
-	      get: function() {
-	        var $__1;
-	        var $__0;
-
-	        var min = ($__0 = moment).min.apply($__0, $__Array$prototype$slice.call(this.data.values().map( function(d) {
-	          return moment(d.key);
-	        } ))).toDate();
-
-	        var max = ($__1 = moment).max.apply($__1, $__Array$prototype$slice.call(this.data.values().map( function(d) {
-	          return moment(d.key);
-	        } ))).toDate();
-
-	        return [min, max];
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    },
-
-	    croppedDomain: {
-	      get: function() {
-	        var $__3;
-	        var $__2;
-
-	        var data = this.data.values().filter( function(datum) {
-	          return datum.value != null;
-	        } );
-
-	        var min = ($__2 = moment).min.apply($__2, $__Array$prototype$slice.call(data.map( function(d) {
-	          return moment(d.key);
-	        } ))).toDate();
-
-	        var max = ($__3 = moment).max.apply($__3, $__Array$prototype$slice.call(data.map( function(d) {
-	          return moment(d.key);
-	        } ))).toDate();
-
-	        return [min, max];
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-
-	  return TimeDataSeries;
-	}(DataSeries);
-	exports.TimeDataSeries = TimeDataSeries;
-	var MultiSeriesChart = function($__super) {
-	  "use strict";
-
-	  function MultiSeriesChart(obj) {
-	    obj = obj || {};
-	    obj.schema = obj.schema || multiSeriesChartSchema;
-	    $__Object$getPrototypeOf(MultiSeriesChart.prototype).constructor.call(this, obj);
-	    this.series = obj.series || [];
-	  }
-
-	  MultiSeriesChart.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  MultiSeriesChart.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(MultiSeriesChart.prototype, "constructor", {
-	    value: MultiSeriesChart
-	  });
-
-	  $__Object$defineProperties(MultiSeriesChart.prototype, {
-	    series: {
-	      get: function() {
-	        return this[dataSym];
-	      },
-
-	      set: function(s) {
-	        this[dataSym] = s.map( function(serum) {
-	          return new DataSeries(serum);
-	        } );
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    },
-
-	    range: {
-	      get: function() {
-	        if(this.range_min != null && this.range_max != null)
-	          return [this.range_min, this.range_max];
-	        var ranges = this.series.map( function(serum) {
-	          return serum.range;
-	        } );
-	        return [
-	          d3.min(ranges, function(arg$0) {
-	            var iterator$0 = $__getIterator(arg$0),
-	                iteratorValue$0 = {
-	                  index: 0
-	                },
-	                min = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]);
-
-	            return min;
-	          } ),
-	          d3.max(ranges, function(arg$1) {
-	            var iterator$1 = $__getIterator(arg$1),
-	                iteratorValue$1 = {
-	                  index: 0
-	                },
-	                max = (iteratorValue$1 = $__getIteratorRange(iterator$1, iteratorValue$1.index, 1, 1), iteratorValue$1.range[0]);
-
-	            return max;
-	          } )
-	        ];
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    },
-
-	    keys: {
-	      get: function() {
-	        var data = this.series.map( function(serum) {
-	          return serum.data;
-	        } )
-	        .map( function(datum) {
-	          return datum.values();
-	        } );
-	        data = d3.merge(data);
-	        return data.map( function(datum) {
-	          return datum.key;
-	        } )
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-
-	  return MultiSeriesChart;
-	}(Klass);
-	exports.MultiSeriesChart = MultiSeriesChart;
-	var TimeSeriesChart = function($__super) {
-	  "use strict";
-
-	  function TimeSeriesChart(obj) {
-	    obj = obj || {};
-	    obj.schema = obj.schema || timeSeriesChartSchema;
-	    $__Object$getPrototypeOf(TimeSeriesChart.prototype).constructor.call(this, obj);
-	    this.series = obj.series || [];
-	  }
-
-	  TimeSeriesChart.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  TimeSeriesChart.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(TimeSeriesChart.prototype, "constructor", {
-	    value: TimeSeriesChart
-	  });
-
-	  $__Object$defineProperties(TimeSeriesChart.prototype, {
-	    series: {
-	      get: function() {
-	        return this[dataSym];
-	      },
-
-	      set: function(s) {
-	        this[dataSym] = s.map( function(serum) {
-	          return new TimeDataSeries(serum);
-	        } );
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    },
-
-	    domain: {
-	      get: function() {
-	        var $__5;
-	        var $__4;
-	        var start, end;
-
-	        var var$0 = [this.start || undefined, this.end || undefined],
-	            iterator$2 = $__getIterator(var$0),
-	            iteratorValue$2 = {
-	              index: 0
-	            },
-	            start = (iteratorValue$2 = $__getIteratorRange(iterator$2, iteratorValue$2.index, 0, 1), iteratorValue$2.range[0]),
-	            end = (iteratorValue$2 = $__getIteratorRange(iterator$2, iteratorValue$2.index, 1, 1), iteratorValue$2.range[0]);;
-
-	        var domains = this.series.map( function(serum) {
-	          return this.auto_crop ? serum.croppedDomain : serum.domain;
-	        }.bind(this) );
-
-	        if(!domains) return [start || new Date(), end || new Date()];
-
-	        domains = domains.map( function(arg$2) {
-	          var iterator$3 = $__getIterator(arg$2),
-	              iteratorValue$3 = {
-	                index: 0
-	              },
-	              a = (iteratorValue$3 = $__getIteratorRange(iterator$3, iteratorValue$3.index, 0, 1), iteratorValue$3.range[0]),
-	              b = (iteratorValue$3 = $__getIteratorRange(iterator$3, iteratorValue$3.index, 1, 1), iteratorValue$3.range[0]);
-
-	          return [moment(a), moment(b)];
-	        } );
-
-	        return [
-	          start || ($__4 = moment).min.apply($__4, $__Array$prototype$slice.call(domains.map( function(arg$3) {
-	            var iterator$4 = $__getIterator(arg$3),
-	                iteratorValue$4 = {
-	                  index: 0
-	                },
-	                min = (iteratorValue$4 = $__getIteratorRange(iterator$4, iteratorValue$4.index, 0, 1), iteratorValue$4.range[0]);
-
-	            return min;
-	          } ))).toDate(),
-	          end || ($__5 = moment).max.apply($__5, $__Array$prototype$slice.call(domains.map( function(arg$4) {
-	            var iterator$5 = $__getIterator(arg$4),
-	                iteratorValue$5 = {
-	                  index: 0
-	                },
-	                max = (iteratorValue$5 = $__getIteratorRange(iterator$5, iteratorValue$5.index, 1, 1), iteratorValue$5.range[0]);
-
-	            return max;
-	          } ))).toDate()
-	        ];
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-
-	  return TimeSeriesChart;
-	}(MultiSeriesChart);
-	exports.TimeSeriesChart = TimeSeriesChart;
-	function Chart(data) {
-	  return data.x_axis_type === 'date' ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
-	}
-	exports.Chart = Chart;
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var $__Array$prototype$slice = Array.prototype.slice;
-	var $__Object$defineProperty = Object.defineProperty;
-	var $__Object$create = Object.create;
-	var $__Object$getPrototypeOf = Object.getPrototypeOf;
-	var $__Object$defineProperties = Object.defineProperties;
-	var __WEBPACK_LABELED_MODULE__4 = __webpack_require__(4), Symbol = __WEBPACK_LABELED_MODULE__4.Symbol;
-	var privateSym = new Symbol();
-
-	var DataPoint = __webpack_require__(8).DataPoint;
-	var TimeDataPoint = __webpack_require__(8).TimeDataPoint;
-	var DataSeries = __webpack_require__(8).DataSeries;
-	var TimeDataSeries = __webpack_require__(8).TimeDataSeries;
-	var MultiSeriesChart = __webpack_require__(8).MultiSeriesChart;
-	var TimeSeriesChartSchema = __webpack_require__(8).TimeSeriesChartSchema;
-
-	var moment = __webpack_require__(1);
-	var d3 = __webpack_require__(2);
-	var nv = __webpack_require__(11);
-
-	var ChartContainer = function() {
-	  "use strict";
-
-	  function ChartContainer(chart, parent) {
-	    this.chart = chart;
-	    this.parent = parent? parent.node() : document.documentElement;
-	  }
-
-	  $__Object$defineProperties(ChartContainer.prototype, {
-	    width: {
-	      get: function() {
-	        if(this.chart.width_units === 'px')
-	          return this.chart.width;
-	        var parentWidth = this.parent.clientWidth;
-	        var ratio = this.chart.width / 100;
-	        return Math.floor(ratio * parentWidth);
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    },
-
-	    height: {
-	      get: function() {
-	        if(this.chart.height_units === 'px')
-	          return this.chart.height;
-	        else if(this.chart.height_units === '%')
-	          var ratio = this.chart.height / 100;
-	        else if(this.chart.aspect_ratio)
-	          var ratio = this.chart.aspect_ratio[1] / this.chart.aspect_ratio[0];
-	        return Math.floor(ratio * this.width);
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    }
-	  });
-
-	  return ChartContainer;
-	}();
-	exports.ChartContainer = ChartContainer;
-	var Graph = function() {
-	  "use strict";
-
-	  function Graph(chart) {
-	    this.container = new ChartContainer(chart);
-	    this.chart = chart;
-	    this.id = this.chart.uid;
-	    this[privateSym] = {};
-	    this.graph = nv.models.lineChart()
-	    .id(this.id)
-	    .showLegend(false)
-	    .margin({top: 10, bottom: 60, left: 30, right: 30});
-	    this.graph.lines.scatter.onlyCircles(false);
-	  }
-
-	  $__Object$defineProperties(Graph.prototype, {
-	    render: {
-	      value: function() {
-	        var div = d3.select('body')
-	                    //.select('#' + this.id)
-	                    .append('div')
-	                    .attr('id', this.id)
-	                    .classed('chart-div', true)
-	                    .style('position', 'relative')
-	                    .style('width', this.container.width + 'px')
-	                    .style('height', this.container.height + 'px');
-
-	        var svg = div.append('svg')
-	                     .attr('width', '100%')
-	                     .attr('height', '100%')
-	                     .style('position', 'absolute')
-	                     .style('top', '0')
-	                     .style('left', '0')
-	                     .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
-
-	        svg.data(this.chart.series);
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    data: {
-	      get: function() {
-	        var data = [];
-	        var keys = d3.map();
-	        this.chart.keys.forEach( function(key) {
-	          return keys.set(key, 'defined');
-	        });
-	        keys = keys.keys();
-	        keys.sort( function(a, b) {
-	          return moment(new Date(a)).valueOf() - moment(new Date(b)).valueOf();
-	        } );
-	        this.chart.series.forEach(function (series, index) {
-	          var obj = {
-	            key: series.title,
-	            color: series.color,
-	            values: [],
-	            format: d3.format(series.display_format),
-	          };
-	          keys.forEach(function (key) {
-	            var datapoint = series.data.get(key);
-	            if(series.data.has(key))
-	              obj.values.push({
-	                x: moment(datapoint.key).valueOf(),
-	                y: datapoint.value,
-	                size: series.marker_size,
-	                shape: series.marker_style,
-	                note: datapoint.note,
-	                title: datapoint.title
-	                });
-	            //else
-	              //obj.values.push({});
-	          });
-	          //obj.values.sort( (a, b) => a.x - b.x );
-	          data.push(obj);
-	        });
-	        return data;
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    },
-
-	    parent: {
-	      get: function() {
-	        return this[privateSym].bound;
-	      },
-
-	      enumerable: true,
-	      configurable: true
-	    },
-
-	    bindTo: {
-	      value: function(parent) {
-	        this[privateSym].bound = d3.select(parent);
-	        return this;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    on: {
-	      value: function(event, callback) {
-	        this[privateSym].events = callback;
-	        return this;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    apply: {
-	      value: function() {
-	        this.parent.call(this.graph);
-	        return this;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    transition: {
-	      value: function(duration) {
-	        if(duration == null) duration = 250;
-	        this.parent.transition().duration(duration);
-	        return this;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    bindData: {
-	      value: function() {
-	        this.parent.datum(this.data);
-	        return this;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    autoResize: {
-	      value: function() {
-	        nv.utils.windowResize(this.graph.update);
-	        return this;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    title: {
-	      value: function() {
-	        this.parent.select('svg')
-	          .append('text')
-	          .attr('x', this.parent.clientWidth / 2)
-	          .attr('y', 20)
-	          .attr('text-anchor', 'middle')
-	          .style('font-size', '9pt')
-	          .text(this.chart.title);
-	          return this;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    legend: {
-	      value: function() {
-	        var wrap = this.parent.selectAll('g.nv-legend').data(['hola']);
-	        var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-legend').append('g');
-	        var g = wrap.select('g');
-	        wrap.attr('transform', 'translate(' + 5 + ',' + (160 - 30) + ')');
-
-	        var legendWrap = g.selectAll('g.nv-leg').data(['hola']);
-	        legendWrap.enter().append('g').attr('class', 'nv-leg');
-	        
-	        var legend = legendWrap.selectAll('circle.legend-pt.nv-point')
-	            .data(this.chart.series.map( function(s) {
-	          return s.color;
-	        } ));
-	        legend.enter().append('circle')
-	            .attr('cx', 5 )
-	            .attr('cy', function(d, i) {
-	          return i * 12;
-	        } )
-	            .attr('r', 4)
-	            .style('stroke', function(d) {
-	          return d;
-	        } )
-	            .style('fill', function(d) {
-	          return d;
-	        } );
-	        legendWrap.exit().selectAll('circle.legend-pt.nv-point')
-	            .transition()
-	            .attr('cx', 0 )
-	            .attr('cy', 0 )
-	            .style('stroke-opacity', 0)
-	            .remove();
-	        legendWrap.selectAll('text.nv-goal-lbl').data(this.chart.series)
-	            .enter().append('text')
-	            .attr('class', 'nv-goal-lbl')
-	            .attr('text-anchor', 'left')
-	            .attr('x', 15)
-	            .attr('y', function(d, i) {
-	          return (i * 12) + 3;
-	        } )
-	            .attr('dy', '0.1em')
-	            //.attr('textLength', 160 - 22)
-	            //.attr('lengthAdjust', 'spacing')
-	            .text( function(d) {
-	          return d.title;
-	        } );
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    }
-	  });
-
-	  return Graph;
-	}();
-	exports.Graph = Graph;
-	var TimeGraph = function($__super) {
-	  "use strict";
-
-	  function TimeGraph(chart) {
-	    $__Object$getPrototypeOf(TimeGraph.prototype).constructor.call(this, chart);
-	    //.showDistX(true).showDistY(true);
-	    //.y( function ({y}) { return y / 100; } );
-	  }
-
-	  TimeGraph.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  TimeGraph.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(TimeGraph.prototype, "constructor", {
-	    value: TimeGraph
-	  });
-
-	  $__Object$defineProperties(TimeGraph.prototype, {
-	    axis: {
-	      value: function() {
-	        var $__0;
-
-	        if(this.chart.x_label)
-	          this.graph.xAxis.axisLabel(this.chart.x_label);
-
-	        this.graph.xAxis.tickFormat( function(d) {
-	          return d3.time.format('%B')(new Date(d))[0];
-	        } )
-	        .tickValues(($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(this.chart.domain)).map( function(month) {
-	          return month.valueOf();
-	        } ));
-
-	        this.graph.xDomain(this.chart.domain.map( function(x) {
-	          return x.valueOf();
-	        } )).yDomain(this.chart.range);
-
-	        //this.graph.lines.xDomain(this.chart.domain.map( x => x.valueOf() ));
-	        if(this.chart.y_label)
-	          this.graph.yAxis.axisLabel(this.chart.y_label);
-
-	        this.graph.yAxis.tickFormat(d3.format(','));
-
-	        //this.graph.yDomain(this.chart.range);
-	        //this.graph.lines.yDomain(this.chart.range);
-	        return this;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    tooltips: {
-	      value: function() {
-	        this.graph.tooltipContent(function(seriesName, x, y, graph) {
-	          return '<h3>' + seriesName + '</h3>' + '<p>' + graph.point.note + '</p>'
-	          + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
-	        });
-	        return this;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    prepare: {
-	      value: function() {
-	        return this.axis().tooltips().bindData().transition().apply().autoResize().graph;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    },
-
-	    goal: {
-	      value: function() {
-	        var margin = this.graph.margin();
-	        var yscale = this.graph.yScale();
-	        var xscale = this.graph.xScale();
-	        var wrap = this.parent.selectAll('g.nv-distribution').data([this.chart.goal]);
-	        var wrapEnter = wrap.enter().append('g').attr('class', 'nvd3 nv-distribution').append('g');
-	        var g = wrap.select('g');
-
-	        wrap.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-	        var goalWrap = g.selectAll('g.nv-dist')
-	            .data([this.chart.goal]);
-
-	        goalWrap.enter().append('g');
-	        goalWrap
-	            .attr('class', 'nv-dist nv-goal-line')
-	            .style('stroke', this.chart.goal_color)
-	            .style('fill', this.chart.goal_color);
-
-	        var goal = goalWrap.selectAll('line.nv-goaly')
-	            .data([this.chart.goal]);
-	        goal.enter().append('line')
-	            .attr('x1', xscale(this.chart.goal) )
-	            .attr('x2', xscale(this.chart.goal) );
-	        goalWrap.exit().selectAll('line.nv-goaly')
-	            .transition()
-	            .attr('y1', Math.floor(yscale(this.chart.goal)) )
-	            .attr('y2', Math.floor(yscale(this.chart.goal)) )
-	            .style('stroke-opacity', 0)
-	            .remove();
-	        goal
-	            .attr('class', 'nv-goalx nv-goal-line')
-	            .attr('x1', xscale(this.chart.domain[0].valueOf()))
-	            .attr('x2', xscale(this.chart.domain[1].valueOf()));
-	        goal
-	            .transition()
-	            .attr('y1', Math.floor(yscale(this.chart.goal)) )
-	            .attr('y2', Math.floor(yscale(this.chart.goal)) );
-	        goalWrap.selectAll('text.nv-goal-lbl')
-	            .data([this.chart.goal])
-	            .enter().append('text')
-	            .attr('class', 'nv-goal-lbl')
-	            .attr('text-anchor', 'left')
-	            .attr('x', xscale(this.chart.domain[1].valueOf()) + 3)
-	            .attr('y', Math.floor(yscale(this.chart.goal)) + 2)
-	            .attr('textLength', margin.right - 3)
-	            .attr('lengthAdjust', 'spacingAndGlyphs')
-	            .text(this.chart.goal + ' (G)');
-	        return this;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    }
-	  });
-
-	  return TimeGraph;
-	}(Graph);
-	exports.TimeGraph = TimeGraph;
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var $__Array$prototype$slice = Array.prototype.slice;
-	var __WEBPACK_LABELED_MODULE__4 = __webpack_require__(4), Symbol = __WEBPACK_LABELED_MODULE__4.Symbol;
-	var privateSym = new Symbol();
-
-	var DataPoint = __webpack_require__(8).DataPoint;
-	var TimeDataPoint = __webpack_require__(8).TimeDataPoint;
-	var DataSeries = __webpack_require__(8).DataSeries;
-	var TimeDataSeries = __webpack_require__(8).TimeDataSeries;
-	var MultiSeriesChart = __webpack_require__(8).MultiSeriesChart;
-	var TimeSeriesChartSchema = __webpack_require__(8).TimeSeriesChartSchema;
-
-	var moment = __webpack_require__(1);
-	var d3 = __webpack_require__(2);
-	var nv = __webpack_require__(11);
-
-	function SmallMultiplesChart(mschart, node, size) {
-	  var $__0;
-	  node = node || d3.select('body').append('div').attr('id', 'small-chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
-	  size = size || [160, 160];
-	  var width = size[0] || 160;
-	  var height = size[1] || 160;
-
-	  node.style('width', width + 'px')
-	      .style('height', height + 'px');
-
-	  node = node.append('svg');
-	  var margins = {top: 10, bottom: 50, left: 25, right: 30};
-	  var data = calculateMissingValues(mschart);
-	  var domain = calcDomain(mschart);
-	  var tick_domain = domain.slice();
-	  tick_domain[1] = d3.time.month.offset(domain[1], 1);
-
-	  var tickVals = ($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(tick_domain)).map( function(month) {
-	    return month.valueOf();
-	  } );
-
-	  return function () {
-	    node.append('g')
-	    .attr('class', 'nv-background')
-	    .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
-
-	    var chart = nv.models.lineChart()
-	                  .id(mschart.uid)
-	                  .showLegend(false)
-	                  .margin(margins)
-	                  .transitionDuration(500)
-	                  .tooltipContent(function(seriesName, x, y, graph) {
-	                    return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
-	                    + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
-	                  })
-	                  chart.lines.scatter.onlyCircles(false);
-
-	    chart.xAxis
-	         .tickFormat( function(d) {
-	      return d3.time.format('%B')(new Date(d))[0];
-	    } )
-	         .tickValues(tickVals)
-	         .showMaxMin(false)
-	         .tickPadding(3)
-	    chart.yAxis
-	         .tickFormat(d3.format(','))
-	         .showMaxMin(false);
-	    chart
-	         .xDomain(domain.map( function(x) {
-	      return x.valueOf();
-	    } ))
-	         .yDomain(mschart.range);
-
-	    node.datum(data).call(chart);
-
-	    var yscale = chart.yScale();
-	    var xscale = chart.xScale();
-
-	    //Dashed lines for all missing areas
-	    node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group').filter( function(d) {
-	      return d.dashed;
-	    } )
-	        .style('stroke-dasharray', '3 3');
-	    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( function(d) {
-	      return d.dashed;
-	    } )
-	        .attr('visibility', 'hidden');
-
-	    //Fix Axis Ticks
-	    node.selectAll('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))')
-	      .append('line')
-	      .attr('y2', 0)
-	      .attr('x2', 4)
-	      .style('stroke', 'dimgray');
-
-	    /*//Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
-	    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
-	        .attr('y1', 0.5)
-	        .attr('y2', 0.5);
-	    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
-	        .attr('y1', -0.5)
-	        .attr('y2', -0.5);*/
-
-	    //Graph Title
-	    node.append('g')
-	        .attr('class', 'nvd3 nv-small-chart nv-chart-title')
-	        .append('text')
-	        .attr('class', 'nv-small-chart nv-title')
-	        .attr('x', 5)
-	        .attr('y', height - 2)
-	        .text(mschart.title);
-
-	    var legend = node.append('g')
-	                     .attr('class', 'nvd3 nv-legend')
-	                     .attr('transform', 'translate(' + 5 + ',' + (height - 30) + ')')
-	                     .append('g')
-	                     .attr('class', 'nv-leg')
-	                     .selectAll('circle.legend-pt.nv-point')
-	                     .data(mschart.series.slice(0, 2))
-	                     .enter().append('g');
-
-	    //Graph Legend
-	    legend.append('circle')
-	          .attr('class', 'nv-legendpt nv-point')
-	          .attr('cx', 5 )
-	          .attr('cy', function(d, i) {
-	      return i * 12;
-	    } )
-	          .attr('r', 4)
-	          .style('stroke', function(d) {
-	      return d.color;
-	    } )
-	          .style('stroke-opacity', 1)
-	          .style('fill', function(d) {
-	      return d.color;
-	    } )
-	          .style('fill-opacity', 0.5);
-	    legend.append('text')
-	          .attr('class', 'nv-goal-lbl')
-	          .attr('text-anchor', 'start')
-	          .attr('x', 15)
-	          .attr('y', function(d, i) {
-	      return (i * 12) + 3;
-	    } )
-	          .attr('dy', '0.1em')
-	          .text( function(d) {
-	      return d.title;
-	    } );
-
-	    //Goal Line
-	    if(mschart.goal) {
-	      var goal = node.append('g')
-	                     .attr('class', 'nvd3 nv-distribution')
-	                     .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')')
-	                     .selectAll('line.nv-goal')
-	                     .data([mschart.goal])
-	                     .enter().append('g')
-	                     .attr('class', 'nv-dist nv-goal');
-	      goal.append('line')
-	          .attr('class', 'nv-goal-line')
-	          .attr('x1', xscale(domain[0].valueOf()))
-	          .attr('x2', xscale(domain[1].valueOf()))
-	          .attr('y1', Math.floor(yscale(mschart.goal)) )
-	          .attr('y2', Math.floor(yscale(mschart.goal)) )
-	          .style('stroke', mschart.goal_color);
-	      goal.append('text')
-	          .attr('class', 'nv-goal-lbl')
-	          .attr('text-anchor', 'start')
-	          .attr('x', xscale(domain[1].valueOf()) + 3)
-	          .attr('y', Math.floor(yscale(mschart.goal)) + 2)
-	          //.attr('textLength', margins.right - 3)
-	          //.attr('lengthAdjust', 'spacingAndGlyphs')
-	          .text(mschart.goal + ' (G)')
-	          .style('fill', mschart.goal_color);
-	    }
-
-	    //Year Labels
-	    var yrs = node.append('g')
-	                   .attr('class', 'nvd3 nv-year-wrap')
-	                   .attr('transform', 'translate(' + margins.left + ',0)')
-	                   .selectAll('line.nv-goal')
-	                   .data([true])
-	                   .enter().append('g')
-	                   .attr('class', 'nv-years');
-	    yrs.append('text')
-	       .attr('class', 'nv-year-lbl')
-	       .attr('text-anchor', 'start')
-	       .attr('x', xscale(domain[0].valueOf()))
-	       .attr('y', margins.top - 5)
-	       .text(domain[0].getFullYear());
-	    if(domain[1].getFullYear() !== domain[0].getFullYear()) {
-	      yrs.append('text')
-	         .attr('class', 'nv-year-lbl')
-	         .attr('text-anchor', 'end')
-	         .attr('x', xscale(domain[1].valueOf()))
-	         .attr('y', margins.top - 5)
-	         .text(domain[1].getFullYear());
-	    }
-
-	    //Zebra striped background
-	    var tickDiff = xscale(tickVals[1]) - xscale(tickVals[0]);
-	    var bg = node.select('.nv-background')
-	                 .selectAll("rect.nv-zebra")
-	                 .data(tickVals)
-	                 .enter().append('rect')
-	                 .attr('y', 0)
-	                 .attr('x', function(d) {
-	      return xscale(d);
-	    })
-	                 .attr('height', yscale(mschart.range[0]))
-	                 .attr('width', tickDiff)
-	                 .attr('visibility', function(d, i) {
-	      return i !== (tickVals.length - 1) ? 'visible' : 'hidden';
-	    } )
-	                 .style('fill', function(d) {
-	      return new Date(d).getFullYear() === domain[0].getFullYear() ? '#E6F0FF' : '#F3EBFF';
-	    } )
-	                 .style('opacity', function(d, i) {
-	      return i % 2 === 0 ? 0.60 : 1.0;
-	    } );
-
-	    /*chart.dispatch.on('changeState.fix_axes', function (e) {
-	      node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
-	        .attr('y1', 0.5)
-	        .attr('y2', 0.5);
-	    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
-	        .attr('y1', -0.5)
-	        .attr('y2', -0.5);
-	    });*/
-	    console.log(chart);
-	    return chart;
-	  };
-	}
-
-	exports.SmallMultiplesChart = SmallMultiplesChart;function calcDomain(mschart) {
-	  var domain = mschart.domain;
-	  if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
-	    domain[0] = d3.time.month.offset(domain[1], -12)
-	  }
-	  return domain;
-	}
-
-	function extractData(mschart) {
-	  var $__1;
-	  var data = [];
-	  var domain = calcDomain(mschart);
-	  domain[1] = d3.time.month.offset(domain[1], 2);
-	  var keys = ($__1 = d3.time.month).range.apply($__1, $__Array$prototype$slice.call(domain));
-	  var chart_series = mschart.series;
-	  if(chart_series.length > 2) chart_series = chart_series.slice(-2);
-
-	  chart_series.forEach(function (series, index) {
-	    var obj = {
-	      key: series.title,
-	      color: series.color,
-	      values: [],
-	      format: d3.format(series.display_format),
-	    };
-
-	    keys.forEach(function (key) {
-	      var datapoint = series.data.get(key);
-	      if(series.data.has(key))
-	        obj.values.push({
-	          x: moment(datapoint.key).valueOf(),
-	          y: datapoint.value,
-	          size: series.marker_size,
-	          shape: series.marker_style,
-	          note: datapoint.note,
-	          title: datapoint.title
-	          });
-	      else
-	        obj.values.push({
-	          x: moment(new Date(key)).valueOf(),
-	          missing: true
-	        });
-	    });
-	    data.push(obj);
-	  });
-
-	  return data;
-	}
-
-	function calculateMissingValues(mschart) {
-	  var data = [];
-	  var oldData = extractData(mschart);
-	  oldData.forEach(function (series, i) {
-	    var poly_set = [];
-	    var poly_line, prev_pt = {missing: true};
-	    series.values.forEach(function (pt, i) {
-	      if(!pt.missing) {
-	        if(!poly_line) {
-	          poly_line = [];
-	          prev_pt = pt;
-	        }
-	         if(!prev_pt.missing) {
-	          poly_line.push(pt);
-	        } else {
-	          poly_line.push(pt);
-	          poly_set.push(poly_line);
-	          poly_line = [ pt ];
-	        }
-	        if(i === (series.values.length)) {
-	          poly_set.push(poly_line);
-	        }
-	      }
-	      if(pt.missing) {
-	         if(!prev_pt.missing) {
-	          poly_set.push(poly_line);
-	          poly_line = [ prev_pt ];
-	        }
-	      }
-	      prev_pt = pt;
-	    });
-
-	    poly_set.forEach(function (poly_line, i) {
-	      data.push({
-	        key: series.key + '::' + i,
-	        color: series.color,
-	        values: poly_line,
-	        format: series.format,
-	        dashed: i % 2 == 1
-	      });
-	    });
-	  });
-	  return data;
-	}
 
 /***/ },
 /* 11 */

@@ -7,21 +7,52 @@ import {
   TimeDataSeries,
   MultiSeriesChart,
   TimeSeriesChartSchema
-} from './chartviz.es6.js';
+} from './chartviz';
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
+import {addStylesheetRules, extractData, calcDomain} from './init';
 
-export function SmallMultiplesChart(mschart, node, size) {
-  node = node || d3.select('body').append('div').attr('id', 'small-chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
-  size = size || [160, 160]
-  var width = size[0] || 160;
-  var height = size[1] || 160;
-  node.style('width', width + 'px')
-      .style('height', height + 'px');
-  node = node.append('svg');
+export function LargeChart(mschart, node) {
+  node = node || d3.select('body').append('div').attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
+  node.classed('chart-div', true)
+      .style("width", mschart.width + mschart.width_units);
+
+  var relative = (mschart.width_units == '%');
+  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : undefined;
+  var yMax, xMax;
+  if(relative) {
+    yMax = mschart.range_max - mschart.range_min;
+    xMax = ratio * (mschart.range_max - mschart.range_min);
+  } else {
+    if(!ratio) {
+      yMax = mschart.height;
+      xMax = mschart.width;
+    } else {
+      yMax = ratio * mschart.width;
+      xMax = mschart.width;
+    }
+  }
+
+  if(relative) {
+    addStylesheetRules([
+      ['#' + node.attr('id') + ':after',
+        ['content', '""'],
+        ['display', 'block'],
+        ['margin-top', (ratio * 100) + '%']
+      ]
+    ]);
+  } else {
+    if(!ratio)
+      node.style('height', mschart.height + mschart.height_units);
+    else
+      node.style('height', (ratio * mschart.width) + 'px')
+  }
+
+  node = node.append('svg')
+             .attr('class', 'upiq-chart chart-svg');
   var margins = {top: 10, bottom: 50, left: 25, right: 30};
-  var data = calculateMissingValues(mschart);
+  var data = extractData(mschart);
   var domain = calcDomain(mschart);
   var tick_domain = domain.slice();
   tick_domain[1] = d3.time.month.offset(domain[1], 1);
@@ -80,19 +111,19 @@ export function SmallMultiplesChart(mschart, node, size) {
     node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
         .attr('y1', -0.5)
         .attr('y2', -0.5);*/
-
+    /*
     //Graph Title
     node.append('g')
         .attr('class', 'nvd3 nv-small-chart nv-chart-title')
         .append('text')
         .attr('class', 'nv-small-chart nv-title')
         .attr('x', 5)
-        .attr('y', height - 2)
+        .attr('y', 10)
         .text(mschart.title);
 
     var legend = node.append('g')
                      .attr('class', 'nvd3 nv-legend')
-                     .attr('transform', 'translate(' + 5 + ',' + (height - 30) + ')')
+                     .attr('transform', 'translate(' + 5 + ',' + '100' + ')')
                      .append('g')
                      .attr('class', 'nv-leg')
                      .selectAll('circle.legend-pt.nv-point')
@@ -170,7 +201,7 @@ export function SmallMultiplesChart(mschart, node, size) {
     //Zebra striped background
     var tickDiff = xscale(tickVals[1]) - xscale(tickVals[0]);
     var bg = node.select('.nv-background')
-                 .selectAll("rect.nv-zebra")
+                 .selectAll('rect.nv-zebra')
                  .data(tickVals)
                  .enter().append('rect')
                  .attr('y', 0)
@@ -178,8 +209,8 @@ export function SmallMultiplesChart(mschart, node, size) {
                  .attr('height', yscale(mschart.range[0]))
                  .attr('width', tickDiff)
                  .attr('visibility', (d, i) => i !== (tickVals.length - 1) ? 'visible' : 'hidden' )
-                 .style('fill', d => new Date(d).getFullYear() === domain[0].getFullYear() ? '#E6F0FF' : '#F3EBFF' )
-                 .style('opacity', (d, i) => i % 2 === 0 ? 0.60 : 1.0 );
+                 .style('fill', d => new Date(d).getFullYear() === domain[0].getFullYear() ? '#E6F0FF' : '#FFEBF5' )
+                 .style('opacity', (d, i) => i % 2 === 0 ? 0.55 : 1.0 );
 
     /*chart.dispatch.on('changeState.fix_axes', function (e) {
       node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
@@ -190,96 +221,8 @@ export function SmallMultiplesChart(mschart, node, size) {
         .attr('y2', -0.5);
     });*/
     console.log(chart);
+    if(relative)
+      nv.utils.windowResize( () => chart.update() );
     return chart;
   };
-}
-
-function calcDomain(mschart) {
-  var domain = mschart.domain;
-  if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
-    domain[0] = d3.time.month.offset(domain[1], -12)
-  }
-  return domain;
-}
-
-function extractData(mschart) {
-  var data = [];
-  var domain = calcDomain(mschart);
-  domain[1] = d3.time.month.offset(domain[1], 2);
-  var keys = d3.time.month.range(...domain);
-  var chart_series = mschart.series;
-  if(chart_series.length > 2) chart_series = chart_series.slice(-2);
-  chart_series.forEach(function (series, index) {
-    var obj = {
-      key: series.title,
-      color: series.color,
-      values: [],
-      format: d3.format(series.display_format),
-    };
-
-    keys.forEach(function (key) {
-      var datapoint = series.data.get(key);
-      if(series.data.has(key))
-        obj.values.push({
-          x: moment(datapoint.key).valueOf(),
-          y: datapoint.value,
-          size: series.marker_size,
-          shape: series.marker_style,
-          note: datapoint.note,
-          title: datapoint.title
-          });
-      else
-        obj.values.push({
-          x: moment(new Date(key)).valueOf(),
-          missing: true
-        });
-    });
-    data.push(obj);
-  });
-  return data;
-}
-
-function calculateMissingValues(mschart) {
-  var data = [];
-  var oldData = extractData(mschart);
-  oldData.forEach(function (series, i) {
-    var poly_set = [];
-    var poly_line, prev_pt = {missing: true};
-    series.values.forEach(function (pt, i) {
-      if(!pt.missing) {
-        if(!poly_line) {
-          poly_line = [];
-          prev_pt = pt;
-        }
-         if(!prev_pt.missing) {
-          poly_line.push(pt);
-        } else {
-          poly_line.push(pt);
-          poly_set.push(poly_line);
-          poly_line = [ pt ];
-        }
-        if(i === (series.values.length)) {
-          poly_set.push(poly_line);
-        }
-      }
-      if(pt.missing) {
-         if(!prev_pt.missing) {
-          poly_set.push(poly_line);
-          poly_line = [ prev_pt ];
-        }
-      }
-      prev_pt = pt;
-    });
-
-    poly_set.forEach(function (poly_line, i) {
-      data.push({
-        key: series.key + '::' + i,
-        color: series.color,
-        values: poly_line,
-        format: series.format,
-        dashed: i % 2 == 1
-      });
-    });
-  });
-  return data;
 }

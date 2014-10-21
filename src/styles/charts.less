@@ -4,39 +4,45 @@
   stroke-opacity: 100% !important;
 }
 
-.nvtooltip.xy-tooltip {
+.nvtooltip {
   max-width: 400px;
   word-wrap: break-word;
   overflow: hidden;
   overflow-wrap: break-word;
   white-space: pre-line;
+
+  .footer {
+    font-size: 8pt; 
+    color: gray;
+    text-align: center;
+  }
+
+  h3 {
+    font-size: 12pt;
+  }
 }
 
-.nvtooltip .footer {
-  font-size: 8pt; 
-  color: gray;
-  text-align: center;
+.chart-svg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
-
-.nvtooltip h3 {
-  font-size: 12pt;
-}
-
 .chart-div {
-  margin: 10px;
+  display: inline-block;
+  position: relative;
 }
 
-.nv-goal-lbl:extend(.upiq-small-chart) {
-  //font-size: 7pt;
-  stroke-opacity: 0;
+svg.upiq-small-chart {
+  text {
+    font-family: 'silkscreennormal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 6pt;
+  }
+  .nv-goal-lbl {
+    stroke-opacity: 0;
+  }
 }
-
-.upiq-small-chart {
-  font-family: 'silkscreennormal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 6pt;
-}
-
-svg text :extend(.upiq-small-chart) {}
 
 /*.nv-axis text {
   font-size: 9pt;

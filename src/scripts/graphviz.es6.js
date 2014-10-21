@@ -50,27 +50,6 @@ export class Graph {
     this.graph.lines.scatter.onlyCircles(false);
   }
 
-  render() {
-    var div = d3.select('body')
-                //.select('#' + this.id)
-                .append('div')
-                .attr('id', this.id)
-                .classed('chart-div', true)
-                .style('position', 'relative')
-                .style('width', this.container.width + 'px')
-                .style('height', this.container.height + 'px');
-
-    var svg = div.append('svg')
-                 .attr('width', '100%')
-                 .attr('height', '100%')
-                 .style('position', 'absolute')
-                 .style('top', '0')
-                 .style('left', '0')
-                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
-
-    svg.data(this.chart.series);
-  }
-
   get data() {
     var data = [];
     var keys = d3.map();

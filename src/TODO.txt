@@ -1,2 +1,0 @@
-
-* Add respective directories for stylesheet, javascript assets as needed.

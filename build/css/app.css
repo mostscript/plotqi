@@ -6191,7 +6191,7 @@ Interactive Layer
   fill-opacity: 100% !important;
   stroke-opacity: 100% !important;
   }
-.nvtooltip.xy-tooltip {
+.nvtooltip {
   max-width: 400px;
   overflow: hidden;
   word-wrap: break-word;
@@ -6207,17 +6207,23 @@ Interactive Layer
 .nvtooltip h3 {
   font-size: 12pt;
   }
+.chart-svg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  }
 .chart-div {
-  margin: 10px;
+  position: relative;
+  display: inline-block;
   }
-.nv-goal-lbl {
-  stroke-opacity: 0;
-  }
-.upiq-small-chart,
-.nv-goal-lbl,
-svg text {
+svg.upiq-small-chart text {
   font-family: 'silkscreennormal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 6pt;
+  }
+svg.upiq-small-chart .nv-goal-lbl {
+  stroke-opacity: 0;
   }
 /*.nv-axis text {
   font-size: 9pt;
