@@ -165,7 +165,7 @@
       "title": "% of patients screened for exposure of adverse events", 
       "legend_location": "e", 
       "height_units": "px", 
-      "width": 800, 
+      "width": 50, 
       "range_max": 100, 
       "x_axis_type": "date", 
       "auto_crop": true, 
@@ -173,7 +173,7 @@
       "name": "of-patients-screened-for-exposure-of-adverse-events-2", 
       "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-patients-screened-for-exposure-of-adverse-events-2", 
       "goal_color": "#ff0000", 
-      "width_units": "px", 
+      "width_units": "%", 
       "legend_placement": "tabular"
     }
   ], 

@@ -35,13 +35,16 @@ export function LargeChart(mschart, node) {
   }
 
   if(relative) {
-    addStylesheetRules([
-      ['#' + node.attr('id') + ':after',
-        ['content', '""'],
-        ['display', 'block'],
-        ['margin-top', (ratio * 100) + '%']
-      ]
-    ]);
+    if(ratio)
+      addStylesheetRules([
+        ['#' + node.attr('id') + ':after',
+          ['content', '""'],
+          ['display', 'block'],
+          ['margin-top', (ratio * 100) + '%']
+        ]
+      ]);
+    else
+      node.style('height', mschart.height + mschart.height_units);
   } else {
     if(!ratio)
       node.style('height', mschart.height + mschart.height_units);
