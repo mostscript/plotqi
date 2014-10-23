@@ -1,6 +1,5 @@
 import {Klass} from './classviz.es6.js';
-require: './Symbol.js';
-var dataSym = new Symbol();
+var dataSym = Symbol();
 var d3 = require('d3');
 import {
   dataPointSchema,

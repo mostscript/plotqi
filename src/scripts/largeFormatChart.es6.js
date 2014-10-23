@@ -1,5 +1,4 @@
-require: './Symbol.js';
-var privateSym = new Symbol();
+var privateSym = Symbol();
 import {
   DataPoint,
   TimeDataPoint,

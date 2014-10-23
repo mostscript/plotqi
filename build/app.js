@@ -44,12 +44,67 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var d3 = __webpack_require__(2);
-	var moment = __webpack_require__(1);
+	__webpack_require__(1);
+	var d3 = __webpack_require__(4);
+	var moment = __webpack_require__(2);
 	__webpack_require__(3);
 
 /***/ },
 /* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	if (typeof window.Symbol === 'undefined') {
+	var SortaSymbol = (function(Object){
+	 
+	// (C) WebReflection Mit Style License
+	 
+	var ObjectPrototype = Object.prototype,
+	defineProperty = Object.defineProperty,
+	prefix = '__simbol' + Math.random() + '__',
+	id = 0;
+	 
+	function get(){/*avoid set w/out get prob*/}
+	 
+	function Symbol() {
+	var __symbol__ = prefix + id++;
+	defineProperty(
+	ObjectPrototype,
+	this._ = __symbol__,
+	{
+	enumerable: false,
+	configurable: false,
+	get: get, // undefined
+	set: function (value) {
+	defineProperty(this, __symbol__, {
+	enumerable: false,
+	configurable: true,
+	writable: true,
+	value: value
+	});
+	}
+	}
+	);
+	}
+	 
+	defineProperty(Symbol.prototype, 'toString', {
+	enumerable: false,
+	configurable: false,
+	writable: false,
+	value: function toString() {
+	return this._;
+	}
+	});
+	 
+	return Symbol;
+	 
+	}(Object));
+	window.Symbol = function() {
+	  return new SortaSymbol();
+	}
+	}
+
+/***/ },
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {//! moment.js
@@ -62,7 +117,72 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 2 */
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var getObjects = __webpack_require__(5).getObjects;
+	var Chart = __webpack_require__(6).Chart;
+	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
+	var LargeChart = __webpack_require__(8).LargeChart;
+	var d3 = __webpack_require__(4);
+	var nv = __webpack_require__(12);
+	getObjects('report.json', function (charts) {
+	  console.log(charts);
+	  charts = charts.map( function(graph) {
+	    return Chart(graph);
+	  } )
+	  window.charts = charts;
+	  /* window.container = ChartContainer;
+	  window.graphs = charts.map( chart => new TimeGraph(chart) );
+	  function renderAll() {
+	    graphs.forEach(function (g) {
+	    var div = d3.select('body')
+	                .append('div')
+	                .attr('id', g.id)
+	                .classed('chart-div', true)
+	                .style('position', 'relative')
+	                .style('width', g.container.width + 'px')
+	                .style('height', g.container.height + 'px');
+
+	    var svg = div.append('svg')
+	                 .attr('width', '100%')
+	                 .attr('height', '100%')
+	                 .style('position', 'absolute')
+	                 .style('top', '0')
+	                 .style('left', '0')
+	                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
+
+	    svg.data(g.chart.series);
+	    });
+	  }
+	  renderAll();
+	  //d3.select(window).on('resize', renderAll);*/
+	  var small_div = d3.select('#small-chart-div-test_numero_dos');
+	  var lg_div = d3.select('#chart-div-test_numero_dos');
+	  /*window.nvchart = graphs[0].bindTo(svg.node());
+	  nv.addGraph( () => {
+	    var c = nvchart.prepare();
+	    d3.select('#chart-div-test_numero_dos svg')
+	      .append('text')
+	      .attr('x', 5)
+	      .attr('y', 160 - 2)
+	      .attr('text-anchor', 'left')
+	      //.style('font-size', '8pt')
+	      .style('letter-spacing', '-0.1em')
+	      //.attr('textLength', '160')
+	      //.attr('lengthAdjust', 'spacingAndGlyphs')
+	      .text(nvchart.chart.title);
+	    nvchart.goal();
+	    nvchart.legend();
+	    return c;
+	  } );*/
+	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
+	  nv.addGraph(LargeChart(charts[0], lg_div));
+	});
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -9300,72 +9420,7 @@
 	}();
 
 /***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var getObjects = __webpack_require__(4).getObjects;
-	var Chart = __webpack_require__(5).Chart;
-	var SmallMultiplesChart = __webpack_require__(6).SmallMultiplesChart;
-	var LargeChart = __webpack_require__(7).LargeChart;
-	var d3 = __webpack_require__(2);
-	var nv = __webpack_require__(12);
-	getObjects('report.json', function (charts) {
-	  console.log(charts);
-	  charts = charts.map( function(graph) {
-	    return Chart(graph);
-	  } )
-	  window.charts = charts;
-	  /* window.container = ChartContainer;
-	  window.graphs = charts.map( chart => new TimeGraph(chart) );
-	  function renderAll() {
-	    graphs.forEach(function (g) {
-	    var div = d3.select('body')
-	                .append('div')
-	                .attr('id', g.id)
-	                .classed('chart-div', true)
-	                .style('position', 'relative')
-	                .style('width', g.container.width + 'px')
-	                .style('height', g.container.height + 'px');
-
-	    var svg = div.append('svg')
-	                 .attr('width', '100%')
-	                 .attr('height', '100%')
-	                 .style('position', 'absolute')
-	                 .style('top', '0')
-	                 .style('left', '0')
-	                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
-
-	    svg.data(g.chart.series);
-	    });
-	  }
-	  renderAll();
-	  //d3.select(window).on('resize', renderAll);*/
-	  var small_div = d3.select('#small-chart-div-test_numero_dos');
-	  var lg_div = d3.select('#chart-div-test_numero_dos');
-	  /*window.nvchart = graphs[0].bindTo(svg.node());
-	  nv.addGraph( () => {
-	    var c = nvchart.prepare();
-	    d3.select('#chart-div-test_numero_dos svg')
-	      .append('text')
-	      .attr('x', 5)
-	      .attr('y', 160 - 2)
-	      .attr('text-anchor', 'left')
-	      //.style('font-size', '8pt')
-	      .style('letter-spacing', '-0.1em')
-	      //.attr('textLength', '160')
-	      //.attr('lengthAdjust', 'spacingAndGlyphs')
-	      .text(nvchart.chart.title);
-	    nvchart.goal();
-	    nvchart.legend();
-	    return c;
-	  } );*/
-	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-	  nv.addGraph(LargeChart(charts[0], lg_div));
-	});
-
-/***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9432,7 +9487,7 @@
 	  };
 	};
 
-	var moment = __webpack_require__(1);
+	var moment = __webpack_require__(2);
 
 	function getObjects(jsonFile, callback) {
 		d3.json(jsonFile, function (jsonData) {
@@ -9537,7 +9592,7 @@
 	exports.debounce = debounce;
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9609,19 +9664,18 @@
 	var $__Object$defineProperty = Object.defineProperty;
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
-	var Klass = __webpack_require__(10).Klass;
-	var __WEBPACK_LABELED_MODULE__8 = __webpack_require__(8), Symbol = __WEBPACK_LABELED_MODULE__8.Symbol;
-	var dataSym = new Symbol();
-	var d3 = __webpack_require__(2);
+	var Klass = __webpack_require__(9).Klass;
+	var dataSym = Symbol();
+	var d3 = __webpack_require__(4);
 
-	var dataPointSchema = __webpack_require__(11).dataPointSchema;
-	var timeDataPointSchema = __webpack_require__(11).timeDataPointSchema;
-	var dataSeriesSchema = __webpack_require__(11).dataSeriesSchema;
-	var timeDataSeriesSchema = __webpack_require__(11).timeDataSeriesSchema;
-	var multiSeriesChartSchema = __webpack_require__(11).multiSeriesChartSchema;
-	var timeSeriesChartSchema = __webpack_require__(11).timeSeriesChartSchema;
+	var dataPointSchema = __webpack_require__(10).dataPointSchema;
+	var timeDataPointSchema = __webpack_require__(10).timeDataPointSchema;
+	var dataSeriesSchema = __webpack_require__(10).dataSeriesSchema;
+	var timeDataSeriesSchema = __webpack_require__(10).timeDataSeriesSchema;
+	var multiSeriesChartSchema = __webpack_require__(10).multiSeriesChartSchema;
+	var timeSeriesChartSchema = __webpack_require__(10).timeSeriesChartSchema;
 
-	var moment = __webpack_require__(1);
+	var moment = __webpack_require__(2);
 
 	var DataPoint = function($__super) {
 	  "use strict";
@@ -10013,26 +10067,25 @@
 	exports.Chart = Chart;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var $__Array$prototype$slice = Array.prototype.slice;
-	var __WEBPACK_LABELED_MODULE__8 = __webpack_require__(8), Symbol = __WEBPACK_LABELED_MODULE__8.Symbol;
-	var privateSym = new Symbol();
+	var privateSym = Symbol();
 
-	var DataPoint = __webpack_require__(5).DataPoint;
-	var TimeDataPoint = __webpack_require__(5).TimeDataPoint;
-	var DataSeries = __webpack_require__(5).DataSeries;
-	var TimeDataSeries = __webpack_require__(5).TimeDataSeries;
-	var MultiSeriesChart = __webpack_require__(5).MultiSeriesChart;
-	var TimeSeriesChartSchema = __webpack_require__(5).TimeSeriesChartSchema;
+	var DataPoint = __webpack_require__(6).DataPoint;
+	var TimeDataPoint = __webpack_require__(6).TimeDataPoint;
+	var DataSeries = __webpack_require__(6).DataSeries;
+	var TimeDataSeries = __webpack_require__(6).TimeDataSeries;
+	var MultiSeriesChart = __webpack_require__(6).MultiSeriesChart;
+	var TimeSeriesChartSchema = __webpack_require__(6).TimeSeriesChartSchema;
 
-	var shapePath = __webpack_require__(9).shapePath;
-	var shapes = __webpack_require__(9).shapes;
-	var legendMarkers = __webpack_require__(9).legendMarkers;
-	var moment = __webpack_require__(1);
-	var d3 = __webpack_require__(2);
+	var shapePath = __webpack_require__(11).shapePath;
+	var shapes = __webpack_require__(11).shapes;
+	var legendMarkers = __webpack_require__(11).legendMarkers;
+	var moment = __webpack_require__(2);
+	var d3 = __webpack_require__(4);
 	var nv = __webpack_require__(12);
 
 	function SmallMultiplesChart(mschart, node, size) {
@@ -10345,26 +10398,25 @@
 	}
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var $__Array$prototype$slice = Array.prototype.slice;
-	var __WEBPACK_LABELED_MODULE__8 = __webpack_require__(8), Symbol = __WEBPACK_LABELED_MODULE__8.Symbol;
-	var privateSym = new Symbol();
+	var privateSym = Symbol();
 
-	var DataPoint = __webpack_require__(5).DataPoint;
-	var TimeDataPoint = __webpack_require__(5).TimeDataPoint;
-	var DataSeries = __webpack_require__(5).DataSeries;
-	var TimeDataSeries = __webpack_require__(5).TimeDataSeries;
-	var MultiSeriesChart = __webpack_require__(5).MultiSeriesChart;
-	var TimeSeriesChartSchema = __webpack_require__(5).TimeSeriesChartSchema;
+	var DataPoint = __webpack_require__(6).DataPoint;
+	var TimeDataPoint = __webpack_require__(6).TimeDataPoint;
+	var DataSeries = __webpack_require__(6).DataSeries;
+	var TimeDataSeries = __webpack_require__(6).TimeDataSeries;
+	var MultiSeriesChart = __webpack_require__(6).MultiSeriesChart;
+	var TimeSeriesChartSchema = __webpack_require__(6).TimeSeriesChartSchema;
 
-	var moment = __webpack_require__(1);
-	var d3 = __webpack_require__(2);
+	var moment = __webpack_require__(2);
+	var d3 = __webpack_require__(4);
 	var nv = __webpack_require__(12);
-	var addStylesheetRules = __webpack_require__(4).addStylesheetRules;
-	var debounce = __webpack_require__(4).debounce;
+	var addStylesheetRules = __webpack_require__(5).addStylesheetRules;
+	var debounce = __webpack_require__(5).debounce;
 
 	function LargeChart(mschart, node) {
 	  var $__0;
@@ -10598,10 +10650,7 @@
 	               .attr('y', -5);
 
 	      goal.transition().duration(500).attr('transform', 'translate(0,' + (Math.floor(yscale(mschart.goal)) + 0.5) + ')');
-	      console.log("Goal!!!!");
-
-	      goal.select('line').transition().duration(500)
-	          .attr('x2', xscale(mschart.domain[1].valueOf()));
+	      goal.select('line').transition().duration(500).attr('x2', xscale(mschart.domain[1].valueOf()));
 	    }
 	  }
 	}
@@ -10690,263 +10739,7 @@
 	}
 
 /***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Symbol;
-	if (!Symbol) {
-	Symbol = (function(Object){
-	 
-	// (C) WebReflection Mit Style License
-	 
-	var ObjectPrototype = Object.prototype,
-	defineProperty = Object.defineProperty,
-	prefix = '__simbol' + Math.random() + '__',
-	id = 0;
-	 
-	function get(){/*avoid set w/out get prob*/}
-	 
-	function Symbol() {
-	var __symbol__ = prefix + id++;
-	defineProperty(
-	ObjectPrototype,
-	this._ = __symbol__,
-	{
-	enumerable: false,
-	configurable: false,
-	get: get, // undefined
-	set: function (value) {
-	defineProperty(this, __symbol__, {
-	enumerable: false,
-	configurable: true,
-	writable: true,
-	value: value
-	});
-	}
-	}
-	);
-	}
-	 
-	defineProperty(Symbol.prototype, 'toString', {
-	enumerable: false,
-	configurable: false,
-	writable: false,
-	value: function toString() {
-	return this._;
-	}
-	});
-	 
-	return Symbol;
-	 
-	}(Object));
-	}
-	exports: exports["Symbol"] = Symbol;
-
-/***/ },
 /* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var $__getIteratorRange = function(iterator, index, begin, len) {
-	  if (index > begin) {
-	    throw new RangeError();
-	  }
-
-	  if (typeof len === "undefined") {
-	    len = Infinity;
-	  }
-
-	  var range = [], end = begin + len;
-
-	  while (index < end) {
-	    var next = iterator.next();
-
-	    if (next.done) {
-	      break;
-	    }
-
-	    if (index >= begin) {
-	      range.push(next.value);
-	    }
-
-	    index++;
-	  }
-
-	  return {
-	    range: range,
-	    index: index
-	  };
-	};
-
-	var $__getIterator = function(iterable) {
-	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
-
-	  if (typeof iterable[sym] === "function") {
-	    return iterable[sym]();
-	  } else if (typeof iterable === "object" || typeof iterable === "function") {
-	    return $__getArrayIterator(iterable);
-	  } else {
-	    throw new TypeError();
-	  }
-	};
-
-	var $__getArrayIterator = function(array) {
-	  var index = 0;
-
-	  return {
-	    next: function() {
-	      if (index < array.length) {
-	        return {
-	          done: false,
-	          value: array[index++]
-	        };
-	      } else {
-	        return {
-	          done: true,
-	          value: void 0
-	        };
-	      }
-	    }
-	  };
-	};
-
-	function shapePath(node) {
-	  var spec = (arguments[1] !== void 0 ? arguments[1] : shapes.square);
-	  var size = (arguments[2] !== void 0 ? arguments[2] : 3);
-	  var d = "";
-	  var normalizer = spec.normalizer || 1;
-	  var multiplier = size * normalizer;
-
-	  spec.path.forEach(function () {
-	    var $__arguments0 = arguments;
-	    var $__arguments = $__arguments0;
-
-	    var var$0 = $__arguments[0],
-	        iterator$0 = $__getIterator(var$0),
-	        iteratorValue$0 = {
-	          index: 0
-	        },
-	        cmd = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]),
-	        args = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, Infinity), iteratorValue$0.range);
-
-	    d += cmd;
-
-	    args.forEach(function (arg, i) {
-	      if(i !== 0)
-	        d += ' ';
-	      if(arg.length)
-	        arg.forEach(function (sub_arg, sub_i) {
-	          if(arg)
-	          if(sub_i === 0){
-	                if(String(arg).indexOf('#') === -1)
-	              d += (multiplier * sub_arg);
-	            else
-	              d += sub_arg.slice(1);
-	          } else {
-	            if(String(arg).indexOf('#') === -1)
-	              d += "," + (multiplier * sub_arg);
-	            else
-	              d += "," + arg.slice(1);
-	          }
-	        });
-	      else {
-	        if(String(arg).indexOf('#') === -1)
-	          d += (multiplier * arg);
-	        else
-	          d += arg.slice(1);
-	      }
-	    });
-	  });
-
-	  console.log(d);
-
-	  node.attr('d', d)
-	      .classed('smooth-shape', spec.smooth ? true : false)
-	      .classed('crisp-shape', spec.smooth ? false : true);
-	}
-
-	exports.shapePath = shapePath;function legendMarkers (selection, size) {
-	  size = size || 4;
-	  selection.each(function (d, i) {
-	    var sel = d3.select(this);
-	    var shape_name = d.marker_style || 'square';
-	    if(shape_name === 'cross') shape_name = 'legend_cross';
-	    var shape = shapes[shape_name] || shapes.square;
-	    sel.call(shapePath, shape, size)
-	  });
-	}
-
-	exports.legendMarkers = legendMarkers;var shapes = {
-	  square: {
-	    normalizer: 1 /2,
-	    path: [
-	      ['m', -1, -1],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['z']
-	    ]
-	  },
-	  diamond: {
-	    normalizer: 1 / 2,
-	    path: [
-	      ['m', -1, 0],
-	      ['l', 1, -1],
-	      ['l', 1, 1],
-	      ['l', -1, 1],
-	      ['z']
-	    ]
-	  },
-	  cross: {
-	    normalizer: 1 / 6,
-	    path: [
-	      ['m', -1, -1],
-	      ['v', -2],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['v', -2],
-	      ['h', -2],
-	      ['v', -2],
-	      ['z']
-	    ]
-	  },
-	  legend_cross: {
-	    normalizer: 1 / 4,
-	    path: [
-	      ['m', -1, -1],
-	      ['v', -1],
-	      ['h', 2],
-	      ['v', 1],
-	      ['h', 1],
-	      ['v', 2],
-	      ['h', -1],
-	      ['v', 1],
-	      ['h', -2],
-	      ['v', -1],
-	      ['h', -1],
-	      ['v', -2],
-	      ['z']
-	    ]
-	  },
-	  circle: {
-	    normalizer: 1 / 2,
-	    path: [
-	      ['m', -1, 0],
-	      ['a', [1, 1], [0], ['#1',0], [2,0]],
-	      ['a', [1, 1], [0], ['#1',0], [-2,0]]
-	    ],
-	    smooth: true
-	  }
-	}
-	exports.shapes = shapes;
-
-/***/ },
-/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10955,7 +10748,7 @@
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
 	var $__Object$defineProperties = Object.defineProperties;
 	'use strict';
-	var moment = __webpack_require__(1);
+	var moment = __webpack_require__(2);
 
 	var Schema = function() {
 	  "use strict";
@@ -11099,18 +10892,18 @@
 	exports.Klass = Klass;
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var $__Object$defineProperty = Object.defineProperty;
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
-	var Schema = __webpack_require__(10).Schema;
-	var schematize = __webpack_require__(10).schematize;
-	var ValidationError = __webpack_require__(10).ValidationError;
-	var ValidationTypeError = __webpack_require__(10).ValidationTypeError;
-	var moment = __webpack_require__(1);
+	var Schema = __webpack_require__(9).Schema;
+	var schematize = __webpack_require__(9).schematize;
+	var ValidationError = __webpack_require__(9).ValidationError;
+	var ValidationTypeError = __webpack_require__(9).ValidationTypeError;
+	var moment = __webpack_require__(2);
 
 	function dateTypeConstraint(value) {
 	  var m = moment(value);
@@ -11793,11 +11586,214 @@
 	exports.timeSeriesChartSchema = timeSeriesChartSchema;
 
 /***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var $__getIteratorRange = function(iterator, index, begin, len) {
+	  if (index > begin) {
+	    throw new RangeError();
+	  }
+
+	  if (typeof len === "undefined") {
+	    len = Infinity;
+	  }
+
+	  var range = [], end = begin + len;
+
+	  while (index < end) {
+	    var next = iterator.next();
+
+	    if (next.done) {
+	      break;
+	    }
+
+	    if (index >= begin) {
+	      range.push(next.value);
+	    }
+
+	    index++;
+	  }
+
+	  return {
+	    range: range,
+	    index: index
+	  };
+	};
+
+	var $__getIterator = function(iterable) {
+	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+
+	  if (typeof iterable[sym] === "function") {
+	    return iterable[sym]();
+	  } else if (typeof iterable === "object" || typeof iterable === "function") {
+	    return $__getArrayIterator(iterable);
+	  } else {
+	    throw new TypeError();
+	  }
+	};
+
+	var $__getArrayIterator = function(array) {
+	  var index = 0;
+
+	  return {
+	    next: function() {
+	      if (index < array.length) {
+	        return {
+	          done: false,
+	          value: array[index++]
+	        };
+	      } else {
+	        return {
+	          done: true,
+	          value: void 0
+	        };
+	      }
+	    }
+	  };
+	};
+
+	function shapePath(node) {
+	  var spec = (arguments[1] !== void 0 ? arguments[1] : shapes.square);
+	  var size = (arguments[2] !== void 0 ? arguments[2] : 3);
+	  var d = "";
+	  var normalizer = spec.normalizer || 1;
+	  var multiplier = size * normalizer;
+
+	  spec.path.forEach(function () {
+	    var $__arguments0 = arguments;
+	    var $__arguments = $__arguments0;
+
+	    var var$0 = $__arguments[0],
+	        iterator$0 = $__getIterator(var$0),
+	        iteratorValue$0 = {
+	          index: 0
+	        },
+	        cmd = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]),
+	        args = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, Infinity), iteratorValue$0.range);
+
+	    d += cmd;
+
+	    args.forEach(function (arg, i) {
+	      if(i !== 0)
+	        d += ' ';
+	      if(arg.length)
+	        arg.forEach(function (sub_arg, sub_i) {
+	          if(arg)
+	          if(sub_i === 0){
+	                if(String(arg).indexOf('#') === -1)
+	              d += (multiplier * sub_arg);
+	            else
+	              d += sub_arg.slice(1);
+	          } else {
+	            if(String(arg).indexOf('#') === -1)
+	              d += "," + (multiplier * sub_arg);
+	            else
+	              d += "," + arg.slice(1);
+	          }
+	        });
+	      else {
+	        if(String(arg).indexOf('#') === -1)
+	          d += (multiplier * arg);
+	        else
+	          d += arg.slice(1);
+	      }
+	    });
+	  });
+
+	  console.log(d);
+
+	  node.attr('d', d)
+	      .classed('smooth-shape', spec.smooth ? true : false)
+	      .classed('crisp-shape', spec.smooth ? false : true);
+	}
+
+	exports.shapePath = shapePath;function legendMarkers (selection, size) {
+	  size = size || 4;
+	  selection.each(function (d, i) {
+	    var sel = d3.select(this);
+	    var shape_name = d.marker_style || 'square';
+	    if(shape_name === 'cross') shape_name = 'legend_cross';
+	    var shape = shapes[shape_name] || shapes.square;
+	    sel.call(shapePath, shape, size)
+	  });
+	}
+
+	exports.legendMarkers = legendMarkers;var shapes = {
+	  square: {
+	    normalizer: 1 /2,
+	    path: [
+	      ['m', -1, -1],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['z']
+	    ]
+	  },
+	  diamond: {
+	    normalizer: 1 / 2,
+	    path: [
+	      ['m', -1, 0],
+	      ['l', 1, -1],
+	      ['l', 1, 1],
+	      ['l', -1, 1],
+	      ['z']
+	    ]
+	  },
+	  cross: {
+	    normalizer: 1 / 6,
+	    path: [
+	      ['m', -1, -1],
+	      ['v', -2],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['v', -2],
+	      ['h', -2],
+	      ['v', -2],
+	      ['z']
+	    ]
+	  },
+	  legend_cross: {
+	    normalizer: 1 / 4,
+	    path: [
+	      ['m', -1, -1],
+	      ['v', -1],
+	      ['h', 2],
+	      ['v', 1],
+	      ['h', 1],
+	      ['v', 2],
+	      ['h', -1],
+	      ['v', 1],
+	      ['h', -2],
+	      ['v', -1],
+	      ['h', -1],
+	      ['v', -2],
+	      ['z']
+	    ]
+	  },
+	  circle: {
+	    normalizer: 1 / 2,
+	    path: [
+	      ['m', -1, 0],
+	      ['a', [1, 1], [0], ['#1',0], [2,0]],
+	      ['a', [1, 1], [0], ['#1',0], [-2,0]]
+	    ],
+	    smooth: true
+	  }
+	}
+	exports.shapes = shapes;
+
+/***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
-	var d3 = __webpack_require__(2);
+	var d3 = __webpack_require__(4);
 
 	(function(){
 

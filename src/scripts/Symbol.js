@@ -1,6 +1,5 @@
-var Symbol;
-if (!Symbol) {
-SortaSymbol = (function(Object){
+if (typeof window.Symbol === 'undefined') {
+var SortaSymbol = (function(Object){
  
 // (C) WebReflection Mit Style License
  
@@ -44,5 +43,7 @@ return this._;
 return Symbol;
  
 }(Object));
+window.Symbol = function() {
+  return new SortaSymbol();
 }
-exports: Symbol;
+}
