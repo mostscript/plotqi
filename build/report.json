@@ -19,6 +19,25 @@
           "display_format": "%.1f", 
           "data": [
             [
+              "2014-02-01T00:00:00", 
+              {
+                "note": "10 of 10 records -- We are doing a prescreen for family stressors. We are in the process of developing a screening tool if they prescreen was positive for toxic stress.", 
+                "uri": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/chart-review/may-2014", 
+                "value": 45.0, 
+                "key": "2014-02-01T00:00:00", 
+                "title": "2014-02-01"
+              }
+            ],
+            [
+              "2014-03-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 92.53, 
+                "key": "2014-03-01T00:00:00", 
+                "title": "2014-03-01"
+              }
+            ],
+            [
               "2014-05-01T00:00:00", 
               {
                 "note": "10 of 10 records -- We are doing a prescreen for family stressors. We are in the process of developing a screening tool if they prescreen was positive for toxic stress.", 
@@ -99,6 +118,15 @@
           "display_format": "%.1f", 
           "data": [
             [
+              "2013-11-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 24.55555, 
+                "key": "2013-11-01T00:00:00", 
+                "title": "2013-11-01"
+              }
+            ],
+            [
               "2014-04-01T00:00:00", 
               {
                 "note": "Average of 8 values found.", 
@@ -169,12 +197,14 @@
       "range_max": 100, 
       "x_axis_type": "date", 
       "auto_crop": true, 
-      "start": "2014-04-01T00:00:00", 
       "name": "of-patients-screened-for-exposure-of-adverse-events-2", 
       "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-patients-screened-for-exposure-of-adverse-events-2", 
       "goal_color": "#ff0000", 
       "width_units": "%", 
-      "legend_placement": "tabular"
+      "legend_placement": "tabular",
+      "aspect_ratio": [2, 1],
+      "x_label": "Months",
+      "y_label": "% of Patients"
     }
   ], 
   [

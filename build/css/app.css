@@ -6191,6 +6191,10 @@ Interactive Layer
   fill-opacity: 100% !important;
   stroke-opacity: 100% !important;
   }
+svg text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #484848;
+  }
 .nvtooltip {
   max-width: 400px;
   overflow: hidden;
@@ -6222,8 +6226,25 @@ svg.upiq-small-chart text {
   font-family: 'silkscreennormal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 6pt;
   }
-svg.upiq-small-chart .nv-goal-lbl {
+svg.upiq-chart .series-dashed {
+  stroke-dasharray: 5 5;
+  }
+svg.upiq-chart .nv-title {
+  font-size: 14pt;
+  font-weight: bold;
+  }
+.nv-goal-lbl {
   stroke-opacity: 0;
+  }
+.nv-dist.nv-goal {
+  stroke: currentColor;
+  fill: currentColor;
+  }
+.smooth-shape {
+  shape-rendering: auto;
+  }
+.crisp-shape {
+  shape-rendering: crispEdges;
   }
 /*.nv-axis text {
   font-size: 9pt;

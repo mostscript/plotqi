@@ -4,6 +4,11 @@
   stroke-opacity: 100% !important;
 }
 
+svg text {
+  color: #484848;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 .nvtooltip {
   max-width: 400px;
   word-wrap: break-word;
@@ -39,9 +44,32 @@ svg.upiq-small-chart {
     font-family: 'silkscreennormal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 6pt;
   }
-  .nv-goal-lbl {
-    stroke-opacity: 0;
+}
+
+svg.upiq-chart {
+  .series-dashed {
+    stroke-dasharray: 5 5;
   }
+  .nv-title{
+    font-size: 14pt;
+    font-weight: bold;
+  }
+}
+
+.nv-goal-lbl {
+    stroke-opacity: 0;
+}
+.nv-dist.nv-goal {
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.smooth-shape {
+  shape-rendering: auto;
+}
+
+.crisp-shape {
+  shape-rendering: crispEdges;
 }
 
 /*.nv-axis text {

@@ -1,6 +1,6 @@
 var Symbol;
 if (!Symbol) {
-Symbol = (function(Object){
+SortaSymbol = (function(Object){
  
 // (C) WebReflection Mit Style License
  

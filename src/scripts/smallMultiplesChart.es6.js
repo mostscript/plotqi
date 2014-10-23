@@ -8,10 +8,10 @@ import {
   MultiSeriesChart,
   TimeSeriesChartSchema
 } from './chartviz';
+import {shapePath, shapes, legendMarkers} from './shapes';
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
-import {extractData, calcDomain} from './init'
 
 export function SmallMultiplesChart(mschart, node, size) {
   node = node || d3.select('body').append('div').attr('id', 'small-chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
@@ -25,7 +25,7 @@ export function SmallMultiplesChart(mschart, node, size) {
              .attr('class', 'upiq-small-chart chart-svg');
   var margins = {top: 10, bottom: 50, left: 25, right: 30};
   var data = extractData(mschart);
-  var domain = calcDomain(mschart);
+  var domain = croppedDomain(mschart);
   var tick_domain = domain.slice();
   tick_domain[1] = d3.time.month.offset(domain[1], 1);
   var tickVals = d3.time.months(...tick_domain).map( month => month.valueOf() );
@@ -38,13 +38,14 @@ export function SmallMultiplesChart(mschart, node, size) {
     var chart = nv.models.lineChart()
                   .id('small-' + mschart.uid)
                   .showLegend(false)
+                  .useInteractiveGuideline(false)
                   .margin(margins)
                   .transitionDuration(500)
                   .tooltipContent(function(seriesName, x, y, graph) {
                     return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
                     + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
                   })
-                  chart.lines.scatter.onlyCircles(false);
+                  chart.lines.scatter.onlyCircles(false).useVoronoi(false);
 
     chart.xAxis
          .tickFormat( d => d3.time.format('%B')(new Date(d))[0] )
@@ -67,7 +68,8 @@ export function SmallMultiplesChart(mschart, node, size) {
     node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group').filter( d => d.dashed )
         .style('stroke-dasharray', '3 3');
     node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( d => d.dashed )
-        .attr('visibility', 'hidden');
+        .attr('visibility', 'hidden')
+        .remove();
 
     //Fix Axis Ticks
     node.selectAll('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))')
@@ -103,15 +105,14 @@ export function SmallMultiplesChart(mschart, node, size) {
                      .enter().append('g');
 
     //Graph Legend
-    legend.append('circle')
+    legend.append('path')
           .attr('class', 'nv-legendpt nv-point')
-          .attr('cx', 5 )
-          .attr('cy', (d, i) => i * 12 )
-          .attr('r', 4)
+          .attr('transform', (d, i) => 'translate(5.5,' + (i * 11) + ')')
           .style('stroke', d => d.color )
           .style('stroke-opacity', 1)
           .style('fill', d => d.color )
-          .style('fill-opacity', 0.5);
+          .style('fill-opacity', 0.5)
+          .call(legendMarkers, 8);
     legend.append('text')
           .attr('class', 'nv-goal-lbl')
           .attr('text-anchor', 'start')
@@ -128,23 +129,21 @@ export function SmallMultiplesChart(mschart, node, size) {
                      .selectAll('line.nv-goal')
                      .data([mschart.goal])
                      .enter().append('g')
-                     .attr('class', 'nv-dist nv-goal');
+                     .attr('class', 'nv-dist nv-goal')
+                     .attr('transform',
+                      'translate(0,' + Math.floor(yscale(mschart.goal)) + ')')
+                     .style('color', mschart.goal_color);
       goal.append('line')
           .attr('class', 'nv-goal-line')
-          .attr('x1', xscale(domain[0].valueOf()))
-          .attr('x2', xscale(domain[1].valueOf()))
-          .attr('y1', Math.floor(yscale(mschart.goal)) )
-          .attr('y2', Math.floor(yscale(mschart.goal)) )
-          .style('stroke', mschart.goal_color);
+          .attr('x2', xscale(domain[1].valueOf()));
       goal.append('text')
           .attr('class', 'nv-goal-lbl')
           .attr('text-anchor', 'start')
-          .attr('x', xscale(domain[1].valueOf()) + 3)
-          .attr('y', Math.floor(yscale(mschart.goal)) + 2)
+          .attr('x', xscale(domain[1].valueOf()) + 2)
+          .attr('y', 2)
           //.attr('textLength', margins.right - 3)
           //.attr('lengthAdjust', 'spacingAndGlyphs')
-          .text(mschart.goal + ' (G)')
-          .style('fill', mschart.goal_color);
+          .text(mschart.goal + ' (G)');
     }
 
     //Year Labels
@@ -195,4 +194,94 @@ export function SmallMultiplesChart(mschart, node, size) {
     console.log(chart);
     return chart;
   };
+}
+
+export function croppedDomain(mschart) {
+  var domain = mschart.domain;
+  if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
+    domain[0] = d3.time.month.offset(domain[1], -12)
+  }
+  return domain;
+}
+
+function preprocessData(mschart) {
+  var data = [];
+  var domain = croppedDomain(mschart);
+  domain[1] = d3.time.month.offset(domain[1], 2);
+  var keys = d3.time.month.range(...domain);
+  var chart_series = mschart.series;
+  if(chart_series.length > 2) chart_series = chart_series.slice(-2);
+  chart_series.forEach(function (series, index) {
+    var obj = {
+      key: series.title,
+      color: series.color,
+      values: [],
+      format: d3.format(series.display_format),
+    };
+
+    keys.forEach(function (key) {
+      var datapoint = series.data.get(key);
+      if(series.data.has(key))
+        obj.values.push({
+          x: moment(datapoint.key).valueOf(),
+          y: datapoint.value,
+          size: series.marker_size,
+          shape: series.marker_style,
+          note: datapoint.note,
+          title: datapoint.title
+          });
+      else
+        obj.values.push({
+          x: moment(new Date(key)).valueOf(),
+          missing: true
+        });
+    });
+    data.push(obj);
+  });
+  return data;
+}
+
+function extractData(mschart) {
+  var data = [];
+  var oldData = preprocessData(mschart);
+  oldData.forEach(function (series, i) {
+    var poly_set = [];
+    var poly_line, prev_pt = {missing: true};
+    series.values.forEach(function (pt, i) {
+      if(!pt.missing) {
+        if(!poly_line) {
+          poly_line = [];
+          prev_pt = pt;
+        }
+         if(!prev_pt.missing) {
+          poly_line.push(pt);
+        } else {
+          poly_line.push(pt);
+          poly_set.push(poly_line);
+          poly_line = [ pt ];
+        }
+        if(i === (series.values.length)) {
+          poly_set.push(poly_line);
+        }
+      }
+      if(pt.missing) {
+         if(!prev_pt.missing) {
+          poly_set.push(poly_line);
+          poly_line = [ prev_pt ];
+        }
+      }
+      prev_pt = pt;
+    });
+
+    poly_set.forEach(function (poly_line, i) {
+      data.push({
+        key: series.key + '::' + i,
+        color: series.color,
+        values: poly_line,
+        format: series.format,
+        dashed: i % 2 == 1
+      });
+    });
+  });
+  return data;
 }
