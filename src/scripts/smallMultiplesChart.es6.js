@@ -38,6 +38,8 @@ export function SmallMultiplesChart(mschart, node, size) {
                   .id('small-' + mschart.uid)
                   .showLegend(false)
                   .useInteractiveGuideline(false)
+                  .interactive(false)
+                  .tooltips(false)
                   .margin(margins)
                   .transitionDuration(500)
                   .tooltipContent(function(seriesName, x, y, graph) {
@@ -94,6 +96,7 @@ export function SmallMultiplesChart(mschart, node, size) {
         .attr('y', height - 2)
         .text(mschart.title);
 
+    //Legend
     var legend = node.append('g')
                      .attr('class', 'nvd3 nv-legend')
                      .attr('transform', 'translate(' + 5 + ',' + (height - 30) + ')')
@@ -102,8 +105,6 @@ export function SmallMultiplesChart(mschart, node, size) {
                      .selectAll('circle.legend-pt.nv-point')
                      .data(mschart.series.slice(0, 2))
                      .enter().append('g');
-
-    //Graph Legend
     legend.append('path')
           .attr('class', 'nv-legendpt nv-point')
           .attr('transform', (d, i) => 'translate(5.5,' + (i * 11) + ')')

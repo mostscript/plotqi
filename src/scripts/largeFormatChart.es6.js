@@ -10,7 +10,7 @@ import {
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
-import {addStylesheetRules, debounce} from './init';
+import {addStylesheetRules, debounce, d3textWrap} from './init';
 
 export function LargeChart(mschart, node) {
   node = node || d3.select('body').append('div').attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
@@ -54,7 +54,7 @@ export function LargeChart(mschart, node) {
   node = node.append('svg')
              .attr('class', 'upiq-chart chart-svg');
 
-  var margins = {top: 30, bottom: 80, left: 40, right: 10};
+  var margins = {top: 30, bottom: 75, left: 40, right: 120};
   var data = extractData(mschart);
   var domain = mschart.domain;
   var tick_domain = domain.slice();
@@ -151,48 +151,7 @@ export function LargeChart(mschart, node) {
                      .attr('class', 'nv-leg')
                      .selectAll('circle.legend-pt.nv-point')
                      .data(mschart.series.slice(0, 2))
-                     .enter().append('g');
-
-    //Graph Legend
-    legend.append('circle')
-          .attr('class', 'nv-legendpt nv-point')
-          .attr('cx', 5 )
-          .attr('cy', (d, i) => i * 12 )
-          .attr('r', 4)
-          .style('stroke', d => d.color )
-          .style('stroke-opacity', 1)
-          .style('fill', d => d.color )
-          .style('fill-opacity', 0.5);
-    legend.append('text')
-          .attr('class', 'nv-goal-lbl')
-          .attr('text-anchor', 'start')
-          .attr('x', 15)
-          .attr('y', (d, i) => (i * 12) + 3 )
-          .attr('dy', '0.1em')
-          .text( d => d.title );
-
-    //Zebra striped background
-    var tickDiff = xscale(tickVals[1]) - xscale(tickVals[0]);
-    var bg = node.select('.nv-background')
-                 .selectAll('rect.nv-zebra')
-                 .data(tickVals)
-                 .enter().append('rect')
-                 .attr('y', 0)
-                 .attr('x', d => xscale(d))
-                 .attr('height', yscale(mschart.range[0]))
-                 .attr('width', tickDiff)
-                 .attr('visibility', (d, i) => i !== (tickVals.length - 1) ? 'visible' : 'hidden' )
-                 .style('fill', d => new Date(d).getFullYear() === domain[0].getFullYear() ? '#E6F0FF' : '#FFEBF5' )
-                 .style('opacity', (d, i) => i % 2 === 0 ? 0.55 : 1.0 );
-
-    /*chart.dispatch.on('changeState.fix_axes', function (e) {
-      node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
-        .attr('y1', 0.5)
-        .attr('y2', 0.5);
-    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
-        .attr('y1', -0.5)
-        .attr('y2', -0.5);
-    });*/
+                     .enter().append('g');*/
     render(mschart, node, margins).call(chart);
     console.log(chart);
     if(relative)
@@ -210,11 +169,18 @@ function render(mschart, node, margins) {
 
     var yscale = this.yScale();
     var xscale = this.xScale();
+    var xMax = xscale(mschart.domain[1].valueOf());
+    var yMax = yscale(mschart.range[1]);
+    var yMin = yscale(mschart.range[0]);
+    var yRange = yMin - yMax;
+    var chartHeight = node.node().getBoundingClientRect().height;
+
     //Goal Line
     if(mschart.goal) {
-      var distWrap = node.selectAll('g.nv-distribution')
-                         .data([mschart.goal]);
-      distWrap.enter().append('g').attr('class', 'nvd3 nv-distribution').attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
+      var distWrap = node.selectAll('g.nv-distribution').data([mschart.goal]);
+      distWrap.enter().append('g')
+                      .attr('class', 'nvd3 nv-distribution')
+                      .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
 
       var goal = distWrap.selectAll('g.nv-dist.nv-goal').data([mschart.goal]);
       var goalEnter = goal.enter().append('g')
@@ -230,7 +196,48 @@ function render(mschart, node, margins) {
                .attr('y', -5);
 
       goal.transition().duration(500).attr('transform', 'translate(0,' + (Math.floor(yscale(mschart.goal)) + 0.5) + ')');
-      goal.select('line').transition().duration(500).attr('x2', xscale(mschart.domain[1].valueOf()));
+      goal.select('line').transition().duration(500).attr('x2', xMax);
+
+      //Legend
+      if(mschart.series.length > 1) {
+        var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;;
+        var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
+        var legWrapEnter = legWrap.enter().append('g')
+                                   .attr('class', 'nvd3 nv-legend')
+                                   .attr('transform', 'translate(' + (xMax + margins.left) + ',' + margins.top + ')');
+
+        var legend = legWrap.selectAll('g.nv-leg-entry').data(mschart.series);
+        var legEnter = legend.enter().append('g')
+                                     .attr('class', 'nv-leg-entry');
+        var dy = legPadding * 2;
+        legEnter.each(function (d, i) {
+          var el = d3.select(this);
+          el.attr('transform', 'translate(' + (2 * legPadding) +  ',' + dy + ')');
+          el.append('text')
+            .text(d.title)
+            .attr('y', markerWidth)
+            .attr('transform', 'translate(' + (legPadding + markerWidth) + ',0)')
+            .call(d3textWrap, legWidth - markerWidth - (2 * legPadding), 0);
+          dy += this.getBoundingClientRect().height + 10;
+          el.append('rect')
+              .attr('x', 0)
+              .attr('y', 0)
+              .attr('width', 10)
+              .attr('height', 10)
+              .style('fill', (d, i) => d.color )
+              .style('stroke', (d, i) => d.color )
+              .style('fill-opacity', 0.5 );
+        });
+        var legHeight = legWrap.node().getBoundingClientRect().height + 15;
+
+        /*legWrapEnter.append('rect')
+                    .attr('x', legPadding)
+                    .attr('height', legHeight)
+                    .attr('width', legWidth)
+                    .attr('stroke', 'lightblue')
+                    .attr('fill-opacity', 0.05);*/
+        legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (((chartHeight - margins.top) / 2) - (legHeight / 2)) + ')')
+      }
     }
   }
 }

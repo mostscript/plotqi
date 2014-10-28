@@ -1,12 +1,20 @@
 @import './nv.d3.less';
-.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
-  fill-opacity: 100% !important;
-  stroke-opacity: 100% !important;
-}
 
 svg text {
   color: #484848;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  fill: currentColor;
+}
+html {
+  pointer-events: none;
+}
+body * {
+  pointer-events: auto;
+}
+
+.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
+  //fill-opacity: 100% !important;
+  //stroke-opacity: 100% !important;
 }
 
 .nvtooltip {
@@ -44,6 +52,9 @@ svg.upiq-small-chart {
     font-family: 'silkscreennormal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 6pt;
   }
+  .nv-year-lbl {
+    fill: #777;
+  }
 }
 
 svg.upiq-chart {
@@ -56,12 +67,17 @@ svg.upiq-chart {
   }
 }
 
-.nv-goal-lbl {
-    stroke-opacity: 0;
-}
 .nv-dist.nv-goal {
   stroke: currentColor;
   fill: currentColor;
+  line {
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+  }
+  text {
+    stroke-opacity: 0;
+    color: inherit;
+  }
 }
 
 .smooth-shape {
@@ -92,8 +108,3 @@ svg.upiq-chart {
 }
 
 .nv-axisMaxMin {}
-
-.nv-goal-line {
-  stroke-width: 1px;
-  shape-rendering: crispEdges;
-}
