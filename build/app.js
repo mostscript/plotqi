@@ -10500,9 +10500,11 @@
 	function LargeChart(mschart, node) {
 	  var $__0;
 	  node = node || d3.select('body').append('div').attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
+	  var parentNode = node;
 
-	  node.classed('chart-div', true)
-	      .style("width", mschart.width + mschart.width_units);
+	  node = parentNode.append('div')
+	             .classed('chart-div', true)
+	             .style("width", mschart.width + mschart.width_units);
 
 	  var relative = (mschart.width_units == '%');
 	  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : undefined;
@@ -10524,7 +10526,7 @@
 	  if(relative) {
 	    if(ratio)
 	      addStylesheetRules([
-	        ['#' + node.attr('id') + ':after',
+	        ['#' + parentNode.attr('id') + ' .chart-div:after',
 	          ['content', '""'],
 	          ['display', 'block'],
 	          ['margin-top', (ratio * 100) + '%']
@@ -10542,7 +10544,7 @@
 	  node = node.append('svg')
 	             .attr('class', 'upiq-chart chart-svg');
 
-	  var margins = {top: 30, bottom: 75, left: 40, right: 120};
+	  var margins = {top: 5, bottom: 75, left: 40, right: 120};
 	  var data = extractData(mschart);
 	  var domain = mschart.domain;
 	  var tick_domain = domain.slice();
@@ -10615,13 +10617,9 @@
 
 	    //Graph Title
 	    if(mschart.title) {
-	      node.append('g')
-	          .attr('class', 'nvd3 nv-chart-title')
-	          .append('text')
-	          .attr('class', 'nv-title')
-	          .attr('x', 10)
-	          .attr('y', 15)
-	          .text(mschart.title);
+	      parentNode.insert('h4', 'div.chart-div')
+	                .attr('class', 'chart-title')
+	                .text(mschart.title);
 	    }
 
 	    /*//Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
@@ -10733,13 +10731,15 @@
 	        });
 	        var legHeight = legWrap.node().getBoundingClientRect().height + 15;
 
-	        /*legWrapEnter.append('rect')
+	        legWrapEnter.append('rect')
 	                    .attr('x', legPadding)
 	                    .attr('height', legHeight)
 	                    .attr('width', legWidth)
-	                    .attr('stroke', 'lightblue')
-	                    .attr('fill-opacity', 0.05);*/
-	        legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (((chartHeight - margins.top) / 2) - (legHeight / 2)) + ')')
+	                    .attr('stroke', 'black')
+	                    .attr('stroke-opacity', 0.5)
+	                    .attr('stroke-width', 1)
+	                    .attr('fill-opacity', 0);
+	        legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (margins.top + (yRange / 2) - (legHeight / 2)) + ')')
 	      }
 	    }
 	  }
