@@ -191,6 +191,7 @@
       "chart_type": "line", 
       "goal": 80.0, 
       "title": "% of patients screened for exposure of adverse events", 
+      "description": "The number of patients per 100 who were screened for a possible exposure to adverse circumstances",
       "legend_location": "e", 
       "height_units": "px", 
       "width": 50, 

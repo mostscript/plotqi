@@ -80,7 +80,7 @@ export function LargeChart(mschart, node) {
                     return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
                     + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
                   })
-                  chart.lines.scatter.onlyCircles(false).useVoronoi(false);
+                  //chart.lines.scatter.onlyCircles(false).useVoronoi(false);
 
     chart.xAxis
          .tickFormat( d => d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) )
@@ -107,6 +107,11 @@ export function LargeChart(mschart, node) {
     var yscale = chart.yScale();
     var xscale = chart.xScale();
 
+    var distNode = node.append('g')
+                       .attr('class', 'nvd3 nv-distribution')
+                       .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')')
+                       .node();
+
     //Dashed lines for all missing areas
     node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group').filter( d => d.dashed )
         .style('stroke-dasharray', '5 5');
@@ -123,6 +128,11 @@ export function LargeChart(mschart, node) {
       parentNode.insert('h4', 'div.chart-div')
                 .attr('class', 'chart-title')
                 .text(mschart.title);
+                if(mschart.description) {
+                  parentNode.insert('p', 'div.chart-div')
+                            .attr('class', 'chart-desc')
+                            .text(mschart.description);
+                }
     }
 
     /*//Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries

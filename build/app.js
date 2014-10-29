@@ -45,9 +45,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 	var moment = __webpack_require__(2);
-	__webpack_require__(3);
+	__webpack_require__(4);
 
 /***/ },
 /* 1 */
@@ -118,71 +118,6 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var getObjects = __webpack_require__(5).getObjects;
-	var Chart = __webpack_require__(6).Chart;
-	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
-	var LargeChart = __webpack_require__(8).LargeChart;
-	var d3 = __webpack_require__(4);
-	var nv = __webpack_require__(12);
-	getObjects('report.json', function (charts) {
-	  console.log(charts);
-	  charts = charts.map( function(graph) {
-	    return Chart(graph);
-	  } )
-	  window.charts = charts;
-	  /* window.container = ChartContainer;
-	  window.graphs = charts.map( chart => new TimeGraph(chart) );
-	  function renderAll() {
-	    graphs.forEach(function (g) {
-	    var div = d3.select('body')
-	                .append('div')
-	                .attr('id', g.id)
-	                .classed('chart-div', true)
-	                .style('position', 'relative')
-	                .style('width', g.container.width + 'px')
-	                .style('height', g.container.height + 'px');
-
-	    var svg = div.append('svg')
-	                 .attr('width', '100%')
-	                 .attr('height', '100%')
-	                 .style('position', 'absolute')
-	                 .style('top', '0')
-	                 .style('left', '0')
-	                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
-
-	    svg.data(g.chart.series);
-	    });
-	  }
-	  renderAll();
-	  //d3.select(window).on('resize', renderAll);*/
-	  var small_div = d3.select('#small-chart-div-test_numero_dos');
-	  var lg_div = d3.select('#chart-div-test_numero_dos');
-	  /*window.nvchart = graphs[0].bindTo(svg.node());
-	  nv.addGraph( () => {
-	    var c = nvchart.prepare();
-	    d3.select('#chart-div-test_numero_dos svg')
-	      .append('text')
-	      .attr('x', 5)
-	      .attr('y', 160 - 2)
-	      .attr('text-anchor', 'left')
-	      //.style('font-size', '8pt')
-	      .style('letter-spacing', '-0.1em')
-	      //.attr('textLength', '160')
-	      //.attr('lengthAdjust', 'spacingAndGlyphs')
-	      .text(nvchart.chart.title);
-	    nvchart.goal();
-	    nvchart.legend();
-	    return c;
-	  } );*/
-	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-	  nv.addGraph(LargeChart(charts[0], lg_div));
-	});
-
-/***/ },
-/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -9420,6 +9355,71 @@
 	}();
 
 /***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var getObjects = __webpack_require__(5).getObjects;
+	var Chart = __webpack_require__(6).Chart;
+	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
+	var LargeChart = __webpack_require__(8).LargeChart;
+	var d3 = __webpack_require__(3);
+	var nv = __webpack_require__(12);
+	getObjects('report.json', function (charts) {
+	  console.log(charts);
+	  charts = charts.map( function(graph) {
+	    return Chart(graph);
+	  } )
+	  window.charts = charts;
+	  /* window.container = ChartContainer;
+	  window.graphs = charts.map( chart => new TimeGraph(chart) );
+	  function renderAll() {
+	    graphs.forEach(function (g) {
+	    var div = d3.select('body')
+	                .append('div')
+	                .attr('id', g.id)
+	                .classed('chart-div', true)
+	                .style('position', 'relative')
+	                .style('width', g.container.width + 'px')
+	                .style('height', g.container.height + 'px');
+
+	    var svg = div.append('svg')
+	                 .attr('width', '100%')
+	                 .attr('height', '100%')
+	                 .style('position', 'absolute')
+	                 .style('top', '0')
+	                 .style('left', '0')
+	                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
+
+	    svg.data(g.chart.series);
+	    });
+	  }
+	  renderAll();
+	  //d3.select(window).on('resize', renderAll);*/
+	  var small_div = d3.select('#small-chart-div-test_numero_dos');
+	  var lg_div = d3.select('#chart-div-test_numero_dos');
+	  /*window.nvchart = graphs[0].bindTo(svg.node());
+	  nv.addGraph( () => {
+	    var c = nvchart.prepare();
+	    d3.select('#chart-div-test_numero_dos svg')
+	      .append('text')
+	      .attr('x', 5)
+	      .attr('y', 160 - 2)
+	      .attr('text-anchor', 'left')
+	      //.style('font-size', '8pt')
+	      .style('letter-spacing', '-0.1em')
+	      //.attr('textLength', '160')
+	      //.attr('lengthAdjust', 'spacingAndGlyphs')
+	      .text(nvchart.chart.title);
+	    nvchart.goal();
+	    nvchart.legend();
+	    return c;
+	  } );*/
+	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
+	  nv.addGraph(LargeChart(charts[0], lg_div));
+	});
+
+/***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9743,7 +9743,7 @@
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
 	var Klass = __webpack_require__(9).Klass;
 	var dataSym = Symbol();
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 
 	var dataPointSchema = __webpack_require__(10).dataPointSchema;
 	var timeDataPointSchema = __webpack_require__(10).timeDataPointSchema;
@@ -10162,7 +10162,7 @@
 	var shapes = __webpack_require__(11).shapes;
 	var legendMarkers = __webpack_require__(11).legendMarkers;
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 	var nv = __webpack_require__(12);
 
 	function SmallMultiplesChart(mschart, node, size) {
@@ -10491,7 +10491,7 @@
 	var TimeSeriesChartSchema = __webpack_require__(6).TimeSeriesChartSchema;
 
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 	var nv = __webpack_require__(12);
 	var addStylesheetRules = __webpack_require__(5).addStylesheetRules;
 	var debounce = __webpack_require__(5).debounce;
@@ -10571,7 +10571,7 @@
 	                    return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
 	                    + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
 	                  })
-	                  chart.lines.scatter.onlyCircles(false).useVoronoi(false);
+	                  //chart.lines.scatter.onlyCircles(false).useVoronoi(false);
 
 	    chart.xAxis
 	         .tickFormat( function(d) {
@@ -10602,6 +10602,11 @@
 	    var yscale = chart.yScale();
 	    var xscale = chart.xScale();
 
+	    var distNode = node.append('g')
+	                       .attr('class', 'nvd3 nv-distribution')
+	                       .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')')
+	                       .node();
+
 	    //Dashed lines for all missing areas
 	    node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group').filter( function(d) {
 	      return d.dashed;
@@ -10620,6 +10625,11 @@
 	      parentNode.insert('h4', 'div.chart-div')
 	                .attr('class', 'chart-title')
 	                .text(mschart.title);
+	                if(mschart.description) {
+	                  parentNode.insert('p', 'div.chart-div')
+	                            .attr('class', 'chart-desc')
+	                            .text(mschart.description);
+	                }
 	    }
 
 	    /*//Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
@@ -11883,7 +11893,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 
 	(function(){
 

@@ -756,6 +756,9 @@ address {
   -webkit-transform: translate3d(0, 0, 0);
           transform: translate3d(0, 0, 0);
   }
+body {
+  margin: 8px;
+  }
 /********************
  * HTML CSS
  */
@@ -1423,6 +1426,12 @@ body * {
 .chart-div {
   position: relative;
   display: inline-block;
+  }
+.chart-title {
+  margin-bottom: 0;
+  }
+.chart-desc {
+  margin-top: .3em;
   }
 svg.upiq-small-chart text {
   font-family: 'silkscreennormal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
