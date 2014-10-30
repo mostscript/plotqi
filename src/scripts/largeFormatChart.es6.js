@@ -56,7 +56,7 @@ export function LargeChart(mschart, node) {
   node = node.append('svg')
              .attr('class', 'upiq-chart chart-svg');
 
-  var margins = {top: 5, bottom: 75, left: 40, right: 120};
+  var margins = {top: 8, bottom: 75, left: 40, right: 120};
   var data = extractData(mschart);
   var domain = mschart.domain;
   var tick_domain = domain.slice();
@@ -170,42 +170,7 @@ export function LargeChart(mschart, node) {
 
 function render(mschart, node, margins) {
   return function () {
-    this.update();
-    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( d => d.dashed )
-        .attr('visibility', 'hidden')
-        .remove();
-
-    var yscale = this.yScale();
-    var xscale = this.xScale();
-    var xMax = xscale(mschart.domain[1].valueOf());
-    var yMax = yscale(mschart.range[1]);
-    var yMin = yscale(mschart.range[0]);
-    var yRange = yMin - yMax;
-    var chartHeight = node.node().getBoundingClientRect().height;
-
-    //Goal Line
-    if(mschart.goal) {
-      var distWrap = node.selectAll('g.nv-distribution').data([mschart.goal]);
-      distWrap.enter().append('g')
-                      .attr('class', 'nvd3 nv-distribution')
-                      .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
-
-      var goal = distWrap.selectAll('g.nv-dist.nv-goal').data([mschart.goal]);
-      var goalEnter = goal.enter().append('g')
-                          .attr('class', 'nv-dist nv-goal')
-                          .style('color', mschart.goal_color);
-      goalEnter.append('line')
-               .attr('class', 'nv-goal-line');
-      goalEnter.append('text')
-               .attr('class', 'nv-goal-lbl')
-               .text('Goal: ' + mschart.goal)
-               .attr('text-anchor', 'start')
-               .attr('x', 3)
-               .attr('y', -5);
-
-      goal.transition().duration(500).attr('transform', 'translate(0,' + (Math.floor(yscale(mschart.goal)) + 0.5) + ')');
-      goal.select('line').transition().duration(500).attr('x2', xMax);
-
+    var rightHandLegend = function() {
       //Legend
       if(mschart.series.length > 1) {
         var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;;
@@ -246,9 +211,51 @@ function render(mschart, node, margins) {
                     .attr('stroke-opacity', 0.5)
                     .attr('stroke-width', 1)
                     .attr('fill-opacity', 0);
-        legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (margins.top + (yRange / 2) - (legHeight / 2)) + ')')
+        legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (margins.top + (yRange / 2) - (legHeight / 2)) + ')');
       }
     }
+
+
+    
+    this.update();
+    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( d => d.dashed )
+        .attr('visibility', 'hidden')
+        .remove();
+
+    var yscale = this.yScale();
+    var xscale = this.xScale();
+    var xMax = xscale(mschart.domain[1].valueOf());
+    var yMax = yscale(mschart.range[1]);
+    var yMin = yscale(mschart.range[0]);
+    var yRange = yMin - yMax;
+    var chartHeight = node.node().getBoundingClientRect().height;
+
+    //Goal Line
+    if(mschart.goal) {
+      var distWrap = node.selectAll('g.nv-distribution').data([mschart.goal]);
+      distWrap.enter().append('g')
+                      .attr('class', 'nvd3 nv-distribution')
+                      .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
+
+      var goal = distWrap.selectAll('g.nv-dist.nv-goal').data([mschart.goal]);
+      var goalEnter = goal.enter().append('g')
+                          .attr('class', 'nv-dist nv-goal')
+                          .style('color', mschart.goal_color);
+      goalEnter.append('line')
+               .attr('class', 'nv-goal-line');
+      goalEnter.append('text')
+               .attr('class', 'nv-goal-lbl')
+               .text('Goal: ' + mschart.goal)
+               .attr('text-anchor', 'start')
+               .attr('x', 3)
+               .attr('y', -5);
+
+      goal.transition().duration(500).attr('transform', 'translate(0,' + (Math.floor(yscale(mschart.goal)) + 0.5) + ')');
+      goal.select('line').transition().duration(500).attr('x2', xMax);
+    }
+
+    //Legend
+    rightHandLegend();
   }
 }
 

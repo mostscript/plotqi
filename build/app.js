@@ -45,9 +45,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(4);
 	var moment = __webpack_require__(2);
-	__webpack_require__(4);
+	__webpack_require__(3);
 
 /***/ },
 /* 1 */
@@ -118,6 +118,71 @@
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var getObjects = __webpack_require__(5).getObjects;
+	var Chart = __webpack_require__(6).Chart;
+	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
+	var LargeChart = __webpack_require__(8).LargeChart;
+	var d3 = __webpack_require__(4);
+	var nv = __webpack_require__(11);
+	getObjects('report.json', function (charts) {
+	  console.log(charts);
+	  charts = charts.map( function(graph) {
+	    return Chart(graph);
+	  } )
+	  window.charts = charts;
+	  /* window.container = ChartContainer;
+	  window.graphs = charts.map( chart => new TimeGraph(chart) );
+	  function renderAll() {
+	    graphs.forEach(function (g) {
+	    var div = d3.select('body')
+	                .append('div')
+	                .attr('id', g.id)
+	                .classed('chart-div', true)
+	                .style('position', 'relative')
+	                .style('width', g.container.width + 'px')
+	                .style('height', g.container.height + 'px');
+
+	    var svg = div.append('svg')
+	                 .attr('width', '100%')
+	                 .attr('height', '100%')
+	                 .style('position', 'absolute')
+	                 .style('top', '0')
+	                 .style('left', '0')
+	                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
+
+	    svg.data(g.chart.series);
+	    });
+	  }
+	  renderAll();
+	  //d3.select(window).on('resize', renderAll);*/
+	  var small_div = d3.select('#small-chart-div-test_numero_dos');
+	  var lg_div = d3.select('#chart-div-test_numero_dos');
+	  /*window.nvchart = graphs[0].bindTo(svg.node());
+	  nv.addGraph( () => {
+	    var c = nvchart.prepare();
+	    d3.select('#chart-div-test_numero_dos svg')
+	      .append('text')
+	      .attr('x', 5)
+	      .attr('y', 160 - 2)
+	      .attr('text-anchor', 'left')
+	      //.style('font-size', '8pt')
+	      .style('letter-spacing', '-0.1em')
+	      //.attr('textLength', '160')
+	      //.attr('lengthAdjust', 'spacingAndGlyphs')
+	      .text(nvchart.chart.title);
+	    nvchart.goal();
+	    nvchart.legend();
+	    return c;
+	  } );*/
+	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
+	  nv.addGraph(LargeChart(charts[0], lg_div));
+	});
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -9355,71 +9420,6 @@
 	}();
 
 /***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var getObjects = __webpack_require__(5).getObjects;
-	var Chart = __webpack_require__(6).Chart;
-	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
-	var LargeChart = __webpack_require__(8).LargeChart;
-	var d3 = __webpack_require__(3);
-	var nv = __webpack_require__(12);
-	getObjects('report.json', function (charts) {
-	  console.log(charts);
-	  charts = charts.map( function(graph) {
-	    return Chart(graph);
-	  } )
-	  window.charts = charts;
-	  /* window.container = ChartContainer;
-	  window.graphs = charts.map( chart => new TimeGraph(chart) );
-	  function renderAll() {
-	    graphs.forEach(function (g) {
-	    var div = d3.select('body')
-	                .append('div')
-	                .attr('id', g.id)
-	                .classed('chart-div', true)
-	                .style('position', 'relative')
-	                .style('width', g.container.width + 'px')
-	                .style('height', g.container.height + 'px');
-
-	    var svg = div.append('svg')
-	                 .attr('width', '100%')
-	                 .attr('height', '100%')
-	                 .style('position', 'absolute')
-	                 .style('top', '0')
-	                 .style('left', '0')
-	                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
-
-	    svg.data(g.chart.series);
-	    });
-	  }
-	  renderAll();
-	  //d3.select(window).on('resize', renderAll);*/
-	  var small_div = d3.select('#small-chart-div-test_numero_dos');
-	  var lg_div = d3.select('#chart-div-test_numero_dos');
-	  /*window.nvchart = graphs[0].bindTo(svg.node());
-	  nv.addGraph( () => {
-	    var c = nvchart.prepare();
-	    d3.select('#chart-div-test_numero_dos svg')
-	      .append('text')
-	      .attr('x', 5)
-	      .attr('y', 160 - 2)
-	      .attr('text-anchor', 'left')
-	      //.style('font-size', '8pt')
-	      .style('letter-spacing', '-0.1em')
-	      //.attr('textLength', '160')
-	      //.attr('lengthAdjust', 'spacingAndGlyphs')
-	      .text(nvchart.chart.title);
-	    nvchart.goal();
-	    nvchart.legend();
-	    return c;
-	  } );*/
-	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-	  nv.addGraph(LargeChart(charts[0], lg_div));
-	});
-
-/***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9743,7 +9743,7 @@
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
 	var Klass = __webpack_require__(9).Klass;
 	var dataSym = Symbol();
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(4);
 
 	var dataPointSchema = __webpack_require__(10).dataPointSchema;
 	var timeDataPointSchema = __webpack_require__(10).timeDataPointSchema;
@@ -10158,12 +10158,12 @@
 	var MultiSeriesChart = __webpack_require__(6).MultiSeriesChart;
 	var TimeSeriesChartSchema = __webpack_require__(6).TimeSeriesChartSchema;
 
-	var shapePath = __webpack_require__(11).shapePath;
-	var shapes = __webpack_require__(11).shapes;
-	var legendMarkers = __webpack_require__(11).legendMarkers;
+	var shapePath = __webpack_require__(12).shapePath;
+	var shapes = __webpack_require__(12).shapes;
+	var legendMarkers = __webpack_require__(12).legendMarkers;
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(3);
-	var nv = __webpack_require__(12);
+	var d3 = __webpack_require__(4);
+	var nv = __webpack_require__(11);
 
 	function SmallMultiplesChart(mschart, node, size) {
 	  var $__0;
@@ -10491,8 +10491,8 @@
 	var TimeSeriesChartSchema = __webpack_require__(6).TimeSeriesChartSchema;
 
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(3);
-	var nv = __webpack_require__(12);
+	var d3 = __webpack_require__(4);
+	var nv = __webpack_require__(11);
 	var addStylesheetRules = __webpack_require__(5).addStylesheetRules;
 	var debounce = __webpack_require__(5).debounce;
 	var d3textWrap = __webpack_require__(5).d3textWrap;
@@ -10544,7 +10544,7 @@
 	  node = node.append('svg')
 	             .attr('class', 'upiq-chart chart-svg');
 
-	  var margins = {top: 5, bottom: 75, left: 40, right: 120};
+	  var margins = {top: 8, bottom: 75, left: 40, right: 120};
 	  var data = extractData(mschart);
 	  var domain = mschart.domain;
 	  var tick_domain = domain.slice();
@@ -10667,44 +10667,7 @@
 
 	exports.LargeChart = LargeChart;function render(mschart, node, margins) {
 	  return function () {
-	    this.update();
-	    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( function(d) {
-	      return d.dashed;
-	    } )
-	        .attr('visibility', 'hidden')
-	        .remove();
-
-	    var yscale = this.yScale();
-	    var xscale = this.xScale();
-	    var xMax = xscale(mschart.domain[1].valueOf());
-	    var yMax = yscale(mschart.range[1]);
-	    var yMin = yscale(mschart.range[0]);
-	    var yRange = yMin - yMax;
-	    var chartHeight = node.node().getBoundingClientRect().height;
-
-	    //Goal Line
-	    if(mschart.goal) {
-	      var distWrap = node.selectAll('g.nv-distribution').data([mschart.goal]);
-	      distWrap.enter().append('g')
-	                      .attr('class', 'nvd3 nv-distribution')
-	                      .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
-
-	      var goal = distWrap.selectAll('g.nv-dist.nv-goal').data([mschart.goal]);
-	      var goalEnter = goal.enter().append('g')
-	                          .attr('class', 'nv-dist nv-goal')
-	                          .style('color', mschart.goal_color);
-	      goalEnter.append('line')
-	               .attr('class', 'nv-goal-line');
-	      goalEnter.append('text')
-	               .attr('class', 'nv-goal-lbl')
-	               .text('Goal: ' + mschart.goal)
-	               .attr('text-anchor', 'start')
-	               .attr('x', 3)
-	               .attr('y', -5);
-
-	      goal.transition().duration(500).attr('transform', 'translate(0,' + (Math.floor(yscale(mschart.goal)) + 0.5) + ')');
-	      goal.select('line').transition().duration(500).attr('x2', xMax);
-
+	    var rightHandLegend = function() {
 	      //Legend
 	      if(mschart.series.length > 1) {
 	        var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;;
@@ -10749,9 +10712,50 @@
 	                    .attr('stroke-opacity', 0.5)
 	                    .attr('stroke-width', 1)
 	                    .attr('fill-opacity', 0);
-	        legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (margins.top + (yRange / 2) - (legHeight / 2)) + ')')
+	        legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (margins.top + (yRange / 2) - (legHeight / 2)) + ')');
 	      }
 	    }
+	    this.update();
+	    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( function(d) {
+	      return d.dashed;
+	    } )
+	        .attr('visibility', 'hidden')
+	        .remove();
+
+	    var yscale = this.yScale();
+	    var xscale = this.xScale();
+	    var xMax = xscale(mschart.domain[1].valueOf());
+	    var yMax = yscale(mschart.range[1]);
+	    var yMin = yscale(mschart.range[0]);
+	    var yRange = yMin - yMax;
+	    var chartHeight = node.node().getBoundingClientRect().height;
+
+	    //Goal Line
+	    if(mschart.goal) {
+	      var distWrap = node.selectAll('g.nv-distribution').data([mschart.goal]);
+	      distWrap.enter().append('g')
+	                      .attr('class', 'nvd3 nv-distribution')
+	                      .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
+
+	      var goal = distWrap.selectAll('g.nv-dist.nv-goal').data([mschart.goal]);
+	      var goalEnter = goal.enter().append('g')
+	                          .attr('class', 'nv-dist nv-goal')
+	                          .style('color', mschart.goal_color);
+	      goalEnter.append('line')
+	               .attr('class', 'nv-goal-line');
+	      goalEnter.append('text')
+	               .attr('class', 'nv-goal-lbl')
+	               .text('Goal: ' + mschart.goal)
+	               .attr('text-anchor', 'start')
+	               .attr('x', 3)
+	               .attr('y', -5);
+
+	      goal.transition().duration(500).attr('transform', 'translate(0,' + (Math.floor(yscale(mschart.goal)) + 0.5) + ')');
+	      goal.select('line').transition().duration(500).attr('x2', xMax);
+	    }
+
+	    //Legend
+	    rightHandLegend();
 	  }
 	}
 
@@ -11689,211 +11693,8 @@
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	var $__getIteratorRange = function(iterator, index, begin, len) {
-	  if (index > begin) {
-	    throw new RangeError();
-	  }
-
-	  if (typeof len === "undefined") {
-	    len = Infinity;
-	  }
-
-	  var range = [], end = begin + len;
-
-	  while (index < end) {
-	    var next = iterator.next();
-
-	    if (next.done) {
-	      break;
-	    }
-
-	    if (index >= begin) {
-	      range.push(next.value);
-	    }
-
-	    index++;
-	  }
-
-	  return {
-	    range: range,
-	    index: index
-	  };
-	};
-
-	var $__getIterator = function(iterable) {
-	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
-
-	  if (typeof iterable[sym] === "function") {
-	    return iterable[sym]();
-	  } else if (typeof iterable === "object" || typeof iterable === "function") {
-	    return $__getArrayIterator(iterable);
-	  } else {
-	    throw new TypeError();
-	  }
-	};
-
-	var $__getArrayIterator = function(array) {
-	  var index = 0;
-
-	  return {
-	    next: function() {
-	      if (index < array.length) {
-	        return {
-	          done: false,
-	          value: array[index++]
-	        };
-	      } else {
-	        return {
-	          done: true,
-	          value: void 0
-	        };
-	      }
-	    }
-	  };
-	};
-
-	function shapePath(node) {
-	  var spec = (arguments[1] !== void 0 ? arguments[1] : shapes.square);
-	  var size = (arguments[2] !== void 0 ? arguments[2] : 3);
-	  var d = "";
-	  var normalizer = spec.normalizer || 1;
-	  var multiplier = size * normalizer;
-
-	  spec.path.forEach(function () {
-	    var $__arguments0 = arguments;
-	    var $__arguments = $__arguments0;
-
-	    var var$0 = $__arguments[0],
-	        iterator$0 = $__getIterator(var$0),
-	        iteratorValue$0 = {
-	          index: 0
-	        },
-	        cmd = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]),
-	        args = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, Infinity), iteratorValue$0.range);
-
-	    d += cmd;
-
-	    args.forEach(function (arg, i) {
-	      if(i !== 0)
-	        d += ' ';
-	      if(arg.length)
-	        arg.forEach(function (sub_arg, sub_i) {
-	          if(arg)
-	          if(sub_i === 0){
-	                if(String(arg).indexOf('#') === -1)
-	              d += (multiplier * sub_arg);
-	            else
-	              d += sub_arg.slice(1);
-	          } else {
-	            if(String(arg).indexOf('#') === -1)
-	              d += "," + (multiplier * sub_arg);
-	            else
-	              d += "," + arg.slice(1);
-	          }
-	        });
-	      else {
-	        if(String(arg).indexOf('#') === -1)
-	          d += (multiplier * arg);
-	        else
-	          d += arg.slice(1);
-	      }
-	    });
-	  });
-
-	  console.log(d);
-
-	  node.attr('d', d)
-	      .classed('smooth-shape', spec.smooth ? true : false)
-	      .classed('crisp-shape', spec.smooth ? false : true);
-	}
-
-	exports.shapePath = shapePath;function legendMarkers (selection, size) {
-	  size = size || 4;
-	  selection.each(function (d, i) {
-	    var sel = d3.select(this);
-	    var shape_name = d.marker_style || 'square';
-	    if(shape_name === 'cross') shape_name = 'legend_cross';
-	    var shape = shapes[shape_name] || shapes.square;
-	    sel.call(shapePath, shape, size)
-	  });
-	}
-
-	exports.legendMarkers = legendMarkers;var shapes = {
-	  square: {
-	    normalizer: 1 /2,
-	    path: [
-	      ['m', -1, -1],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['z']
-	    ]
-	  },
-	  diamond: {
-	    normalizer: 1 / 2,
-	    path: [
-	      ['m', -1, 0],
-	      ['l', 1, -1],
-	      ['l', 1, 1],
-	      ['l', -1, 1],
-	      ['z']
-	    ]
-	  },
-	  cross: {
-	    normalizer: 1 / 6,
-	    path: [
-	      ['m', -1, -1],
-	      ['v', -2],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['v', -2],
-	      ['h', -2],
-	      ['v', -2],
-	      ['z']
-	    ]
-	  },
-	  legend_cross: {
-	    normalizer: 1 / 4,
-	    path: [
-	      ['m', -1, -1],
-	      ['v', -1],
-	      ['h', 2],
-	      ['v', 1],
-	      ['h', 1],
-	      ['v', 2],
-	      ['h', -1],
-	      ['v', 1],
-	      ['h', -2],
-	      ['v', -1],
-	      ['h', -1],
-	      ['v', -2],
-	      ['z']
-	    ]
-	  },
-	  circle: {
-	    normalizer: 1 / 2,
-	    path: [
-	      ['m', -1, 0],
-	      ['a', [1, 1], [0], ['#1',0], [2,0]],
-	      ['a', [1, 1], [0], ['#1',0], [-2,0]]
-	    ],
-	    smooth: true
-	  }
-	}
-	exports.shapes = shapes;
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/*** IMPORTS FROM imports-loader ***/
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(4);
 
 	(function(){
 
@@ -26263,6 +26064,209 @@
 
 	/*** EXPORTS FROM exports-loader ***/
 	module.exports = window.nv
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var $__getIteratorRange = function(iterator, index, begin, len) {
+	  if (index > begin) {
+	    throw new RangeError();
+	  }
+
+	  if (typeof len === "undefined") {
+	    len = Infinity;
+	  }
+
+	  var range = [], end = begin + len;
+
+	  while (index < end) {
+	    var next = iterator.next();
+
+	    if (next.done) {
+	      break;
+	    }
+
+	    if (index >= begin) {
+	      range.push(next.value);
+	    }
+
+	    index++;
+	  }
+
+	  return {
+	    range: range,
+	    index: index
+	  };
+	};
+
+	var $__getIterator = function(iterable) {
+	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+
+	  if (typeof iterable[sym] === "function") {
+	    return iterable[sym]();
+	  } else if (typeof iterable === "object" || typeof iterable === "function") {
+	    return $__getArrayIterator(iterable);
+	  } else {
+	    throw new TypeError();
+	  }
+	};
+
+	var $__getArrayIterator = function(array) {
+	  var index = 0;
+
+	  return {
+	    next: function() {
+	      if (index < array.length) {
+	        return {
+	          done: false,
+	          value: array[index++]
+	        };
+	      } else {
+	        return {
+	          done: true,
+	          value: void 0
+	        };
+	      }
+	    }
+	  };
+	};
+
+	function shapePath(node) {
+	  var spec = (arguments[1] !== void 0 ? arguments[1] : shapes.square);
+	  var size = (arguments[2] !== void 0 ? arguments[2] : 3);
+	  var d = "";
+	  var normalizer = spec.normalizer || 1;
+	  var multiplier = size * normalizer;
+
+	  spec.path.forEach(function () {
+	    var $__arguments0 = arguments;
+	    var $__arguments = $__arguments0;
+
+	    var var$0 = $__arguments[0],
+	        iterator$0 = $__getIterator(var$0),
+	        iteratorValue$0 = {
+	          index: 0
+	        },
+	        cmd = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]),
+	        args = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, Infinity), iteratorValue$0.range);
+
+	    d += cmd;
+
+	    args.forEach(function (arg, i) {
+	      if(i !== 0)
+	        d += ' ';
+	      if(arg.length)
+	        arg.forEach(function (sub_arg, sub_i) {
+	          if(arg)
+	          if(sub_i === 0){
+	                if(String(arg).indexOf('#') === -1)
+	              d += (multiplier * sub_arg);
+	            else
+	              d += sub_arg.slice(1);
+	          } else {
+	            if(String(arg).indexOf('#') === -1)
+	              d += "," + (multiplier * sub_arg);
+	            else
+	              d += "," + arg.slice(1);
+	          }
+	        });
+	      else {
+	        if(String(arg).indexOf('#') === -1)
+	          d += (multiplier * arg);
+	        else
+	          d += arg.slice(1);
+	      }
+	    });
+	  });
+
+	  console.log(d);
+
+	  node.attr('d', d)
+	      .classed('smooth-shape', spec.smooth ? true : false)
+	      .classed('crisp-shape', spec.smooth ? false : true);
+	}
+
+	exports.shapePath = shapePath;function legendMarkers (selection, size) {
+	  size = size || 4;
+	  selection.each(function (d, i) {
+	    var sel = d3.select(this);
+	    var shape_name = d.marker_style || 'square';
+	    if(shape_name === 'cross') shape_name = 'legend_cross';
+	    var shape = shapes[shape_name] || shapes.square;
+	    sel.call(shapePath, shape, size)
+	  });
+	}
+
+	exports.legendMarkers = legendMarkers;var shapes = {
+	  square: {
+	    normalizer: 1 /2,
+	    path: [
+	      ['m', -1, -1],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['z']
+	    ]
+	  },
+	  diamond: {
+	    normalizer: 1 / 2,
+	    path: [
+	      ['m', -1, 0],
+	      ['l', 1, -1],
+	      ['l', 1, 1],
+	      ['l', -1, 1],
+	      ['z']
+	    ]
+	  },
+	  cross: {
+	    normalizer: 1 / 6,
+	    path: [
+	      ['m', -1, -1],
+	      ['v', -2],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['v', -2],
+	      ['h', -2],
+	      ['v', -2],
+	      ['z']
+	    ]
+	  },
+	  legend_cross: {
+	    normalizer: 1 / 4,
+	    path: [
+	      ['m', -1, -1],
+	      ['v', -1],
+	      ['h', 2],
+	      ['v', 1],
+	      ['h', 1],
+	      ['v', 2],
+	      ['h', -1],
+	      ['v', 1],
+	      ['h', -2],
+	      ['v', -1],
+	      ['h', -1],
+	      ['v', -2],
+	      ['z']
+	    ]
+	  },
+	  circle: {
+	    normalizer: 1 / 2,
+	    path: [
+	      ['m', -1, 0],
+	      ['a', [1, 1], [0], ['#1',0], [2,0]],
+	      ['a', [1, 1], [0], ['#1',0], [-2,0]]
+	    ],
+	    smooth: true
+	  }
+	}
+	exports.shapes = shapes;
 
 /***/ }
 /******/ ])
