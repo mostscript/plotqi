@@ -216,7 +216,7 @@ function render(mschart, node, margins) {
     }
 
 
-    
+
     this.update();
     node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( d => d.dashed )
         .attr('visibility', 'hidden')
@@ -270,6 +270,7 @@ function preprocessData(mschart) {
       color: series.color,
       values: [],
       format: d3.format(series.display_format),
+      incomplete: series.break_lines
     };
 
     keys.forEach(function (key) {
@@ -300,6 +301,8 @@ function extractData(mschart) {
   oldData.forEach(function (series, i) {
     var poly_set = [];
     var poly_line, prev_pt = {missing: true};
+    var hidden = series.incomplete === 'hidden';
+    var solid = series.incomplete === 'solid';
     series.values.forEach(function (pt, i) {
       if(!pt.missing) {
         if(!poly_line) {
@@ -310,30 +313,42 @@ function extractData(mschart) {
           poly_line.push(pt);
         } else {
           poly_line.push(pt);
-          poly_set.push(poly_line);
-          poly_line = [ pt ];
+          if(!solid) {
+            poly_set.push(poly_line);
+            poly_line = [ pt ];
+          }
         }
         if(i === (series.values.length)) {
           poly_set.push(poly_line);
         }
       }
       if(pt.missing) {
-         if(!prev_pt.missing) {
+         if(!prev_pt.missing && !solid) {
           poly_set.push(poly_line);
           poly_line = [ prev_pt ];
         }
       }
       prev_pt = pt;
     });
-
+    if(solid)
+      poly_set = [ poly_line ];
     poly_set.forEach(function (poly_line, i) {
-      data.push({
-        key: series.key + '::' + i,
-        color: series.color,
-        values: poly_line,
-        format: series.format,
-        dashed: i % 2 == 1
-      });
+      if(!hidden)
+        data.push({
+          key: series.key + '::' + i,
+          color: series.color,
+          values: poly_line,
+          format: series.format,
+          dashed: i % 2 === 1
+        });
+      else if(i % 2 === 0)
+          data.push({
+          key: series.key + '::' + i,
+          color: series.color,
+          values: poly_line,
+          format: series.format,
+          dashed: false
+        });
     });
   });
   return data;

@@ -7,7 +7,7 @@
       "series": [
         {
           "line_width": 4, 
-          "break_lines": true, 
+          "break_lines": "dashed", 
           "marker_style": "filledSquare", 
           "marker_color": "#554e4e", 
           "title": "Jupiter Pediatrics", 

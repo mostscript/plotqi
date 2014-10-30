@@ -233,10 +233,10 @@ export class TimeDataSeriesSchema extends DataSeriesSchema {
         type: 'string',
         constraint: function (value) {
           if(typeof value === 'boolean')
-            return value ? 'hidden' : 'solid';
+            return value ? 'dashed' : 'solid';
         },
         vocabulary: ['hidden', 'solid', 'dashed'],
-        defaultValue: true
+        defaultValue: 'dashed'
       }
     }, this);
   }

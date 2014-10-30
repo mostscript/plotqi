@@ -45,9 +45,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 	var moment = __webpack_require__(2);
-	__webpack_require__(3);
+	__webpack_require__(4);
 
 /***/ },
 /* 1 */
@@ -118,71 +118,6 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var getObjects = __webpack_require__(5).getObjects;
-	var Chart = __webpack_require__(6).Chart;
-	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
-	var LargeChart = __webpack_require__(8).LargeChart;
-	var d3 = __webpack_require__(4);
-	var nv = __webpack_require__(11);
-	getObjects('report.json', function (charts) {
-	  console.log(charts);
-	  charts = charts.map( function(graph) {
-	    return Chart(graph);
-	  } )
-	  window.charts = charts;
-	  /* window.container = ChartContainer;
-	  window.graphs = charts.map( chart => new TimeGraph(chart) );
-	  function renderAll() {
-	    graphs.forEach(function (g) {
-	    var div = d3.select('body')
-	                .append('div')
-	                .attr('id', g.id)
-	                .classed('chart-div', true)
-	                .style('position', 'relative')
-	                .style('width', g.container.width + 'px')
-	                .style('height', g.container.height + 'px');
-
-	    var svg = div.append('svg')
-	                 .attr('width', '100%')
-	                 .attr('height', '100%')
-	                 .style('position', 'absolute')
-	                 .style('top', '0')
-	                 .style('left', '0')
-	                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
-
-	    svg.data(g.chart.series);
-	    });
-	  }
-	  renderAll();
-	  //d3.select(window).on('resize', renderAll);*/
-	  var small_div = d3.select('#small-chart-div-test_numero_dos');
-	  var lg_div = d3.select('#chart-div-test_numero_dos');
-	  /*window.nvchart = graphs[0].bindTo(svg.node());
-	  nv.addGraph( () => {
-	    var c = nvchart.prepare();
-	    d3.select('#chart-div-test_numero_dos svg')
-	      .append('text')
-	      .attr('x', 5)
-	      .attr('y', 160 - 2)
-	      .attr('text-anchor', 'left')
-	      //.style('font-size', '8pt')
-	      .style('letter-spacing', '-0.1em')
-	      //.attr('textLength', '160')
-	      //.attr('lengthAdjust', 'spacingAndGlyphs')
-	      .text(nvchart.chart.title);
-	    nvchart.goal();
-	    nvchart.legend();
-	    return c;
-	  } );*/
-	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-	  nv.addGraph(LargeChart(charts[0], lg_div));
-	});
-
-/***/ },
-/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -9420,6 +9355,71 @@
 	}();
 
 /***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var getObjects = __webpack_require__(5).getObjects;
+	var Chart = __webpack_require__(6).Chart;
+	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
+	var LargeChart = __webpack_require__(8).LargeChart;
+	var d3 = __webpack_require__(3);
+	var nv = __webpack_require__(10);
+	getObjects('report.json', function (charts) {
+	  console.log(charts);
+	  charts = charts.map( function(graph) {
+	    return Chart(graph);
+	  } )
+	  window.charts = charts;
+	  /* window.container = ChartContainer;
+	  window.graphs = charts.map( chart => new TimeGraph(chart) );
+	  function renderAll() {
+	    graphs.forEach(function (g) {
+	    var div = d3.select('body')
+	                .append('div')
+	                .attr('id', g.id)
+	                .classed('chart-div', true)
+	                .style('position', 'relative')
+	                .style('width', g.container.width + 'px')
+	                .style('height', g.container.height + 'px');
+
+	    var svg = div.append('svg')
+	                 .attr('width', '100%')
+	                 .attr('height', '100%')
+	                 .style('position', 'absolute')
+	                 .style('top', '0')
+	                 .style('left', '0')
+	                 .style('background-color', 'rgb(' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ',' + Math.round(Math.random() * 256) + ')');
+
+	    svg.data(g.chart.series);
+	    });
+	  }
+	  renderAll();
+	  //d3.select(window).on('resize', renderAll);*/
+	  var small_div = d3.select('#small-chart-div-test_numero_dos');
+	  var lg_div = d3.select('#chart-div-test_numero_dos');
+	  /*window.nvchart = graphs[0].bindTo(svg.node());
+	  nv.addGraph( () => {
+	    var c = nvchart.prepare();
+	    d3.select('#chart-div-test_numero_dos svg')
+	      .append('text')
+	      .attr('x', 5)
+	      .attr('y', 160 - 2)
+	      .attr('text-anchor', 'left')
+	      //.style('font-size', '8pt')
+	      .style('letter-spacing', '-0.1em')
+	      //.attr('textLength', '160')
+	      //.attr('lengthAdjust', 'spacingAndGlyphs')
+	      .text(nvchart.chart.title);
+	    nvchart.goal();
+	    nvchart.legend();
+	    return c;
+	  } );*/
+	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
+	  nv.addGraph(LargeChart(charts[0], lg_div));
+	});
+
+/***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9741,16 +9741,16 @@
 	var $__Object$defineProperty = Object.defineProperty;
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
-	var Klass = __webpack_require__(9).Klass;
+	var Klass = __webpack_require__(11).Klass;
 	var dataSym = Symbol();
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 
-	var dataPointSchema = __webpack_require__(10).dataPointSchema;
-	var timeDataPointSchema = __webpack_require__(10).timeDataPointSchema;
-	var dataSeriesSchema = __webpack_require__(10).dataSeriesSchema;
-	var timeDataSeriesSchema = __webpack_require__(10).timeDataSeriesSchema;
-	var multiSeriesChartSchema = __webpack_require__(10).multiSeriesChartSchema;
-	var timeSeriesChartSchema = __webpack_require__(10).timeSeriesChartSchema;
+	var dataPointSchema = __webpack_require__(12).dataPointSchema;
+	var timeDataPointSchema = __webpack_require__(12).timeDataPointSchema;
+	var dataSeriesSchema = __webpack_require__(12).dataSeriesSchema;
+	var timeDataSeriesSchema = __webpack_require__(12).timeDataSeriesSchema;
+	var multiSeriesChartSchema = __webpack_require__(12).multiSeriesChartSchema;
+	var timeSeriesChartSchema = __webpack_require__(12).timeSeriesChartSchema;
 
 	var moment = __webpack_require__(2);
 
@@ -10158,12 +10158,12 @@
 	var MultiSeriesChart = __webpack_require__(6).MultiSeriesChart;
 	var TimeSeriesChartSchema = __webpack_require__(6).TimeSeriesChartSchema;
 
-	var shapePath = __webpack_require__(12).shapePath;
-	var shapes = __webpack_require__(12).shapes;
-	var legendMarkers = __webpack_require__(12).legendMarkers;
+	var shapePath = __webpack_require__(9).shapePath;
+	var shapes = __webpack_require__(9).shapes;
+	var legendMarkers = __webpack_require__(9).legendMarkers;
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(4);
-	var nv = __webpack_require__(11);
+	var d3 = __webpack_require__(3);
+	var nv = __webpack_require__(10);
 
 	function SmallMultiplesChart(mschart, node, size) {
 	  var $__0;
@@ -10405,6 +10405,7 @@
 	      color: series.color,
 	      values: [],
 	      format: d3.format(series.display_format),
+	      incomplete: series.break_lines
 	    };
 
 	    keys.forEach(function (key) {
@@ -10436,6 +10437,8 @@
 	  oldData.forEach(function (series, i) {
 	    var poly_set = [];
 	    var poly_line, prev_pt = {missing: true};
+	    var hidden = series.incomplete === 'hidden';
+	    var solid = series.incomplete === 'solid';
 	    series.values.forEach(function (pt, i) {
 	      if(!pt.missing) {
 	        if(!poly_line) {
@@ -10446,30 +10449,42 @@
 	          poly_line.push(pt);
 	        } else {
 	          poly_line.push(pt);
-	          poly_set.push(poly_line);
-	          poly_line = [ pt ];
+	          if(!solid) {
+	            poly_set.push(poly_line);
+	            poly_line = [ pt ];
+	          }
 	        }
 	        if(i === (series.values.length)) {
 	          poly_set.push(poly_line);
 	        }
 	      }
 	      if(pt.missing) {
-	         if(!prev_pt.missing) {
+	         if(!prev_pt.missing && !solid) {
 	          poly_set.push(poly_line);
 	          poly_line = [ prev_pt ];
 	        }
 	      }
 	      prev_pt = pt;
 	    });
-
+	    if(solid)
+	      poly_set = [ poly_line ];
 	    poly_set.forEach(function (poly_line, i) {
-	      data.push({
-	        key: series.key + '::' + i,
-	        color: series.color,
-	        values: poly_line,
-	        format: series.format,
-	        dashed: i % 2 == 1
-	      });
+	      if(!hidden)
+	        data.push({
+	          key: series.key + '::' + i,
+	          color: series.color,
+	          values: poly_line,
+	          format: series.format,
+	          dashed: i % 2 === 1
+	        });
+	      else if(i % 2 === 0)
+	          data.push({
+	          key: series.key + '::' + i,
+	          color: series.color,
+	          values: poly_line,
+	          format: series.format,
+	          dashed: false
+	        });
 	    });
 	  });
 	  return data;
@@ -10491,8 +10506,8 @@
 	var TimeSeriesChartSchema = __webpack_require__(6).TimeSeriesChartSchema;
 
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(4);
-	var nv = __webpack_require__(11);
+	var d3 = __webpack_require__(3);
+	var nv = __webpack_require__(10);
 	var addStylesheetRules = __webpack_require__(5).addStylesheetRules;
 	var debounce = __webpack_require__(5).debounce;
 	var d3textWrap = __webpack_require__(5).d3textWrap;
@@ -10715,6 +10730,9 @@
 	        legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (margins.top + (yRange / 2) - (legHeight / 2)) + ')');
 	      }
 	    }
+
+
+
 	    this.update();
 	    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( function(d) {
 	      return d.dashed;
@@ -10772,6 +10790,7 @@
 	      color: series.color,
 	      values: [],
 	      format: d3.format(series.display_format),
+	      incomplete: series.break_lines
 	    };
 
 	    keys.forEach(function (key) {
@@ -10803,6 +10822,8 @@
 	  oldData.forEach(function (series, i) {
 	    var poly_set = [];
 	    var poly_line, prev_pt = {missing: true};
+	    var hidden = series.incomplete === 'hidden';
+	    var solid = series.incomplete === 'solid';
 	    series.values.forEach(function (pt, i) {
 	      if(!pt.missing) {
 	        if(!poly_line) {
@@ -10813,30 +10834,42 @@
 	          poly_line.push(pt);
 	        } else {
 	          poly_line.push(pt);
-	          poly_set.push(poly_line);
-	          poly_line = [ pt ];
+	          if(!solid) {
+	            poly_set.push(poly_line);
+	            poly_line = [ pt ];
+	          }
 	        }
 	        if(i === (series.values.length)) {
 	          poly_set.push(poly_line);
 	        }
 	      }
 	      if(pt.missing) {
-	         if(!prev_pt.missing) {
+	         if(!prev_pt.missing && !solid) {
 	          poly_set.push(poly_line);
 	          poly_line = [ prev_pt ];
 	        }
 	      }
 	      prev_pt = pt;
 	    });
-
+	    if(solid)
+	      poly_set = [ poly_line ];
 	    poly_set.forEach(function (poly_line, i) {
-	      data.push({
-	        key: series.key + '::' + i,
-	        color: series.color,
-	        values: poly_line,
-	        format: series.format,
-	        dashed: i % 2 == 1
-	      });
+	      if(!hidden)
+	        data.push({
+	          key: series.key + '::' + i,
+	          color: series.color,
+	          values: poly_line,
+	          format: series.format,
+	          dashed: i % 2 === 1
+	        });
+	      else if(i % 2 === 0)
+	          data.push({
+	          key: series.key + '::' + i,
+	          color: series.color,
+	          values: poly_line,
+	          format: series.format,
+	          dashed: false
+	        });
 	    });
 	  });
 	  return data;
@@ -10847,854 +10880,210 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var $__Object$defineProperty = Object.defineProperty;
-	var $__Object$create = Object.create;
-	var $__Object$getPrototypeOf = Object.getPrototypeOf;
-	var $__Object$defineProperties = Object.defineProperties;
-	'use strict';
-	var moment = __webpack_require__(2);
+	var $__getIteratorRange = function(iterator, index, begin, len) {
+	  if (index > begin) {
+	    throw new RangeError();
+	  }
 
-	var Schema = function() {
-	  "use strict";
-	  function Schema() {}
-	  return Schema;
-	}();
-	exports.Schema = Schema;
-	function schematize(fields, schema) {
-	  var fieldset = [];
-	  Object.getOwnPropertyNames(fields).forEach(function (field) {
-	    fieldset.push(new Field(field, this[field]));
-	  }, fields);
-	  fieldset.forEach(function (field) {
-	    Object.defineProperty(schema, field.name, {
-	      enumerable: true,
-	      configurable: true,
-	      value: field
+	  if (typeof len === "undefined") {
+	    len = Infinity;
+	  }
+
+	  var range = [], end = begin + len;
+
+	  while (index < end) {
+	    var next = iterator.next();
+
+	    if (next.done) {
+	      break;
+	    }
+
+	    if (index >= begin) {
+	      range.push(next.value);
+	    }
+
+	    index++;
+	  }
+
+	  return {
+	    range: range,
+	    index: index
+	  };
+	};
+
+	var $__getIterator = function(iterable) {
+	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+
+	  if (typeof iterable[sym] === "function") {
+	    return iterable[sym]();
+	  } else if (typeof iterable === "object" || typeof iterable === "function") {
+	    return $__getArrayIterator(iterable);
+	  } else {
+	    throw new TypeError();
+	  }
+	};
+
+	var $__getArrayIterator = function(array) {
+	  var index = 0;
+
+	  return {
+	    next: function() {
+	      if (index < array.length) {
+	        return {
+	          done: false,
+	          value: array[index++]
+	        };
+	      } else {
+	        return {
+	          done: true,
+	          value: void 0
+	        };
+	      }
+	    }
+	  };
+	};
+
+	function shapePath(node) {
+	  var spec = (arguments[1] !== void 0 ? arguments[1] : shapes.square);
+	  var size = (arguments[2] !== void 0 ? arguments[2] : 3);
+	  var d = "";
+	  var normalizer = spec.normalizer || 1;
+	  var multiplier = size * normalizer;
+
+	  spec.path.forEach(function () {
+	    var $__arguments0 = arguments;
+	    var $__arguments = $__arguments0;
+
+	    var var$0 = $__arguments[0],
+	        iterator$0 = $__getIterator(var$0),
+	        iteratorValue$0 = {
+	          index: 0
+	        },
+	        cmd = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]),
+	        args = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, Infinity), iteratorValue$0.range);
+
+	    d += cmd;
+
+	    args.forEach(function (arg, i) {
+	      if(i !== 0)
+	        d += ' ';
+	      if(arg.length)
+	        arg.forEach(function (sub_arg, sub_i) {
+	          if(arg)
+	          if(sub_i === 0){
+	                if(String(arg).indexOf('#') === -1)
+	              d += (multiplier * sub_arg);
+	            else
+	              d += sub_arg.slice(1);
+	          } else {
+	            if(String(arg).indexOf('#') === -1)
+	              d += "," + (multiplier * sub_arg);
+	            else
+	              d += "," + arg.slice(1);
+	          }
+	        });
+	      else {
+	        if(String(arg).indexOf('#') === -1)
+	          d += (multiplier * arg);
+	        else
+	          d += arg.slice(1);
+	      }
 	    });
 	  });
-	  return schema;
+
+	  console.log(d);
+
+	  node.attr('d', d)
+	      .classed('smooth-shape', spec.smooth ? true : false)
+	      .classed('crisp-shape', spec.smooth ? false : true);
 	}
 
-	exports.schematize = schematize;var Field = function() {
-	  "use strict";
-
-	  function Field(name, descriptor) {
-	    if(name == null) throw new Error('Field must be named');
-	    descriptor = descriptor || {};
-	    this.name = name; //field name, REQUIRED
-	    this.title = descriptor.title; //label for the field
-	    this.description = descriptor.description;
-	    this.type = descriptor.type; //constrain to specific type, either pass in a class or a typeof. undefined means ignored
-	    this.vocabulary = descriptor.vocabulary; //constrain field to specific set of values.
-	    this.constraint = descriptor.constraint; //a callback function which can throw a ValidationError or return a normalized value. the field is passed in as 'this'
-	    this.required = descriptor.required || false; //ValidationError thrown if this field is not set
-	    this.defaultValue = descriptor.defaultValue; //when there is no value stored, the getter will return this value
-	  }
-
-	  $__Object$defineProperties(Field.prototype, {
-	    validate: {
-	      value: function(value, obj) {
-	        var normalized = value;
-	        obj = obj || {};
-	        if(value != null) normalized = this.constraint ? (this.constraint.call(this, value, obj) || value) : value;
-
-	        if(this.type && (normalized != null)) {
-	          if(typeof this.type === 'string') {
-	            if(typeof normalized !== this.type) throw new ValidationTypeError(this, (typeof normalized), 'Expected type: [' + this.type + ']');
-	          } else if (typeof this.type === 'function') {
-	            if(! (normalized instanceof this.type)) throw new ValidationTypeError(this, (typeof normalized), 'Expected type: [' + this.type + ']');
-	          }
-	        }
-
-	        if(this.required && (normalized == null)) {
-	          if(this.defaultValue != null) normalized = this.defaultValue;
-	          else throw new ValidationError(this, normalized, 'Required fields cannot be null');
-	        }
-
-	        if(this.vocabulary && this.vocabulary.indexOf(normalized) === -1) throw new ValidationError(this, normalized, 'Allowed values: ' + this.vocabulary);
-
-	        return normalized;
-	      },
-
-	      enumerable: false,
-	      writable: true
-	    }
+	exports.shapePath = shapePath;function legendMarkers (selection, size) {
+	  size = size || 4;
+	  selection.each(function (d, i) {
+	    var sel = d3.select(this);
+	    var shape_name = d.marker_style || 'square';
+	    if(shape_name === 'cross') shape_name = 'legend_cross';
+	    var shape = shapes[shape_name] || shapes.square;
+	    sel.call(shapePath, shape, size)
 	  });
+	}
 
-	  return Field;
-	}();
-	exports.Field = Field;
-	var ValidationError = function($__super) {
-	  "use strict";
-
-	  function ValidationError(field, value, msg) {
-	    $__Object$getPrototypeOf(ValidationError.prototype).constructor.call(this);
-	    this.message = 'Invalid value: ' + value + ' on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
-	    this.name = 'ValidationError';
+	exports.legendMarkers = legendMarkers;var shapes = {
+	  square: {
+	    normalizer: 1 /2,
+	    path: [
+	      ['m', -1, -1],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['z']
+	    ]
+	  },
+	  diamond: {
+	    normalizer: 1 / 2,
+	    path: [
+	      ['m', -1, 0],
+	      ['l', 1, -1],
+	      ['l', 1, 1],
+	      ['l', -1, 1],
+	      ['z']
+	    ]
+	  },
+	  cross: {
+	    normalizer: 1 / 6,
+	    path: [
+	      ['m', -1, -1],
+	      ['v', -2],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['v', -2],
+	      ['h', -2],
+	      ['v', -2],
+	      ['z']
+	    ]
+	  },
+	  legend_cross: {
+	    normalizer: 1 / 4,
+	    path: [
+	      ['m', -1, -1],
+	      ['v', -1],
+	      ['h', 2],
+	      ['v', 1],
+	      ['h', 1],
+	      ['v', 2],
+	      ['h', -1],
+	      ['v', 1],
+	      ['h', -2],
+	      ['v', -1],
+	      ['h', -1],
+	      ['v', -2],
+	      ['z']
+	    ]
+	  },
+	  circle: {
+	    normalizer: 1 / 2,
+	    path: [
+	      ['m', -1, 0],
+	      ['a', [1, 1], [0], ['#1',0], [2,0]],
+	      ['a', [1, 1], [0], ['#1',0], [-2,0]]
+	    ],
+	    smooth: true
 	  }
-
-	  ValidationError.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  ValidationError.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(ValidationError.prototype, "constructor", {
-	    value: ValidationError
-	  });
-
-	  return ValidationError;
-	}(Error);
-	exports.ValidationError = ValidationError;
-	var ValidationTypeError = function($__super) {
-	  "use strict";
-
-	  function ValidationTypeError(field, type, msg) {
-	    $__Object$getPrototypeOf(ValidationTypeError.prototype).constructor.call(this);
-	    this.message = 'Invalid type: [' + type + '] on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
-	    this.name = 'ValidationTypeError';
-	  }
-
-	  ValidationTypeError.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  ValidationTypeError.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(ValidationTypeError.prototype, "constructor", {
-	    value: ValidationTypeError
-	  });
-
-	  return ValidationTypeError;
-	}(TypeError);
-	exports.ValidationTypeError = ValidationTypeError;
-	var Klass = function() {
-	  "use strict";
-
-	  function Klass(obj) {
-	    obj = obj || {};
-	    var schema = obj.schema || schematize(obj, {});
-	    this.schema = schema;
-	    function descriptor(field, o) {
-	      var value;
-	      return {
-	        enumerable: true,
-	        configurable: true,
-	        get: function () {
-	          return (value != null) ? value : field.defaultValue;
-	        },
-	        set: function (v) {
-	          value = field.validate(v, o);
-	        }
-	      };
-	    }
-	    Object.keys(schema).forEach(function (field) {
-	      Object.defineProperty(this, schema[field].name, descriptor(schema[field], this));
-	    }, this);
-
-	    Object.keys(schema).forEach(function (k) {
-	      this[k] = obj[k];
-	    }, this);
-	  }
-
-	  return Klass;
-	}();
-	exports.Klass = Klass;
+	}
+	exports.shapes = shapes;
 
 /***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	var $__Object$defineProperty = Object.defineProperty;
-	var $__Object$create = Object.create;
-	var $__Object$getPrototypeOf = Object.getPrototypeOf;
-	var Schema = __webpack_require__(9).Schema;
-	var schematize = __webpack_require__(9).schematize;
-	var ValidationError = __webpack_require__(9).ValidationError;
-	var ValidationTypeError = __webpack_require__(9).ValidationTypeError;
-	var moment = __webpack_require__(2);
-
-	function dateTypeConstraint(value) {
-	  var m = moment(value);
-	  if(!m.isValid()) return null;
-	  return m.toDate();
-	}
-
-	var DataPointSchema = function($__super) {
-	  "use strict";
-
-	  function DataPointSchema() {
-	    $__Object$getPrototypeOf(DataPointSchema.prototype).constructor.call(this);
-	    schematize({
-	      key: {
-	        title: 'Data point key',
-	        type: 'string',
-	        required: true
-	      },
-	      value: {
-	        title: 'Data point value',
-	        type: 'number',
-	        required: false  // null value means explicitly N/A for key
-	      },
-	      title: {
-	        title: 'Descriptive label (for key)',
-	        type: 'string',
-	        required: false,
-	      },
-	      valueLabel: {
-	        title: 'Value label',
-	        description: 'May be used for N= labels for denominator value',
-	        type: 'string',
-	        required: false
-	      },
-	      note: {
-	        title: 'Data point note',
-	        description: 'Descriptive note, used in interactive features',
-	        type: 'string',
-	        defaultValue: ''
-	      },
-	      uri: {
-	        title: 'Data point URI',
-	        description: 'Link to data source for point',
-	        type: 'string',
-	        required: false
-	      }
-	    }, this);
-	  }
-
-	  DataPointSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  DataPointSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(DataPointSchema.prototype, "constructor", {
-	    value: DataPointSchema
-	  });
-
-	  return DataPointSchema;
-	}(Schema);
-	exports.DataPointSchema = DataPointSchema;
-	var dataPointSchema = new DataPointSchema();
-	exports.dataPointSchema = dataPointSchema;
-	var TimeDataPointSchema = function($__super) {
-	  "use strict";
-
-	  function TimeDataPointSchema() {
-	    $__Object$getPrototypeOf(TimeDataPointSchema.prototype).constructor.call(this);
-	    schematize({
-	      key: {
-	        title: 'Date key',
-	        description: 'Time series data point key (Date value); ' +
-	                     'should be naive dates stored as localtime.',
-	        type: Date,
-	        required: true,
-	        constraint: dateTypeConstraint
-	      }
-	      }, this);
-	  }
-
-	  TimeDataPointSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  TimeDataPointSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(TimeDataPointSchema.prototype, "constructor", {
-	    value: TimeDataPointSchema
-	  });
-
-	  return TimeDataPointSchema;
-	}(DataPointSchema);
-	exports.TimeDataPointSchema = TimeDataPointSchema;
-	var timeDataPointSchema = new TimeDataPointSchema();
-	exports.timeDataPointSchema = timeDataPointSchema;
-	var DataSeriesSchema = function($__super) {
-	  "use strict";
-
-	  function DataSeriesSchema() {
-	    $__Object$getPrototypeOf(DataSeriesSchema.prototype).constructor.call(this);
-	    schematize({
-	          title: {
-	            title: 'Series title',
-	            description: 'Series/line name or title',
-	            type: 'string',
-	            required: false
-	          },
-	          description: {
-	            title: 'Series description',
-	            description: 'Descriptive text metadata about series, often' +
-	                         'is empty or unused',
-	            type: 'string',
-	            required: false
-	          },
-	          line_width: {
-	            title: 'Line width',
-	            description: 'Line width (in relative px units) Considered '+
-	                         'in line plots only, ignored otherwise.',
-	            type: 'number',
-	            required: false,
-	            defaultValue: 2.0
-	          },
-	          color: {
-	            title: 'Line/bar color',
-	            description: 'Primary series color name or HTML color code; ' +
-	                         'if unspecified ("Auto" default), defer to ' +
-	                         'automatic default color palette choices.',
-	            type: 'string',
-	            defaultValue: 'auto',
-	            required: false
-	          },
-	          marker_color: {
-	            title: 'Point marker fill color',
-	            description: 'Data point marker color name or code; ' +
-	                         'if unspecified ("Auto" default), defer to ' +
-	                         'match the line/bar color.',
-	            type: 'string',
-	            defaultValue: "Auto",
-	            required: false
-	          },
-	          marker_size: {
-	            title: 'Marker size',
-	            description: 'Marker size (in relative px units) Considered '+
-	                         'in line plots only, ignored otherwise.',
-	            type: 'number',
-	            required: false,
-	            defaultValue: 9.0
-	          },
-	          marker_width: {
-	            title: 'Marker stroke width',
-	            description: 'Marker stroke width (in relative px units) ' +
-	                         'Considered in line plots only, ignored ' +
-	                         'otherwise.  Currently only used for marker ' +
-	                         'style/shape that is not filled.',
-	            type: 'number',
-	            required: false,
-	            defaultValue: 2.0
-	          },
-	          marker_style: {
-	            title: 'Marker shape style',
-	            description: 'Marker shape, selected from enumerated ' +
-	                         'vocabulary of allowable choices.',
-	            type: 'string',
-	            constraint: function (value, obj) {
-	              if(value === 'x') return 'cross';
-	              if(value === 'filledCircle') {
-	                obj.marker_filled = true;
-	                return 'circle';
-	              }
-	              if(value === 'filledSquare') {
-	                obj.marker_filled = true;
-	                return 'square';
-	              }
-	              if(value === 'filledDiamond') {
-	                obj.marker_filled = true;
-	                return 'diamond';
-	              }
-	            },
-	            vocabulary: [
-	              'diamond',
-	              'circle',
-	              'square',
-	              'cross',
-	              'plus',
-	              'dash',
-	              'triangle-up',
-	              'triangle-down',
-	              'filledDiamond',
-	              'filledCircle',
-	              'filledSquare',
-	            ],
-	            required: false,
-	            defaultValue: 'square'
-	          },
-	          marker_filled: {
-	            title: 'Fill markers?',
-	            description: 'Instead of specifying "filledCircle", specify "Circle" that is filled with this property.',
-	            type: 'boolean',
-	            required: false,
-	            defaultValue: true
-	          },
-	          show_trend: {
-	            title: 'Show trend line?',
-	            type: 'boolean',
-	            defaultValue: false
-	          },
-	          trend_width: {
-	            title: 'Trend line width, if applicable',
-	            type: 'number',
-	            defaultValue: 2.0
-	          },
-	          trend_color: {
-	            title: 'Trend line color, if applicable',
-	            description: 'Trend line color name or code; ' +
-	                         'if unspecified ("Auto" default), defer to ' +
-	                         'match the line/bar color.',
-	            type: 'string',
-	            defaultValue: "Auto"
-	          },
-	          point_labels: {
-	            title: 'Show point labels?',
-	            description: 'Show labels above each marker for data value? ' +
-	                         'The default value of defer obeys plot-wide ' +
-	                         'setting, where show/omit explicitly do as ' +
-	                         'described.',
-	            type: 'string',
-	            vocabulary: ['defer', 'omit', 'show'],
-	            defaultValue: 'defer'
-	          },
-	          display_format: {
-	            title: 'Display format for y values',
-	            description: 'Standard formatting string',
-	            type: 'string',
-	            defaultValue: '%%.%if'
-	          }
-	        }, this);
-	  }
-
-	  DataSeriesSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  DataSeriesSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(DataSeriesSchema.prototype, "constructor", {
-	    value: DataSeriesSchema
-	  });
-
-	  return DataSeriesSchema;
-	}(Schema);
-	exports.DataSeriesSchema = DataSeriesSchema;
-	var dataSeriesSchema = new DataSeriesSchema();
-	exports.dataSeriesSchema = dataSeriesSchema;
-	var TimeDataSeriesSchema = function($__super) {
-	  "use strict";
-
-	  function TimeDataSeriesSchema() {
-	    $__Object$getPrototypeOf(TimeDataSeriesSchema.prototype).constructor.call(this);
-	    schematize({
-	      break_lines: {
-	        title: 'Break lines?',
-	        description:
-	            'When a value is missing for name or date on the ' +
-	            'X axis, should the line be broken/discontinuous ' +
-	            'such that no line runs through the empty/null ' +
-	            'value?  This defaults to true, which means that ' +
-	            'no line will run from adjacent values through the ' +
-	            'missing value.  For purposes of tabular legend, ' +
-	            'any value without a data-source should render "--" ' +
-	            'and any null value (specifying N/A or NaN value) ' +
-	            'should display as N/A.  At future date, we may ' +
-	            'wish to add other options for this case, such as ' +
-	            'drawing a dotted-line through the N/A period that ' +
-	            'breaks continuity of contiguous points.  Ideally, ' +
-	            'any such rendering behavior avoids depending on a ' +
-	            'fixed frequency for a time-series plot.',
-	        type: 'string',
-	        constraint: function (value) {
-	          if(typeof value === 'boolean')
-	            return value ? 'hidden' : 'solid';
-	        },
-	        vocabulary: ['hidden', 'solid', 'dashed'],
-	        defaultValue: true
-	      }
-	    }, this);
-	  }
-
-	  TimeDataSeriesSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  TimeDataSeriesSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(TimeDataSeriesSchema.prototype, "constructor", {
-	    value: TimeDataSeriesSchema
-	  });
-
-	  return TimeDataSeriesSchema;
-	}(DataSeriesSchema);
-	exports.TimeDataSeriesSchema = TimeDataSeriesSchema;
-	var timeDataSeriesSchema = new TimeDataSeriesSchema();
-	exports.timeDataSeriesSchema = timeDataSeriesSchema;
-	var MultiSeriesChartSchema = function($__super) {
-	  "use strict";
-
-	  function MultiSeriesChartSchema() {
-	    $__Object$getPrototypeOf(MultiSeriesChartSchema.prototype).constructor.call(this);
-	    schematize({
-	          // Identifiction: shortname and uid
-	          name: {
-	            title: 'Short name',
-	            description: 'Short name of plot, unique only to report it ' +
-	                         'is contained within, usually descriptive, ' +
-	                         'like a filename; often transformed from ' +
-	                         'title.  May be present in JSON, but usually ' +
-	                         'is not preferred for identification or ' +
-	                         'data binding vs. UID; may be used in URL ' +
-	                         'construction, but in itself does not contain ' +
-	                         'full context or URI.',
-	            type: 'string',
-	            required: false
-	          },
-	          uid: {
-	            title: 'UID',
-	            description: 'UUID (hexidecimal representation) of chart, ' +
-	                         'based on UUID of chart content in Teamspace ' +
-	                         'CMS system.  May or may not be in canonical ' +
-	                         'RFC 4122 format (with dashes) or unfieled ' +
-	                         'hexidecimal format (usually, no dashes).',
-	            type: 'string',
-	            required: false
-	          },
-	          url: {
-	            title: 'Chart URL',
-	            description: 'Base URL to chart content',
-	            type: 'string',
-	            required: false
-	          },
-	          // Basic metadata -- may be rendered in template in HTML source
-	          //                   rendered by server, if it is included in
-	          //                   DOM this way, plotting application may
-	          //                   choose to re-plot it, if necessary?
-	          //                   Current (Sept. 2014) implementation is
-	          //                   *ignoring* title, description even though
-	          //                   they are provided in JSON.
-	          title: {
-	            title: 'Title',
-	            description: 'Data collection name or title; may be ' +
-	                         'displayed in legend.',
-	            type: 'string',
-	            required: false
-	          },
-	          description: {
-	            title: 'Description',
-	            description: 'Textual description of the data collection.',
-	            type: 'string',
-	            required: false
-	          },
-	          info: {
-	            title: 'Informative notes / caption',
-	            description: 'This allows any rich text and may contain ' +
-	                         'free-form notes about this chart; displayed ' +
-	                         'in report output.  NOTE: this is NOT included ' +
-	                         'in JSON as of September 2014, and is instead ' +
-	                         'rendered server-side in template -- it may be ' +
-	                         'included in future JSON feeds.',
-	            type: 'string',
-	            required: false
-	          },
-	          // Type of plot:
-	          chart_type: {
-	            title: 'Chart type',
-	            description: 'Type of chart to display (line or bar).',
-	            type: 'string',
-	            vocabulary: ['line', 'bar'],
-	            defaultValue: 'line',
-	            required: true
-	          },
-	          // Plot sizing: favor aspect_ratio over height, if provided
-	          width: {
-	            title: 'Width',
-	            description: 'Display width of chart, including Y-axis ' +
-	                         'labels, grid, and legend (if applicable) in ' +
-	                         'units configured.',
-	            type: 'number',
-	            defaultValue: '100',
-	            required: true
-	          },
-	          width_units: {
-	            title: 'Units of width',
-	            description: '',
-	            type: 'string',
-	            defaultValue: '%',
-	            required: true
-	          },
-	          height: {
-	            title: 'Height',
-	            description: 'Display height of chart in units configured ' +
-	                         '(either as percentage of width, or in pixels) ' +
-	                         ' -- used when aspect_ratio not specified.',
-	            type: 'number',
-	            defaultValue: '50',
-	            required: true
-	          },
-	          height_units: {
-	            title: 'Units of height',
-	            description: 'Ignore unless aspect ratio not provided or ' +
-	                         'value of height_units is % or px.',
-	            type: 'string',
-	            defaultValue: '2:1',    // prefer aspect_ratio field to this
-	            required: true
-	          },
-	          aspect_ratio: {
-	              title: 'Aspect ratio',
-	              description: 'Preferred ratio of width to height, should ' +
-	                           'control height of containing div, if present.',
-	              type: Array,
-	              required: false,
-	              constraint: function (value) {
-	                // validate that value is indeed a two-item Array of num.
-	                if (value.length !== 2)
-	                  throw new ValidationError(this, value, 'Aspect ratio must be a two element Array');
-	                if (typeof value[0] !== 'number' || typeof value[1] !== 'number')
-	                  throw new ValidationTypeError(this, (typeof value[0]) + ' ' + (typeof value[1]), 'Both elements of aspect ratio must be numbers');
-	            }
-	          },
-	          range_min: {
-	            title: 'Range minimum',
-	            description: 'Minimum anticipated value of any data point ' +
-	                         '(optional; if not specified, calculate from '+
-	                         'available data on all contained series).',
-	            type: 'number',
-	            constraint: function(value, obj) {
-	              var max = (obj.range_max != null) ? obj.range_max : null;
-	              if(value > max) throw new ValidationError(this, value, 'range_min must be less than or equal to range_max');
-	              return value;
-	            },
-	            required: false
-	          },
-	          range_max: {
-	            title: 'Range maximum',
-	            description: 'Maximum anticipated value of any data point ' +
-	                         '(optional; if not specified, calculate from '+
-	                         'available data on all contained series).',
-	            type: 'number',
-	            constraint: function(value, obj) {
-	              var min = (obj.range_min != null) ? obj.range_min : null;
-	              if(value < min) throw new ValidationError(this, value, 'range_max must be greater than or equal to range_min');
-	              return value;
-	            },
-	            required: false
-	          },
-	          units: {
-	            title: 'Units',
-	            description: 'Common set of units of measure for the data ' +
-	                         'series in this collection.  If the units for ' +
-	                         'series are not shared, then define respective ' +
-	                         'units on the series themselves. May be ' +
-	                         'displayed as part of Y-axis label using a ' +
-	                         'parenthetical notation of both units and ' +
-	                         'y_label are provided.',
-	            type: 'string',
-	            required: false
-	          },
-	          y_label: {
-	            title: 'Y axis label',
-	            description: 'Primary Y-Axis label/title (descriptive); ' +
-	                         'this is often omitted since axis is often ' +
-	                         'self-describing (especially when units are ' +
-	                         'percentages).  If omitted, do not allocate ' +
-	                         'space in plot for label. If included, ' +
-	                         'render text at 90-degree rotation ' +
-	                         '(counter-clockwise, with text bottom-to-top).',
-	            type: 'string',
-	            defaultValue: '',
-	            required: false
-	          },
-	          // Goal line: value (if defined), color:
-	          goal: {
-	            title: 'Goal',
-	            description: 'Common goal value as decimal number.  If each ' +
-	                         'series has different respective goals, edit ' +
-	                         'those goals on each series.  If goal is ' +
-	                         'undefined or null, omit display of goal line.',
-	            type: 'number',
-	            required: false
-	          },
-	          goal_color: {
-	            title: 'Goal-line color',
-	            description: 'If omitted, color will be selected from ' +
-	                         'defaults.',
-	            type: 'string',
-	            defaultValue: "Auto",
-	            required: false
-	          },
-	          // Legend configuration:
-	          legend_placement: {
-	            title: 'Legend placement',
-	            description: 'Where to place legend in relationship to the ' +
-	                         'grid. Note: the legend is disabled for less ' +
-	                         'than two series/line unless the tabular '+
-	                         'legend is selected.',
-	            type: 'string',
-	            vocabulary: [
-	              'tabular',      // (def) aligned value table below grid
-	              'outside',      // outside grid, next most common
-	              'inside'        // inside grid, rarely used
-	            ],
-	            defaultValue: 'outside',
-	            required: false
-	          },
-	          legend_location: {
-	            title: 'Legend location',
-	            description: 'Select a directional position for legend. ' +
-	                         'This setting is ignored if either the tabular ' +
-	                         'legend placement is selected or if the legend ' +
-	                         'is hidden (for less than two series). ' +
-	                         'Available choices are cardinal directions, ' +
-	                         'which is a hold-over from how jqPlot idioms.',
-	            type: 'string',
-	            vocabulary: [
-	              'n',        // top
-	              'e',        // right of grid, vertical align at middle
-	              'w',        // left of grid, vertical align at middle
-	              's',        // bottom, below plot
-	              'nw',       // left of grid, top-aligned
-	              'ne',       // right of grid, top-aligned
-	              'sw',       // left of grid, bottom-aligned
-	              'se'        // right of grid, bottom-aligned
-	            ],
-	            defaultValue: 'e',
-	            required: false
-	          },
-	          // X-axis (title label):
-	          x_label: {
-	            title: 'X axis label',
-	            description: 'Label for X-axis, optional.',
-	            type: 'string',
-	            defaultValue: '',
-	            required: false
-	          },
-	          // misc:
-	          css: {
-	            title: 'Chart styles',
-	            description: 'CSS stylesheet rules for chart (optional).',
-	            type: 'string',
-	            required: false
-	          },
-	          point_labels: {
-	            title: 'Show point labels?',
-	            description: 'Show labels above data-point markers?  This ' +
-	                         'may be overridden on individual lines/series. ' +
-	                         'If omitted, the usual assumption is that ' +
-	                         'a viewer in a browser must hover over a ' +
-	                         'point to see its value, and click for detail. ' +
-	                         'The primary usability question with this is ' +
-	                         'what to do with overlapping values from two ' +
-	                         'lines, which is why we omit usually (or have ' +
-	                         'an idiom of displaying just labels for the ' +
-	                         'first/primary line on the plot, not plot-wide.',
-	            type: 'string',
-	            vocabulary: ['show', 'omit'],
-	            defaultValue: 'omit',
-	            required: true
-	          }
-	        }, this);
-	  }
-
-	  MultiSeriesChartSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  MultiSeriesChartSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(MultiSeriesChartSchema.prototype, "constructor", {
-	    value: MultiSeriesChartSchema
-	  });
-
-	  return MultiSeriesChartSchema;
-	}(Schema);
-	exports.MultiSeriesChartSchema = MultiSeriesChartSchema;
-	var multiSeriesChartSchema = new MultiSeriesChartSchema();
-	exports.multiSeriesChartSchema = multiSeriesChartSchema;
-	var TimeSeriesChartSchema = function($__super) {
-	  "use strict";
-
-	  function TimeSeriesChartSchema() {
-	    $__Object$getPrototypeOf(TimeSeriesChartSchema.prototype).constructor.call(this);
-	    schematize({
-	          frequency: {
-	            title: 'Frequency (YAGNI??)',
-	            description: 'Frequncy between periods of reporting that ' +
-	                         'the plot visualizes.  May be used as cue for ' +
-	                         'handling the default date-label choices, ' +
-	                         'where month names are often stand-ins for ' +
-	                         'an exemplar date value for the month, e.g. ' +
-	                         '2014-06-01 may be represented as "Jun 2014". ' +
-	                         'THIS MAY BE YAGNI if we do not need to draw ' +
-	                         'vertical lines at X-axis tick labels, or just ' +
-	                         'rely on scales and explicit data-labels in ' +
-	                         'the labels field below (the JSON will provide ' +
-	                         'them, and if it does not, then just using ' +
-	                         'default US-appropriate short-date of ' +
-	                         'MM/DD/YYYY may be good enough to justify ' +
-	                         'ignoring this?  I cannot remember why jqPlot ' +
-	                         'wants this interval-frequency on the domain, ' +
-	                         'but it may be unnecessarily constraining to ' +
-	                         'fix this to a controlled set of choices or ' +
-	                         'just plain unnecessary?',
-	            type: 'string',
-	            vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly'],
-	            defaultValue: 'monthly',
-	            required: false
-	          },
-	          start: {
-	            title: 'Start date',
-	            description: 'Explicit start date; optional.  If an ' +
-	                         'explicit start date is not provided, one ' +
-	                         'should be computed from earliest value in ' +
-	                         'provided data.',
-	            type: Date,
-	            constraint: function(value, obj) {
-	              value = dateTypeConstraint(value);
-	              var end = obj.end;
-	              if(end == null) return value;
-	              if(value > end) throw new ValidationError(this, value, 'Start date cannot be after end date');
-	              return value;
-	            },
-	            required: false
-	          },
-	          end: {
-	            title: 'End date',
-	            description: 'Explicit end date; optional.  If an ' +
-	                         'explicit end date is not provided, one ' +
-	                         'should be computed from latest value in ' +
-	                         'provided data.',
-	            type: Date,
-	            constraint: function(value, obj) {
-	              value = dateTypeConstraint(value);
-	              var start = obj.start;
-	              if(start == null) return value;
-	              if(value < start) throw new ValidationError(this, value, 'End date cannot be before start date');
-	              return value;
-	            },
-	            required: false
-	          },
-	          labels: {
-	            title: 'Date labels',
-	            description: 'Date label overrides, used for X-axis labels. ' +
-	                         'if ommitted in whole or in part, use a ' +
-	                         'default MM/DD/YYYY format for dates. Is an ' +
-	                         'untyped object value used as key/vaule pair; ' +
-	                         'keys are ISO 8601 date stamps, values labels; ' +
-	                         'example: http://snag.gy/D1zjx.jpg',
-	            type: Object,
-	            constraint: function (value) {
-	              // validate the object key/value pairs:
-	              Object.keys(value).forEach(function (k) {
-	                var v = value[k];
-	                if (!moment(k).isValid())
-	                  throw new ValidationError(this, value, 'Key is not a valid Datestamp: ' + k);
-	                if (typeof v !== 'string')
-	                  throw new ValidationTypeError(this, typeof v, 'Labels must be strings');
-	              }, this);
-	            },
-	            required: false
-	          },
-	          auto_crop: {
-	            title: 'Auto-crop data?',
-	            description:
-	                'If data contains sequential null values (incomplete ' +
-	                'or no data calculable) on the right-hand of a ' +
-	                'time-series plot, should that right-hand side ' +
-	                'be cropped to only show the latest meaningful ' +
-	                'data?  The default is to crop automatically.',
-	            type: 'boolean',
-	            defaultValue: true,
-	            required: false
-	          }
-	        }, this);
-	  }
-
-	  TimeSeriesChartSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
-	  TimeSeriesChartSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
-
-	  $__Object$defineProperty(TimeSeriesChartSchema.prototype, "constructor", {
-	    value: TimeSeriesChartSchema
-	  });
-
-	  return TimeSeriesChartSchema;
-	}(MultiSeriesChartSchema);
-	exports.TimeSeriesChartSchema = TimeSeriesChartSchema;
-	var timeSeriesChartSchema = new TimeSeriesChartSchema();
-	exports.timeSeriesChartSchema = timeSeriesChartSchema;
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/*** IMPORTS FROM imports-loader ***/
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 
 	(function(){
 
@@ -26066,207 +25455,851 @@
 	module.exports = window.nv
 
 /***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var $__Object$defineProperty = Object.defineProperty;
+	var $__Object$create = Object.create;
+	var $__Object$getPrototypeOf = Object.getPrototypeOf;
+	var $__Object$defineProperties = Object.defineProperties;
+	'use strict';
+	var moment = __webpack_require__(2);
+
+	var Schema = function() {
+	  "use strict";
+	  function Schema() {}
+	  return Schema;
+	}();
+	exports.Schema = Schema;
+	function schematize(fields, schema) {
+	  var fieldset = [];
+	  Object.getOwnPropertyNames(fields).forEach(function (field) {
+	    fieldset.push(new Field(field, this[field]));
+	  }, fields);
+	  fieldset.forEach(function (field) {
+	    Object.defineProperty(schema, field.name, {
+	      enumerable: true,
+	      configurable: true,
+	      value: field
+	    });
+	  });
+	  return schema;
+	}
+
+	exports.schematize = schematize;var Field = function() {
+	  "use strict";
+
+	  function Field(name, descriptor) {
+	    if(name == null) throw new Error('Field must be named');
+	    descriptor = descriptor || {};
+	    this.name = name; //field name, REQUIRED
+	    this.title = descriptor.title; //label for the field
+	    this.description = descriptor.description;
+	    this.type = descriptor.type; //constrain to specific type, either pass in a class or a typeof. undefined means ignored
+	    this.vocabulary = descriptor.vocabulary; //constrain field to specific set of values.
+	    this.constraint = descriptor.constraint; //a callback function which can throw a ValidationError or return a normalized value. the field is passed in as 'this'
+	    this.required = descriptor.required || false; //ValidationError thrown if this field is not set
+	    this.defaultValue = descriptor.defaultValue; //when there is no value stored, the getter will return this value
+	  }
+
+	  $__Object$defineProperties(Field.prototype, {
+	    validate: {
+	      value: function(value, obj) {
+	        var normalized = value;
+	        obj = obj || {};
+	        if(value != null) normalized = this.constraint ? (this.constraint.call(this, value, obj) || value) : value;
+
+	        if(this.type && (normalized != null)) {
+	          if(typeof this.type === 'string') {
+	            if(typeof normalized !== this.type) throw new ValidationTypeError(this, (typeof normalized), 'Expected type: [' + this.type + ']');
+	          } else if (typeof this.type === 'function') {
+	            if(! (normalized instanceof this.type)) throw new ValidationTypeError(this, (typeof normalized), 'Expected type: [' + this.type + ']');
+	          }
+	        }
+
+	        if(this.required && (normalized == null)) {
+	          if(this.defaultValue != null) normalized = this.defaultValue;
+	          else throw new ValidationError(this, normalized, 'Required fields cannot be null');
+	        }
+
+	        if(this.vocabulary && this.vocabulary.indexOf(normalized) === -1) throw new ValidationError(this, normalized, 'Allowed values: ' + this.vocabulary);
+
+	        return normalized;
+	      },
+
+	      enumerable: false,
+	      writable: true
+	    }
+	  });
+
+	  return Field;
+	}();
+	exports.Field = Field;
+	var ValidationError = function($__super) {
+	  "use strict";
+
+	  function ValidationError(field, value, msg) {
+	    $__Object$getPrototypeOf(ValidationError.prototype).constructor.call(this);
+	    this.message = 'Invalid value: ' + value + ' on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+	    this.name = 'ValidationError';
+	  }
+
+	  ValidationError.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  ValidationError.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(ValidationError.prototype, "constructor", {
+	    value: ValidationError
+	  });
+
+	  return ValidationError;
+	}(Error);
+	exports.ValidationError = ValidationError;
+	var ValidationTypeError = function($__super) {
+	  "use strict";
+
+	  function ValidationTypeError(field, type, msg) {
+	    $__Object$getPrototypeOf(ValidationTypeError.prototype).constructor.call(this);
+	    this.message = 'Invalid type: [' + type + '] on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+	    this.name = 'ValidationTypeError';
+	  }
+
+	  ValidationTypeError.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  ValidationTypeError.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(ValidationTypeError.prototype, "constructor", {
+	    value: ValidationTypeError
+	  });
+
+	  return ValidationTypeError;
+	}(TypeError);
+	exports.ValidationTypeError = ValidationTypeError;
+	var Klass = function() {
+	  "use strict";
+
+	  function Klass(obj) {
+	    obj = obj || {};
+	    var schema = obj.schema || schematize(obj, {});
+	    this.schema = schema;
+	    function descriptor(field, o) {
+	      var value;
+	      return {
+	        enumerable: true,
+	        configurable: true,
+	        get: function () {
+	          return (value != null) ? value : field.defaultValue;
+	        },
+	        set: function (v) {
+	          value = field.validate(v, o);
+	        }
+	      };
+	    }
+	    Object.keys(schema).forEach(function (field) {
+	      Object.defineProperty(this, schema[field].name, descriptor(schema[field], this));
+	    }, this);
+
+	    Object.keys(schema).forEach(function (k) {
+	      this[k] = obj[k];
+	    }, this);
+	  }
+
+	  return Klass;
+	}();
+	exports.Klass = Klass;
+
+/***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var $__getIteratorRange = function(iterator, index, begin, len) {
-	  if (index > begin) {
-	    throw new RangeError();
-	  }
+	var $__Object$defineProperty = Object.defineProperty;
+	var $__Object$create = Object.create;
+	var $__Object$getPrototypeOf = Object.getPrototypeOf;
+	var Schema = __webpack_require__(11).Schema;
+	var schematize = __webpack_require__(11).schematize;
+	var ValidationError = __webpack_require__(11).ValidationError;
+	var ValidationTypeError = __webpack_require__(11).ValidationTypeError;
+	var moment = __webpack_require__(2);
 
-	  if (typeof len === "undefined") {
-	    len = Infinity;
-	  }
+	function dateTypeConstraint(value) {
+	  var m = moment(value);
+	  if(!m.isValid()) return null;
+	  return m.toDate();
+	}
 
-	  var range = [], end = begin + len;
+	var DataPointSchema = function($__super) {
+	  "use strict";
 
-	  while (index < end) {
-	    var next = iterator.next();
-
-	    if (next.done) {
-	      break;
-	    }
-
-	    if (index >= begin) {
-	      range.push(next.value);
-	    }
-
-	    index++;
-	  }
-
-	  return {
-	    range: range,
-	    index: index
-	  };
-	};
-
-	var $__getIterator = function(iterable) {
-	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
-
-	  if (typeof iterable[sym] === "function") {
-	    return iterable[sym]();
-	  } else if (typeof iterable === "object" || typeof iterable === "function") {
-	    return $__getArrayIterator(iterable);
-	  } else {
-	    throw new TypeError();
-	  }
-	};
-
-	var $__getArrayIterator = function(array) {
-	  var index = 0;
-
-	  return {
-	    next: function() {
-	      if (index < array.length) {
-	        return {
-	          done: false,
-	          value: array[index++]
-	        };
-	      } else {
-	        return {
-	          done: true,
-	          value: void 0
-	        };
+	  function DataPointSchema() {
+	    $__Object$getPrototypeOf(DataPointSchema.prototype).constructor.call(this);
+	    schematize({
+	      key: {
+	        title: 'Data point key',
+	        type: 'string',
+	        required: true
+	      },
+	      value: {
+	        title: 'Data point value',
+	        type: 'number',
+	        required: false  // null value means explicitly N/A for key
+	      },
+	      title: {
+	        title: 'Descriptive label (for key)',
+	        type: 'string',
+	        required: false,
+	      },
+	      valueLabel: {
+	        title: 'Value label',
+	        description: 'May be used for N= labels for denominator value',
+	        type: 'string',
+	        required: false
+	      },
+	      note: {
+	        title: 'Data point note',
+	        description: 'Descriptive note, used in interactive features',
+	        type: 'string',
+	        defaultValue: ''
+	      },
+	      uri: {
+	        title: 'Data point URI',
+	        description: 'Link to data source for point',
+	        type: 'string',
+	        required: false
 	      }
-	    }
-	  };
-	};
+	    }, this);
+	  }
 
-	function shapePath(node) {
-	  var spec = (arguments[1] !== void 0 ? arguments[1] : shapes.square);
-	  var size = (arguments[2] !== void 0 ? arguments[2] : 3);
-	  var d = "";
-	  var normalizer = spec.normalizer || 1;
-	  var multiplier = size * normalizer;
+	  DataPointSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  DataPointSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
 
-	  spec.path.forEach(function () {
-	    var $__arguments0 = arguments;
-	    var $__arguments = $__arguments0;
+	  $__Object$defineProperty(DataPointSchema.prototype, "constructor", {
+	    value: DataPointSchema
+	  });
 
-	    var var$0 = $__arguments[0],
-	        iterator$0 = $__getIterator(var$0),
-	        iteratorValue$0 = {
-	          index: 0
-	        },
-	        cmd = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]),
-	        args = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, Infinity), iteratorValue$0.range);
+	  return DataPointSchema;
+	}(Schema);
+	exports.DataPointSchema = DataPointSchema;
+	var dataPointSchema = new DataPointSchema();
+	exports.dataPointSchema = dataPointSchema;
+	var TimeDataPointSchema = function($__super) {
+	  "use strict";
 
-	    d += cmd;
+	  function TimeDataPointSchema() {
+	    $__Object$getPrototypeOf(TimeDataPointSchema.prototype).constructor.call(this);
+	    schematize({
+	      key: {
+	        title: 'Date key',
+	        description: 'Time series data point key (Date value); ' +
+	                     'should be naive dates stored as localtime.',
+	        type: Date,
+	        required: true,
+	        constraint: dateTypeConstraint
+	      }
+	      }, this);
+	  }
 
-	    args.forEach(function (arg, i) {
-	      if(i !== 0)
-	        d += ' ';
-	      if(arg.length)
-	        arg.forEach(function (sub_arg, sub_i) {
-	          if(arg)
-	          if(sub_i === 0){
-	                if(String(arg).indexOf('#') === -1)
-	              d += (multiplier * sub_arg);
-	            else
-	              d += sub_arg.slice(1);
-	          } else {
-	            if(String(arg).indexOf('#') === -1)
-	              d += "," + (multiplier * sub_arg);
-	            else
-	              d += "," + arg.slice(1);
+	  TimeDataPointSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  TimeDataPointSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(TimeDataPointSchema.prototype, "constructor", {
+	    value: TimeDataPointSchema
+	  });
+
+	  return TimeDataPointSchema;
+	}(DataPointSchema);
+	exports.TimeDataPointSchema = TimeDataPointSchema;
+	var timeDataPointSchema = new TimeDataPointSchema();
+	exports.timeDataPointSchema = timeDataPointSchema;
+	var DataSeriesSchema = function($__super) {
+	  "use strict";
+
+	  function DataSeriesSchema() {
+	    $__Object$getPrototypeOf(DataSeriesSchema.prototype).constructor.call(this);
+	    schematize({
+	          title: {
+	            title: 'Series title',
+	            description: 'Series/line name or title',
+	            type: 'string',
+	            required: false
+	          },
+	          description: {
+	            title: 'Series description',
+	            description: 'Descriptive text metadata about series, often' +
+	                         'is empty or unused',
+	            type: 'string',
+	            required: false
+	          },
+	          line_width: {
+	            title: 'Line width',
+	            description: 'Line width (in relative px units) Considered '+
+	                         'in line plots only, ignored otherwise.',
+	            type: 'number',
+	            required: false,
+	            defaultValue: 2.0
+	          },
+	          color: {
+	            title: 'Line/bar color',
+	            description: 'Primary series color name or HTML color code; ' +
+	                         'if unspecified ("Auto" default), defer to ' +
+	                         'automatic default color palette choices.',
+	            type: 'string',
+	            defaultValue: 'auto',
+	            required: false
+	          },
+	          marker_color: {
+	            title: 'Point marker fill color',
+	            description: 'Data point marker color name or code; ' +
+	                         'if unspecified ("Auto" default), defer to ' +
+	                         'match the line/bar color.',
+	            type: 'string',
+	            defaultValue: "Auto",
+	            required: false
+	          },
+	          marker_size: {
+	            title: 'Marker size',
+	            description: 'Marker size (in relative px units) Considered '+
+	                         'in line plots only, ignored otherwise.',
+	            type: 'number',
+	            required: false,
+	            defaultValue: 9.0
+	          },
+	          marker_width: {
+	            title: 'Marker stroke width',
+	            description: 'Marker stroke width (in relative px units) ' +
+	                         'Considered in line plots only, ignored ' +
+	                         'otherwise.  Currently only used for marker ' +
+	                         'style/shape that is not filled.',
+	            type: 'number',
+	            required: false,
+	            defaultValue: 2.0
+	          },
+	          marker_style: {
+	            title: 'Marker shape style',
+	            description: 'Marker shape, selected from enumerated ' +
+	                         'vocabulary of allowable choices.',
+	            type: 'string',
+	            constraint: function (value, obj) {
+	              if(value === 'x') return 'cross';
+	              if(value === 'filledCircle') {
+	                obj.marker_filled = true;
+	                return 'circle';
+	              }
+	              if(value === 'filledSquare') {
+	                obj.marker_filled = true;
+	                return 'square';
+	              }
+	              if(value === 'filledDiamond') {
+	                obj.marker_filled = true;
+	                return 'diamond';
+	              }
+	            },
+	            vocabulary: [
+	              'diamond',
+	              'circle',
+	              'square',
+	              'cross',
+	              'plus',
+	              'dash',
+	              'triangle-up',
+	              'triangle-down',
+	              'filledDiamond',
+	              'filledCircle',
+	              'filledSquare',
+	            ],
+	            required: false,
+	            defaultValue: 'square'
+	          },
+	          marker_filled: {
+	            title: 'Fill markers?',
+	            description: 'Instead of specifying "filledCircle", specify "Circle" that is filled with this property.',
+	            type: 'boolean',
+	            required: false,
+	            defaultValue: true
+	          },
+	          show_trend: {
+	            title: 'Show trend line?',
+	            type: 'boolean',
+	            defaultValue: false
+	          },
+	          trend_width: {
+	            title: 'Trend line width, if applicable',
+	            type: 'number',
+	            defaultValue: 2.0
+	          },
+	          trend_color: {
+	            title: 'Trend line color, if applicable',
+	            description: 'Trend line color name or code; ' +
+	                         'if unspecified ("Auto" default), defer to ' +
+	                         'match the line/bar color.',
+	            type: 'string',
+	            defaultValue: "Auto"
+	          },
+	          point_labels: {
+	            title: 'Show point labels?',
+	            description: 'Show labels above each marker for data value? ' +
+	                         'The default value of defer obeys plot-wide ' +
+	                         'setting, where show/omit explicitly do as ' +
+	                         'described.',
+	            type: 'string',
+	            vocabulary: ['defer', 'omit', 'show'],
+	            defaultValue: 'defer'
+	          },
+	          display_format: {
+	            title: 'Display format for y values',
+	            description: 'Standard formatting string',
+	            type: 'string',
+	            defaultValue: '%%.%if'
 	          }
-	        });
-	      else {
-	        if(String(arg).indexOf('#') === -1)
-	          d += (multiplier * arg);
-	        else
-	          d += arg.slice(1);
-	      }
-	    });
-	  });
-
-	  console.log(d);
-
-	  node.attr('d', d)
-	      .classed('smooth-shape', spec.smooth ? true : false)
-	      .classed('crisp-shape', spec.smooth ? false : true);
-	}
-
-	exports.shapePath = shapePath;function legendMarkers (selection, size) {
-	  size = size || 4;
-	  selection.each(function (d, i) {
-	    var sel = d3.select(this);
-	    var shape_name = d.marker_style || 'square';
-	    if(shape_name === 'cross') shape_name = 'legend_cross';
-	    var shape = shapes[shape_name] || shapes.square;
-	    sel.call(shapePath, shape, size)
-	  });
-	}
-
-	exports.legendMarkers = legendMarkers;var shapes = {
-	  square: {
-	    normalizer: 1 /2,
-	    path: [
-	      ['m', -1, -1],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['z']
-	    ]
-	  },
-	  diamond: {
-	    normalizer: 1 / 2,
-	    path: [
-	      ['m', -1, 0],
-	      ['l', 1, -1],
-	      ['l', 1, 1],
-	      ['l', -1, 1],
-	      ['z']
-	    ]
-	  },
-	  cross: {
-	    normalizer: 1 / 6,
-	    path: [
-	      ['m', -1, -1],
-	      ['v', -2],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['v', -2],
-	      ['h', -2],
-	      ['v', -2],
-	      ['z']
-	    ]
-	  },
-	  legend_cross: {
-	    normalizer: 1 / 4,
-	    path: [
-	      ['m', -1, -1],
-	      ['v', -1],
-	      ['h', 2],
-	      ['v', 1],
-	      ['h', 1],
-	      ['v', 2],
-	      ['h', -1],
-	      ['v', 1],
-	      ['h', -2],
-	      ['v', -1],
-	      ['h', -1],
-	      ['v', -2],
-	      ['z']
-	    ]
-	  },
-	  circle: {
-	    normalizer: 1 / 2,
-	    path: [
-	      ['m', -1, 0],
-	      ['a', [1, 1], [0], ['#1',0], [2,0]],
-	      ['a', [1, 1], [0], ['#1',0], [-2,0]]
-	    ],
-	    smooth: true
+	        }, this);
 	  }
-	}
-	exports.shapes = shapes;
+
+	  DataSeriesSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  DataSeriesSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(DataSeriesSchema.prototype, "constructor", {
+	    value: DataSeriesSchema
+	  });
+
+	  return DataSeriesSchema;
+	}(Schema);
+	exports.DataSeriesSchema = DataSeriesSchema;
+	var dataSeriesSchema = new DataSeriesSchema();
+	exports.dataSeriesSchema = dataSeriesSchema;
+	var TimeDataSeriesSchema = function($__super) {
+	  "use strict";
+
+	  function TimeDataSeriesSchema() {
+	    $__Object$getPrototypeOf(TimeDataSeriesSchema.prototype).constructor.call(this);
+	    schematize({
+	      break_lines: {
+	        title: 'Break lines?',
+	        description:
+	            'When a value is missing for name or date on the ' +
+	            'X axis, should the line be broken/discontinuous ' +
+	            'such that no line runs through the empty/null ' +
+	            'value?  This defaults to true, which means that ' +
+	            'no line will run from adjacent values through the ' +
+	            'missing value.  For purposes of tabular legend, ' +
+	            'any value without a data-source should render "--" ' +
+	            'and any null value (specifying N/A or NaN value) ' +
+	            'should display as N/A.  At future date, we may ' +
+	            'wish to add other options for this case, such as ' +
+	            'drawing a dotted-line through the N/A period that ' +
+	            'breaks continuity of contiguous points.  Ideally, ' +
+	            'any such rendering behavior avoids depending on a ' +
+	            'fixed frequency for a time-series plot.',
+	        type: 'string',
+	        constraint: function (value) {
+	          if(typeof value === 'boolean')
+	            return value ? 'dashed' : 'solid';
+	        },
+	        vocabulary: ['hidden', 'solid', 'dashed'],
+	        defaultValue: 'dashed'
+	      }
+	    }, this);
+	  }
+
+	  TimeDataSeriesSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  TimeDataSeriesSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(TimeDataSeriesSchema.prototype, "constructor", {
+	    value: TimeDataSeriesSchema
+	  });
+
+	  return TimeDataSeriesSchema;
+	}(DataSeriesSchema);
+	exports.TimeDataSeriesSchema = TimeDataSeriesSchema;
+	var timeDataSeriesSchema = new TimeDataSeriesSchema();
+	exports.timeDataSeriesSchema = timeDataSeriesSchema;
+	var MultiSeriesChartSchema = function($__super) {
+	  "use strict";
+
+	  function MultiSeriesChartSchema() {
+	    $__Object$getPrototypeOf(MultiSeriesChartSchema.prototype).constructor.call(this);
+	    schematize({
+	          // Identifiction: shortname and uid
+	          name: {
+	            title: 'Short name',
+	            description: 'Short name of plot, unique only to report it ' +
+	                         'is contained within, usually descriptive, ' +
+	                         'like a filename; often transformed from ' +
+	                         'title.  May be present in JSON, but usually ' +
+	                         'is not preferred for identification or ' +
+	                         'data binding vs. UID; may be used in URL ' +
+	                         'construction, but in itself does not contain ' +
+	                         'full context or URI.',
+	            type: 'string',
+	            required: false
+	          },
+	          uid: {
+	            title: 'UID',
+	            description: 'UUID (hexidecimal representation) of chart, ' +
+	                         'based on UUID of chart content in Teamspace ' +
+	                         'CMS system.  May or may not be in canonical ' +
+	                         'RFC 4122 format (with dashes) or unfieled ' +
+	                         'hexidecimal format (usually, no dashes).',
+	            type: 'string',
+	            required: false
+	          },
+	          url: {
+	            title: 'Chart URL',
+	            description: 'Base URL to chart content',
+	            type: 'string',
+	            required: false
+	          },
+	          // Basic metadata -- may be rendered in template in HTML source
+	          //                   rendered by server, if it is included in
+	          //                   DOM this way, plotting application may
+	          //                   choose to re-plot it, if necessary?
+	          //                   Current (Sept. 2014) implementation is
+	          //                   *ignoring* title, description even though
+	          //                   they are provided in JSON.
+	          title: {
+	            title: 'Title',
+	            description: 'Data collection name or title; may be ' +
+	                         'displayed in legend.',
+	            type: 'string',
+	            required: false
+	          },
+	          description: {
+	            title: 'Description',
+	            description: 'Textual description of the data collection.',
+	            type: 'string',
+	            required: false
+	          },
+	          info: {
+	            title: 'Informative notes / caption',
+	            description: 'This allows any rich text and may contain ' +
+	                         'free-form notes about this chart; displayed ' +
+	                         'in report output.  NOTE: this is NOT included ' +
+	                         'in JSON as of September 2014, and is instead ' +
+	                         'rendered server-side in template -- it may be ' +
+	                         'included in future JSON feeds.',
+	            type: 'string',
+	            required: false
+	          },
+	          // Type of plot:
+	          chart_type: {
+	            title: 'Chart type',
+	            description: 'Type of chart to display (line or bar).',
+	            type: 'string',
+	            vocabulary: ['line', 'bar'],
+	            defaultValue: 'line',
+	            required: true
+	          },
+	          // Plot sizing: favor aspect_ratio over height, if provided
+	          width: {
+	            title: 'Width',
+	            description: 'Display width of chart, including Y-axis ' +
+	                         'labels, grid, and legend (if applicable) in ' +
+	                         'units configured.',
+	            type: 'number',
+	            defaultValue: '100',
+	            required: true
+	          },
+	          width_units: {
+	            title: 'Units of width',
+	            description: '',
+	            type: 'string',
+	            defaultValue: '%',
+	            required: true
+	          },
+	          height: {
+	            title: 'Height',
+	            description: 'Display height of chart in units configured ' +
+	                         '(either as percentage of width, or in pixels) ' +
+	                         ' -- used when aspect_ratio not specified.',
+	            type: 'number',
+	            defaultValue: '50',
+	            required: true
+	          },
+	          height_units: {
+	            title: 'Units of height',
+	            description: 'Ignore unless aspect ratio not provided or ' +
+	                         'value of height_units is % or px.',
+	            type: 'string',
+	            defaultValue: '2:1',    // prefer aspect_ratio field to this
+	            required: true
+	          },
+	          aspect_ratio: {
+	              title: 'Aspect ratio',
+	              description: 'Preferred ratio of width to height, should ' +
+	                           'control height of containing div, if present.',
+	              type: Array,
+	              required: false,
+	              constraint: function (value) {
+	                // validate that value is indeed a two-item Array of num.
+	                if (value.length !== 2)
+	                  throw new ValidationError(this, value, 'Aspect ratio must be a two element Array');
+	                if (typeof value[0] !== 'number' || typeof value[1] !== 'number')
+	                  throw new ValidationTypeError(this, (typeof value[0]) + ' ' + (typeof value[1]), 'Both elements of aspect ratio must be numbers');
+	            }
+	          },
+	          range_min: {
+	            title: 'Range minimum',
+	            description: 'Minimum anticipated value of any data point ' +
+	                         '(optional; if not specified, calculate from '+
+	                         'available data on all contained series).',
+	            type: 'number',
+	            constraint: function(value, obj) {
+	              var max = (obj.range_max != null) ? obj.range_max : null;
+	              if(value > max) throw new ValidationError(this, value, 'range_min must be less than or equal to range_max');
+	              return value;
+	            },
+	            required: false
+	          },
+	          range_max: {
+	            title: 'Range maximum',
+	            description: 'Maximum anticipated value of any data point ' +
+	                         '(optional; if not specified, calculate from '+
+	                         'available data on all contained series).',
+	            type: 'number',
+	            constraint: function(value, obj) {
+	              var min = (obj.range_min != null) ? obj.range_min : null;
+	              if(value < min) throw new ValidationError(this, value, 'range_max must be greater than or equal to range_min');
+	              return value;
+	            },
+	            required: false
+	          },
+	          units: {
+	            title: 'Units',
+	            description: 'Common set of units of measure for the data ' +
+	                         'series in this collection.  If the units for ' +
+	                         'series are not shared, then define respective ' +
+	                         'units on the series themselves. May be ' +
+	                         'displayed as part of Y-axis label using a ' +
+	                         'parenthetical notation of both units and ' +
+	                         'y_label are provided.',
+	            type: 'string',
+	            required: false
+	          },
+	          y_label: {
+	            title: 'Y axis label',
+	            description: 'Primary Y-Axis label/title (descriptive); ' +
+	                         'this is often omitted since axis is often ' +
+	                         'self-describing (especially when units are ' +
+	                         'percentages).  If omitted, do not allocate ' +
+	                         'space in plot for label. If included, ' +
+	                         'render text at 90-degree rotation ' +
+	                         '(counter-clockwise, with text bottom-to-top).',
+	            type: 'string',
+	            defaultValue: '',
+	            required: false
+	          },
+	          // Goal line: value (if defined), color:
+	          goal: {
+	            title: 'Goal',
+	            description: 'Common goal value as decimal number.  If each ' +
+	                         'series has different respective goals, edit ' +
+	                         'those goals on each series.  If goal is ' +
+	                         'undefined or null, omit display of goal line.',
+	            type: 'number',
+	            required: false
+	          },
+	          goal_color: {
+	            title: 'Goal-line color',
+	            description: 'If omitted, color will be selected from ' +
+	                         'defaults.',
+	            type: 'string',
+	            defaultValue: "Auto",
+	            required: false
+	          },
+	          // Legend configuration:
+	          legend_placement: {
+	            title: 'Legend placement',
+	            description: 'Where to place legend in relationship to the ' +
+	                         'grid. Note: the legend is disabled for less ' +
+	                         'than two series/line unless the tabular '+
+	                         'legend is selected.',
+	            type: 'string',
+	            vocabulary: [
+	              'tabular',      // (def) aligned value table below grid
+	              'outside',      // outside grid, next most common
+	              'inside'        // inside grid, rarely used
+	            ],
+	            defaultValue: 'outside',
+	            required: false
+	          },
+	          legend_location: {
+	            title: 'Legend location',
+	            description: 'Select a directional position for legend. ' +
+	                         'This setting is ignored if either the tabular ' +
+	                         'legend placement is selected or if the legend ' +
+	                         'is hidden (for less than two series). ' +
+	                         'Available choices are cardinal directions, ' +
+	                         'which is a hold-over from how jqPlot idioms.',
+	            type: 'string',
+	            vocabulary: [
+	              'n',        // top
+	              'e',        // right of grid, vertical align at middle
+	              'w',        // left of grid, vertical align at middle
+	              's',        // bottom, below plot
+	              'nw',       // left of grid, top-aligned
+	              'ne',       // right of grid, top-aligned
+	              'sw',       // left of grid, bottom-aligned
+	              'se'        // right of grid, bottom-aligned
+	            ],
+	            defaultValue: 'e',
+	            required: false
+	          },
+	          // X-axis (title label):
+	          x_label: {
+	            title: 'X axis label',
+	            description: 'Label for X-axis, optional.',
+	            type: 'string',
+	            defaultValue: '',
+	            required: false
+	          },
+	          // misc:
+	          css: {
+	            title: 'Chart styles',
+	            description: 'CSS stylesheet rules for chart (optional).',
+	            type: 'string',
+	            required: false
+	          },
+	          point_labels: {
+	            title: 'Show point labels?',
+	            description: 'Show labels above data-point markers?  This ' +
+	                         'may be overridden on individual lines/series. ' +
+	                         'If omitted, the usual assumption is that ' +
+	                         'a viewer in a browser must hover over a ' +
+	                         'point to see its value, and click for detail. ' +
+	                         'The primary usability question with this is ' +
+	                         'what to do with overlapping values from two ' +
+	                         'lines, which is why we omit usually (or have ' +
+	                         'an idiom of displaying just labels for the ' +
+	                         'first/primary line on the plot, not plot-wide.',
+	            type: 'string',
+	            vocabulary: ['show', 'omit'],
+	            defaultValue: 'omit',
+	            required: true
+	          }
+	        }, this);
+	  }
+
+	  MultiSeriesChartSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  MultiSeriesChartSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(MultiSeriesChartSchema.prototype, "constructor", {
+	    value: MultiSeriesChartSchema
+	  });
+
+	  return MultiSeriesChartSchema;
+	}(Schema);
+	exports.MultiSeriesChartSchema = MultiSeriesChartSchema;
+	var multiSeriesChartSchema = new MultiSeriesChartSchema();
+	exports.multiSeriesChartSchema = multiSeriesChartSchema;
+	var TimeSeriesChartSchema = function($__super) {
+	  "use strict";
+
+	  function TimeSeriesChartSchema() {
+	    $__Object$getPrototypeOf(TimeSeriesChartSchema.prototype).constructor.call(this);
+	    schematize({
+	          frequency: {
+	            title: 'Frequency (YAGNI??)',
+	            description: 'Frequncy between periods of reporting that ' +
+	                         'the plot visualizes.  May be used as cue for ' +
+	                         'handling the default date-label choices, ' +
+	                         'where month names are often stand-ins for ' +
+	                         'an exemplar date value for the month, e.g. ' +
+	                         '2014-06-01 may be represented as "Jun 2014". ' +
+	                         'THIS MAY BE YAGNI if we do not need to draw ' +
+	                         'vertical lines at X-axis tick labels, or just ' +
+	                         'rely on scales and explicit data-labels in ' +
+	                         'the labels field below (the JSON will provide ' +
+	                         'them, and if it does not, then just using ' +
+	                         'default US-appropriate short-date of ' +
+	                         'MM/DD/YYYY may be good enough to justify ' +
+	                         'ignoring this?  I cannot remember why jqPlot ' +
+	                         'wants this interval-frequency on the domain, ' +
+	                         'but it may be unnecessarily constraining to ' +
+	                         'fix this to a controlled set of choices or ' +
+	                         'just plain unnecessary?',
+	            type: 'string',
+	            vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly'],
+	            defaultValue: 'monthly',
+	            required: false
+	          },
+	          start: {
+	            title: 'Start date',
+	            description: 'Explicit start date; optional.  If an ' +
+	                         'explicit start date is not provided, one ' +
+	                         'should be computed from earliest value in ' +
+	                         'provided data.',
+	            type: Date,
+	            constraint: function(value, obj) {
+	              value = dateTypeConstraint(value);
+	              var end = obj.end;
+	              if(end == null) return value;
+	              if(value > end) throw new ValidationError(this, value, 'Start date cannot be after end date');
+	              return value;
+	            },
+	            required: false
+	          },
+	          end: {
+	            title: 'End date',
+	            description: 'Explicit end date; optional.  If an ' +
+	                         'explicit end date is not provided, one ' +
+	                         'should be computed from latest value in ' +
+	                         'provided data.',
+	            type: Date,
+	            constraint: function(value, obj) {
+	              value = dateTypeConstraint(value);
+	              var start = obj.start;
+	              if(start == null) return value;
+	              if(value < start) throw new ValidationError(this, value, 'End date cannot be before start date');
+	              return value;
+	            },
+	            required: false
+	          },
+	          labels: {
+	            title: 'Date labels',
+	            description: 'Date label overrides, used for X-axis labels. ' +
+	                         'if ommitted in whole or in part, use a ' +
+	                         'default MM/DD/YYYY format for dates. Is an ' +
+	                         'untyped object value used as key/vaule pair; ' +
+	                         'keys are ISO 8601 date stamps, values labels; ' +
+	                         'example: http://snag.gy/D1zjx.jpg',
+	            type: Object,
+	            constraint: function (value) {
+	              // validate the object key/value pairs:
+	              Object.keys(value).forEach(function (k) {
+	                var v = value[k];
+	                if (!moment(k).isValid())
+	                  throw new ValidationError(this, value, 'Key is not a valid Datestamp: ' + k);
+	                if (typeof v !== 'string')
+	                  throw new ValidationTypeError(this, typeof v, 'Labels must be strings');
+	              }, this);
+	            },
+	            required: false
+	          },
+	          auto_crop: {
+	            title: 'Auto-crop data?',
+	            description:
+	                'If data contains sequential null values (incomplete ' +
+	                'or no data calculable) on the right-hand of a ' +
+	                'time-series plot, should that right-hand side ' +
+	                'be cropped to only show the latest meaningful ' +
+	                'data?  The default is to crop automatically.',
+	            type: 'boolean',
+	            defaultValue: true,
+	            required: false
+	          }
+	        }, this);
+	  }
+
+	  TimeSeriesChartSchema.__proto__ = ($__super !== null ? $__super : Function.prototype);
+	  TimeSeriesChartSchema.prototype = $__Object$create(($__super !== null ? $__super.prototype : null));
+
+	  $__Object$defineProperty(TimeSeriesChartSchema.prototype, "constructor", {
+	    value: TimeSeriesChartSchema
+	  });
+
+	  return TimeSeriesChartSchema;
+	}(MultiSeriesChartSchema);
+	exports.TimeSeriesChartSchema = TimeSeriesChartSchema;
+	var timeSeriesChartSchema = new TimeSeriesChartSchema();
+	exports.timeSeriesChartSchema = timeSeriesChartSchema;
 
 /***/ }
 /******/ ])
