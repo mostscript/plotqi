@@ -80,7 +80,7 @@ export function LargeChart(mschart, node) {
                     return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
                     + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
                   })
-                  //chart.lines.scatter.onlyCircles(false).useVoronoi(false);
+                  chart.lines.scatter.onlyCircles(false).useVoronoi(false);
 
     chart.xAxis
          .tickFormat( d => d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) )
@@ -107,14 +107,16 @@ export function LargeChart(mschart, node) {
     var yscale = chart.yScale();
     var xscale = chart.xScale();
 
-    var distNode = node.append('g')
-                       .attr('class', 'nvd3 nv-distribution')
-                       .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')')
-                       .node();
+    node.select('.nv-wrap.nv-lineChart > g')
+        .insert('g', '.nv-linesWrap')
+        .attr('class', 'nvd3 nv-distribution');
 
     //Dashed lines for all missing areas
-    node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group').filter( d => d.dashed )
-        .style('stroke-dasharray', '5 5');
+    node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group')
+        .style('stroke-dasharray', d => d.dashed ? '5 5' : 'none' )
+        .style('stroke-width', d => d.thickness );
+    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group')
+        .style('stroke-width', d => d.markerThickness );
 
     //Fix Axis Ticks
     node.selectAll('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))')
@@ -219,7 +221,6 @@ function render(mschart, node, margins) {
 
     this.update();
     node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( d => d.dashed )
-        .attr('visibility', 'hidden')
         .remove();
 
     var yscale = this.yScale();
@@ -232,12 +233,7 @@ function render(mschart, node, margins) {
 
     //Goal Line
     if(mschart.goal) {
-      var distWrap = node.selectAll('g.nv-distribution').data([mschart.goal]);
-      distWrap.enter().append('g')
-                      .attr('class', 'nvd3 nv-distribution')
-                      .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
-
-      var goal = distWrap.selectAll('g.nv-dist.nv-goal').data([mschart.goal]);
+      var goal = node.select('g.nv-distribution').selectAll('g.nv-dist.nv-goal').data([mschart.goal]);
       var goalEnter = goal.enter().append('g')
                           .attr('class', 'nv-dist nv-goal')
                           .style('color', mschart.goal_color);
@@ -270,7 +266,9 @@ function preprocessData(mschart) {
       color: series.color,
       values: [],
       format: d3.format(series.display_format),
-      incomplete: series.break_lines
+      incomplete: series.break_lines,
+      thickness: series.line_width,
+      markerThickness: series.marker_width
     };
 
     keys.forEach(function (key) {
@@ -282,7 +280,7 @@ function preprocessData(mschart) {
           size: series.marker_size,
           shape: series.marker_style,
           note: datapoint.note,
-          title: datapoint.title
+          title: datapoint.title,
           });
       else
         obj.values.push({
@@ -339,6 +337,8 @@ function extractData(mschart) {
           color: series.color,
           values: poly_line,
           format: series.format,
+          thickness: series.thickness,
+          markerThickness: series.markerThickness,
           dashed: i % 2 === 1
         });
       else if(i % 2 === 0)
@@ -347,6 +347,8 @@ function extractData(mschart) {
           color: series.color,
           values: poly_line,
           format: series.format,
+          thickness: series.thickness,
+          markerThickness: series.markerThickness,
           dashed: false
         });
     });

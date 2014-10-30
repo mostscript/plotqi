@@ -7,7 +7,7 @@
       "series": [
         {
           "line_width": 4, 
-          "break_lines": "dashed", 
+          "break_lines": true, 
           "marker_style": "filledSquare", 
           "marker_color": "#554e4e", 
           "title": "Jupiter Pediatrics", 
@@ -194,7 +194,7 @@
       "description": "The number of patients per 100 who were screened for a possible exposure to adverse circumstances",
       "legend_location": "e", 
       "height_units": "px", 
-      "width": 50, 
+      "width": 65, 
       "range_max": 100, 
       "x_axis_type": "date", 
       "auto_crop": true, 

@@ -135,15 +135,12 @@ export class DataSeriesSchema extends Schema {
             constraint: function (value, obj) {
               if(value === 'x') return 'cross';
               if(value === 'filledCircle') {
-                obj.marker_filled = true;
                 return 'circle';
               }
               if(value === 'filledSquare') {
-                obj.marker_filled = true;
                 return 'square';
               }
               if(value === 'filledDiamond') {
-                obj.marker_filled = true;
                 return 'diamond';
               }
             },
@@ -155,20 +152,10 @@ export class DataSeriesSchema extends Schema {
               'plus',
               'dash',
               'triangle-up',
-              'triangle-down',
-              'filledDiamond',
-              'filledCircle',
-              'filledSquare',
+              'triangle-down'
             ],
             required: false,
             defaultValue: 'square'
-          },
-          marker_filled: {
-            title: 'Fill markers?',
-            description: 'Instead of specifying "filledCircle", specify "Circle" that is filled with this property.',
-            type: 'boolean',
-            required: false,
-            defaultValue: true
           },
           show_trend: {
             title: 'Show trend line?',

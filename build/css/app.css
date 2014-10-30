@@ -1448,6 +1448,13 @@ svg.upiq-chart .nv-title {
   font-size: 14pt;
   font-weight: bold;
   }
+svg.upiq-chart .nv-wrap.nv-line > g > g.nv-groups .nv-group path {
+  stroke-width: inherit;
+  }
+svg.upiq-chart .nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group path,
+svg.upiq-chart .nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group circle {
+  stroke-width: inherit;
+  }
 .nv-dist.nv-goal {
   stroke: currentColor;
   fill: currentColor;

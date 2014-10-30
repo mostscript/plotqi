@@ -141,8 +141,8 @@ export function SmallMultiplesChart(mschart, node, size) {
           .attr('text-anchor', 'start')
           .attr('x', xscale(domain[1].valueOf()) + 2)
           .attr('y', 2)
-          //.attr('textLength', margins.right - 3)
-          //.attr('lengthAdjust', 'spacingAndGlyphs')
+          .attr('textLength', margins.right - 2)
+          .attr('lengthAdjust', 'spacing')
           .text(mschart.goal + ' (G)');
     }
 

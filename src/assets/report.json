@@ -194,7 +194,7 @@
       "description": "The number of patients per 100 who were screened for a possible exposure to adverse circumstances",
       "legend_location": "e", 
       "height_units": "px", 
-      "width": 50, 
+      "width": 65, 
       "range_max": 100, 
       "x_axis_type": "date", 
       "auto_crop": true, 

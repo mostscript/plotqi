@@ -77,6 +77,15 @@ svg.upiq-chart {
   .nv-legend {
     rect:extend(.crisp-shape) {}
   }
+
+  .nv-wrap.nv-line > g > g.nv-groups .nv-group path {
+    stroke-width: inherit;
+  }
+  .nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group {
+    path, circle {
+      stroke-width: inherit;
+    }
+  }
 }
 
 .nv-dist.nv-goal {
