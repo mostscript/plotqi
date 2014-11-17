@@ -1,3 +1,5 @@
+/*jshint esnext:true, eqnull:true */
+/*globals require */
 var privateSym = Symbol();
 import {
   DataPoint,
@@ -83,7 +85,8 @@ export function LargeChart(mschart, node) {
                   chart.lines.scatter.onlyCircles(false).useVoronoi(false);
 
     chart.xAxis
-         .tickFormat( d => d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) )
+         //.tickFormat( d => d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) )
+         .tickFormat( () => '')
          .tickValues(tickVals)
          .showMaxMin(false)
          .tickPadding(6)
@@ -96,8 +99,8 @@ export function LargeChart(mschart, node) {
     chart
          .xDomain(domain.map( x => x.valueOf() ))
          .yDomain(mschart.range);
-    if(mschart.x_label)
-      chart.xAxis.axisLabel(mschart.x_label)
+    //if(mschart.x_label)
+      //chart.xAxis.axisLabel(mschart.x_label)
     if(mschart.y_label)
       chart.yAxis.axisLabel(mschart.y_label)
                  .axisLabelDistance(48);
@@ -162,32 +165,100 @@ export function LargeChart(mschart, node) {
                      .selectAll('circle.legend-pt.nv-point')
                      .data(mschart.series.slice(0, 2))
                      .enter().append('g');*/
-    render(mschart, node, margins).call(chart);
+    render();
     console.log(chart);
     if(relative)
-      nv.utils.windowResize(debounce(render(mschart, node, margins).bind(chart), 250, false));
+      nv.utils.windowResize(debounce(render, 250, false));
     return chart;
-  };
-}
 
-function render(mschart, node, margins) {
-  return function () {
-    var rightHandLegend = function() {
-      //Legend
-      if(mschart.series.length > 1) {
-        var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;;
+    function render() {
+      var rightHandLegend = function() {
+        //Legend
+        if(mschart.series.length > 1) {
+          var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;;
+          var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
+          var legWrapEnter = legWrap.enter().append('g')
+                                     .attr('class', 'nvd3 nv-legend')
+                                     .attr('transform', 'translate(' + (xMax + margins.left) + ',' + margins.top + ')');
+
+          var legend = legWrap.selectAll('g.nv-leg-entry').data(mschart.series);
+          var legEnter = legend.enter().append('g')
+                                       .attr('class', 'nv-leg-entry');
+          var dy = legPadding * 2;
+          legEnter.each(function (d, i) {
+            var el = d3.select(this);
+            el.attr('transform', 'translate(' + (2 * legPadding) +  ',' + dy + ')');
+            el.append('text')
+              .text(d.title)
+              .attr('y', markerWidth)
+              .attr('transform', 'translate(' + (legPadding + markerWidth) + ',0)')
+              .call(d3textWrap, legWidth - markerWidth - (2 * legPadding), 0);
+            dy += this.getBoundingClientRect().height + 10;
+            el.append('rect')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('width', 10)
+                .attr('height', 10)
+                .style('fill', (d, i) => d.color )
+                .style('stroke', (d, i) => d.color )
+                .style('fill-opacity', 0.5 );
+          });
+          var legHeight = legWrap.node().getBoundingClientRect().height + 15;
+
+          legWrapEnter.append('rect')
+                      .attr('x', legPadding)
+                      .attr('height', legHeight)
+                      .attr('width', legWidth)
+                      .attr('stroke', 'black')
+                      .attr('stroke-opacity', 0.5)
+                      .attr('stroke-width', 1)
+                      .attr('fill-opacity', 0);
+          legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (margins.top + (yRange / 2) - (legHeight / 2)) + ')');
+        }
+      }
+
+      var tabularLegend = function() {
+        var legPadding = 10;
+        var legLeftPadding = 5;
         var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
         var legWrapEnter = legWrap.enter().append('g')
                                    .attr('class', 'nvd3 nv-legend')
-                                   .attr('transform', 'translate(' + (xMax + margins.left) + ',' + margins.top + ')');
-
-        var legend = legWrap.selectAll('g.nv-leg-entry').data(mschart.series);
+                                   .attr('transform', 'translate(' + legLeftPadding + ',' + (yMin + margins.top + legPadding) + ')');
+        var legend = legWrap.selectAll('g.nv-leg-row').data(['header'].concat(mschart.series));
         var legEnter = legend.enter().append('g')
-                                     .attr('class', 'nv-leg-entry');
-        var dy = legPadding * 2;
+                                     .attr('class', 'nv-leg-row');
+
         legEnter.each(function (d, i) {
           var el = d3.select(this);
-          el.attr('transform', 'translate(' + (2 * legPadding) +  ',' + dy + ')');
+          if(d === 'header') {
+            el.append('rect')
+                .attr('width', xMax + (margins.left - legLeftPadding))
+                .attr('height', 16)
+                .style('fill', '#ccc');
+            var cells = el.selectAll('.nv-leg-cell').data(tickVals);
+            var cellsEnter = cells.enter().append('text')
+                                          .attr('x', d => margins.left - legLeftPadding + xscale(d) )
+                                          .attr('y', legPadding + 3)
+                                          .style('text-anchor', 'middle')
+                                          .text( d => mschart.labels[moment(d).format('YYYY-MM-DD')] )
+          }
+          else {
+            el.append('rect')
+            .attr('y', i * 16)
+                .attr('width', xMax + (margins.left - legLeftPadding))
+                .attr('height', 16)
+                .style('fill', d.color);
+            var cells = el.selectAll('.nv-leg-cell').data(d.data.values());
+            var cellsEnter = cells.enter().append('text')
+                                          .attr('x', d => margins.left - legLeftPadding + xscale(d.key.valueOf()) )
+                                          .attr('y', (i * 16) + legPadding + 3)
+                                          .style('text-anchor', 'middle')
+                                          .style('fill', '#eee')
+                                          .text( d => d.value );
+            console.log(d)
+            console.log(xscale);
+          }
+          /*el.attr('transform', 'translate(' + 0 +  ',' + dy + ')');
           el.append('text')
             .text(d.title)
             .attr('y', markerWidth)
@@ -198,61 +269,52 @@ function render(mschart, node, margins) {
               .attr('x', 0)
               .attr('y', 0)
               .attr('width', 10)
-              .attr('height', 10)
+              .attr('height', 50)
               .style('fill', (d, i) => d.color )
               .style('stroke', (d, i) => d.color )
-              .style('fill-opacity', 0.5 );
+              .style('fill-opacity', 0.5 );*/
         });
         var legHeight = legWrap.node().getBoundingClientRect().height + 15;
-
-        legWrapEnter.append('rect')
-                    .attr('x', legPadding)
-                    .attr('height', legHeight)
-                    .attr('width', legWidth)
-                    .attr('stroke', 'black')
-                    .attr('stroke-opacity', 0.5)
-                    .attr('stroke-width', 1)
-                    .attr('fill-opacity', 0);
-        legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (margins.top + (yRange / 2) - (legHeight / 2)) + ')');
       }
+
+
+
+      chart.update();
+      node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( d => d.dashed )
+          .remove();
+
+      var yscale = chart.yScale();
+      var xscale = chart.xScale();
+      var xMax = xscale(mschart.domain[1].valueOf());
+      var yMax = yscale(mschart.range[1]);
+      var yMin = yscale(mschart.range[0]);
+      var yRange = yMin - yMax;
+      var chartHeight = node.node().getBoundingClientRect().height;
+
+      //Goal Line
+      if(mschart.goal) {
+        var goal = node.select('g.nv-distribution').selectAll('g.nv-dist.nv-goal').data([mschart.goal]);
+        var goalEnter = goal.enter().append('g')
+                            .attr('class', 'nv-dist nv-goal')
+                            .style('color', mschart.goal_color);
+        goalEnter.append('line')
+                 .attr('class', 'nv-goal-line');
+        goalEnter.append('text')
+                 .attr('class', 'nv-goal-lbl')
+                 .text('Goal: ' + mschart.goal)
+                 .attr('text-anchor', 'start')
+                 .attr('x', 3)
+                 .attr('y', -5);
+
+        goal.transition().duration(500).attr('transform', 'translate(0,' + (Math.floor(yscale(mschart.goal)) + 0.5) + ')');
+        goal.select('line').transition().duration(500).attr('x2', xMax);
+      }
+
+      //Legend
+      //rightHandLegend();
+      tabularLegend();
     }
-
-
-
-    this.update();
-    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( d => d.dashed )
-        .remove();
-
-    var yscale = this.yScale();
-    var xscale = this.xScale();
-    var xMax = xscale(mschart.domain[1].valueOf());
-    var yMax = yscale(mschart.range[1]);
-    var yMin = yscale(mschart.range[0]);
-    var yRange = yMin - yMax;
-    var chartHeight = node.node().getBoundingClientRect().height;
-
-    //Goal Line
-    if(mschart.goal) {
-      var goal = node.select('g.nv-distribution').selectAll('g.nv-dist.nv-goal').data([mschart.goal]);
-      var goalEnter = goal.enter().append('g')
-                          .attr('class', 'nv-dist nv-goal')
-                          .style('color', mschart.goal_color);
-      goalEnter.append('line')
-               .attr('class', 'nv-goal-line');
-      goalEnter.append('text')
-               .attr('class', 'nv-goal-lbl')
-               .text('Goal: ' + mschart.goal)
-               .attr('text-anchor', 'start')
-               .attr('x', 3)
-               .attr('y', -5);
-
-      goal.transition().duration(500).attr('transform', 'translate(0,' + (Math.floor(yscale(mschart.goal)) + 0.5) + ')');
-      goal.select('line').transition().duration(500).attr('x2', xMax);
-    }
-
-    //Legend
-    rightHandLegend();
-  }
+  };
 }
 
 function preprocessData(mschart) {
