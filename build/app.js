@@ -10727,62 +10727,48 @@
 	                                   .attr('class', 'nvd3 nv-legend')
 	                                   .attr('transform', 'translate(' + legLeftPadding + ',' + (yMin + margins.top + legPadding) + ')');
 	        var legend = legWrap.selectAll('g.nv-leg-row').data(['header'].concat(mschart.series));
-	        var legEnter = legend.enter().append('g')
-	                                     .attr('class', 'nv-leg-row');
+	        legend.enter().append('g')
+	                      .attr('class', 'nv-leg-row');
 
-	        legEnter.each(function (d, i) {
+	        legend.each(function (d, i) {
 	          var el = d3.select(this);
 	          if(d === 'header') {
 	            el.append('rect')
-	                .attr('width', xMax + (margins.left - legLeftPadding))
 	                .attr('height', 16)
 	                .style('fill', '#ccc');
 	            var cells = el.selectAll('.nv-leg-cell').data(tickVals);
 	            var cellsEnter = cells.enter().append('text')
-	                                          .attr('x', function(d) {
-	              return margins.left - legLeftPadding + xscale(d);
-	            } )
 	                                          .attr('y', legPadding + 3)
 	                                          .style('text-anchor', 'middle')
 	                                          .text( function(d) {
 	              return mschart.labels[moment(d).format('YYYY-MM-DD')];
 	            } )
+	            cells.transition().duration(500).attr('x', function(d) {
+	              return margins.left - legLeftPadding + xscale(d);
+	            } );
+	            el.select('rect').transition().duration(500).attr('width', xMax + (margins.left - legLeftPadding));
 	          }
 	          else {
 	            el.append('rect')
 	            .attr('y', i * 16)
-	                .attr('width', xMax + (margins.left - legLeftPadding))
 	                .attr('height', 16)
 	                .style('fill', d.color);
 	            var cells = el.selectAll('.nv-leg-cell').data(d.data.values());
 	            var cellsEnter = cells.enter().append('text')
-	                                          .attr('x', function(d) {
-	              return margins.left - legLeftPadding + xscale(d.key.valueOf());
-	            } )
 	                                          .attr('y', (i * 16) + legPadding + 3)
 	                                          .style('text-anchor', 'middle')
 	                                          .style('fill', '#eee')
 	                                          .text( function(d) {
 	              return d.value;
 	            } );
-	            console.log(d)
-	            console.log(xscale);
+	            cells.transition().duration(500).attr('x', function(d) {
+	              return margins.left - legLeftPadding + xscale(d.key.valueOf());
+	            } );
+	            el.select('rect').transition().duration(500)
+	                             .attr('width', xMax + (margins.left - legLeftPadding));
 	          }
-	          /*el.attr('transform', 'translate(' + 0 +  ',' + dy + ')');
-	          el.append('text')
-	            .text(d.title)
-	            .attr('y', markerWidth)
-	            .attr('transform', 'translate(' + (legPadding + markerWidth) + ',0)')
-	            .call(d3textWrap, legWidth - markerWidth - (2 * legPadding), 0);
-	          dy += this.getBoundingClientRect().height + 10;
-	          el.append('rect')
-	              .attr('x', 0)
-	              .attr('y', 0)
-	              .attr('width', 10)
-	              .attr('height', 50)
-	              .style('fill', (d, i) => d.color )
-	              .style('stroke', (d, i) => d.color )
-	              .style('fill-opacity', 0.5 );*/
+
+	          legWrap.transition().duration(500).attr('transform', 'translate(' + legLeftPadding + ',' + (yMin + margins.top + legPadding) + ')');
 	        });
 	        var legHeight = legWrap.node().getBoundingClientRect().height + 15;
 	      }
