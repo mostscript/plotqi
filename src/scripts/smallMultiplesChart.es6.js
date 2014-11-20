@@ -1,16 +1,9 @@
-var privateSym = Symbol();
-import {
-  DataPoint,
-  TimeDataPoint,
-  DataSeries,
-  TimeDataSeries,
-  MultiSeriesChart,
-  TimeSeriesChartSchema
-} from './chartviz';
-import {shapePath, shapes, legendMarkers} from './shapes';
+/*jshint esnext:true, eqnull:true */
+/*globals require */
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
+import {shapePath, shapes, legendMarkers} from './shapes';
 
 export function SmallMultiplesChart(mschart, node, size) {
   node = node || d3.select('body').append('div').attr('id', 'small-chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
@@ -196,7 +189,7 @@ export function SmallMultiplesChart(mschart, node, size) {
   };
 }
 
-export function croppedDomain(mschart) {
+export function croppedDomain(mschart) { //crop data to last 12 (actually, 13) months of data
   var domain = mschart.domain;
   if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
     domain[0] = d3.time.month.offset(domain[1], -12)

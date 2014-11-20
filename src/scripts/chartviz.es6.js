@@ -1,3 +1,6 @@
+/*jshint esnext:true, eqnull:true */
+/*globals require */
+'use strict';
 import {Klass} from './classviz.es6.js';
 var dataSym = Symbol();
 var d3 = require('d3');

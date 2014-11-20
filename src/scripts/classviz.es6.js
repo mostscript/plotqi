@@ -1,3 +1,5 @@
+/*jshint esnext:true, eqnull:true */
+/*globals require */
 'use strict';
 var moment = require('moment');
 export class Schema {

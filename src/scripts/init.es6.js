@@ -1,35 +1,23 @@
+/*jshint esnext:true, eqnull:true */
+/*globals require */
 var moment = require('moment');
 export function getObjects(jsonFile, callback) {
 	d3.json(jsonFile, function (jsonData) {
 		var objs = [];
+
 		if(jsonData.length)
 			objs = jsonData.map( function ([, obj]) { return obj; } );
 		else //if the JSON payload wasn't an array
 			objs = [ jsonData ]; //then we were given a single object
-		/*objs.forEach(function (val, index) {
-			this[index].series.forEach(function (v, i) {
-				this[i].data.forEach(function (datum, n) {
-					this[n] = datum[1];
-					this[n].key = moment(this[n].key);
-				}, this[i].data);
-			}, this[index].series);
-		}, objs);*/
-    objs.forEach( obj => ( 
-      obj.series.forEach( serum => (
-        serum.data = serum.data.map( function([, datum]) { return datum; } )
-        ) ) 
-      ) );
+
+    objs.forEach( function (obj) { 
+      obj.series.forEach( function (serum) {
+        serum.data = serum.data.map( function ([, datum]) { return datum; } )
+        })
+      });
 		callback(objs);
 	});
 };
-
-export function croppedDomain(mschart) {
-  var domain = mschart.domain;
-  if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
-    domain[0] = d3.time.month.offset(domain[1], -12)
-  }
-  return domain;
-}
 
 export function addStylesheetRules (rules) {
   var styleEl = document.createElement('style'),

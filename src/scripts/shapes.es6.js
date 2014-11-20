@@ -1,3 +1,5 @@
+/*jshint esnext:true, eqnull:true */
+/*globals require */
 export function shapePath(node, spec = shapes.square, size = 3) {
   var d = "";
   var normalizer = spec.normalizer || 1;
@@ -31,7 +33,6 @@ export function shapePath(node, spec = shapes.square, size = 3) {
       }
     });
   });
-  console.log(d)
   node.attr('d', d)
       .classed('smooth-shape', spec.smooth ? true : false)
       .classed('crisp-shape', spec.smooth ? false : true);;

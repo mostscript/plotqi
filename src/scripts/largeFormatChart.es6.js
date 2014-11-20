@@ -1,14 +1,5 @@
 /*jshint esnext:true, eqnull:true */
 /*globals require */
-var privateSym = Symbol();
-import {
-  DataPoint,
-  TimeDataPoint,
-  DataSeries,
-  TimeDataSeries,
-  MultiSeriesChart,
-  TimeSeriesChartSchema
-} from './chartviz';
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
@@ -58,19 +49,22 @@ export function LargeChart(mschart, node) {
   node = node.append('svg')
              .attr('class', 'upiq-chart chart-svg');
 
-  var margins = {top: 8, bottom: 75, left: 40, right: 120};
+  var margins = {top: 10, bottom: 75, left: 40, right: 10};
   var data = extractData(mschart);
   var domain = mschart.domain;
   domain = [d3.time.month.offset(domain[0], -1), d3.time.month.offset(domain[1], 1)];
   var tick_domain = domain.slice();
   tick_domain[1] = d3.time.month.offset(domain[1], 1);
   var tickVals = d3.time.months(...tick_domain).map( month => month.valueOf() );
+  var tabular = mschart.legend_placement === 'tabular';
 
   return function () {
-    node.append('g')
-    .attr('class', 'nv-background')
-    .attr('transform', 'translate(' + margins.left + ',' + margins.top + ')');
-
+    if(tabular) {
+      margins.left = 150;
+      margins.bottom = 150;
+    } else {
+      margins.right = 120;
+    }
     var chart = nv.models.lineChart()
                   .id(mschart.uid)
                   .showLegend(false)
@@ -87,7 +81,7 @@ export function LargeChart(mschart, node) {
 
     chart.xAxis
          //.tickFormat( d => d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) )
-         .tickFormat( () => '')
+         .tickFormat( tabular ? () => '' : d => d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) )
          .tickValues(tickVals)
          .showMaxMin(false)
          .tickPadding(6)
@@ -141,31 +135,6 @@ export function LargeChart(mschart, node) {
                 }
     }
 
-    /*//Fix for Firefox - 2px lines must be shifted by .5px to align to pixel boundaries
-    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line')
-        .attr('y1', 0.5)
-        .attr('y2', 0.5);
-    node.select('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line')
-        .attr('y1', -0.5)
-        .attr('y2', -0.5);*/
-    /*
-    //Graph Title
-    node.append('g')
-        .attr('class', 'nvd3 nv-small-chart nv-chart-title')
-        .append('text')
-        .attr('class', 'nv-small-chart nv-title')
-        .attr('x', 5)
-        .attr('y', 10)
-        .text(mschart.title);
-
-    var legend = node.append('g')
-                     .attr('class', 'nvd3 nv-legend')
-                     .attr('transform', 'translate(' + 5 + ',' + '100' + ')')
-                     .append('g')
-                     .attr('class', 'nv-leg')
-                     .selectAll('circle.legend-pt.nv-point')
-                     .data(mschart.series.slice(0, 2))
-                     .enter().append('g');*/
     render();
     console.log(chart);
     if(relative)
@@ -236,13 +205,19 @@ export function LargeChart(mschart, node) {
             el.append('rect')
                 .attr('height', 16)
                 .style('fill', '#ccc');
-            var cells = el.selectAll('.nv-leg-cell').data(tickVals);
+            var labels = [];
+            for(var lbl in mschart.labels) {
+              if(mschart.labels.hasOwnProperty(lbl)) {
+                labels.push({label: mschart.labels[lbl], x: moment(lbl, 'YYYY-MM-DD')})
+              }
+            }
+            var cells = el.selectAll('.nv-leg-cell').data(labels);
             var cellsEnter = cells.enter().append('text')
                                           .attr('class', 'nv-leg-cell')
                                           .attr('y', legPadding + 3)
                                           .style('text-anchor', 'middle')
-                                          .text( d => mschart.labels[moment(d).format('YYYY-MM-DD')] );
-            cells.transition().duration(500).attr('x', d => margins.left - legLeftPadding + xscale(d) );
+                                          .text( d => d.label );
+            cells.transition().duration(500).attr('x', d => margins.left - legLeftPadding + xscale(d.x) );
             el.select('rect').transition().duration(500).attr('width', xMax + (margins.left - legLeftPadding));
           }
           else {
@@ -301,8 +276,10 @@ export function LargeChart(mschart, node) {
       }
 
       //Legend
-      //rightHandLegend();
-      tabularLegend();
+      if(tabular)
+        tabularLegend();
+      else
+        rightHandLegend();
     }
   };
 }
