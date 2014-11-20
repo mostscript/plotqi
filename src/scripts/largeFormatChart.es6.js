@@ -61,6 +61,7 @@ export function LargeChart(mschart, node) {
   var margins = {top: 8, bottom: 75, left: 40, right: 120};
   var data = extractData(mschart);
   var domain = mschart.domain;
+  domain = [d3.time.month.offset(domain[0], -1), d3.time.month.offset(domain[1], 1)];
   var tick_domain = domain.slice();
   tick_domain[1] = d3.time.month.offset(domain[1], 1);
   var tickVals = d3.time.months(...tick_domain).map( month => month.valueOf() );
@@ -218,6 +219,7 @@ export function LargeChart(mschart, node) {
       }
 
       var tabularLegend = function() {
+        var yformat = d3.format(',.1f');
         var legPadding = 10;
         var legLeftPadding = 5;
         var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
@@ -236,9 +238,10 @@ export function LargeChart(mschart, node) {
                 .style('fill', '#ccc');
             var cells = el.selectAll('.nv-leg-cell').data(tickVals);
             var cellsEnter = cells.enter().append('text')
+                                          .attr('class', 'nv-leg-cell')
                                           .attr('y', legPadding + 3)
                                           .style('text-anchor', 'middle')
-                                          .text( d => mschart.labels[moment(d).format('YYYY-MM-DD')] )
+                                          .text( d => mschart.labels[moment(d).format('YYYY-MM-DD')] );
             cells.transition().duration(500).attr('x', d => margins.left - legLeftPadding + xscale(d) );
             el.select('rect').transition().duration(500).attr('width', xMax + (margins.left - legLeftPadding));
           }
@@ -249,10 +252,11 @@ export function LargeChart(mschart, node) {
                 .style('fill', d.color);
             var cells = el.selectAll('.nv-leg-cell').data(d.data.values());
             var cellsEnter = cells.enter().append('text')
+                                          .attr('class', 'nv-leg-cell')
                                           .attr('y', (i * 16) + legPadding + 3)
                                           .style('text-anchor', 'middle')
                                           .style('fill', '#eee')
-                                          .text( d => d.value );
+                                          .text( d => yformat(d.value) );
             cells.transition().duration(500).attr('x', d => margins.left - legLeftPadding + xscale(d.key.valueOf()) );
             el.select('rect').transition().duration(500)
                              .attr('width', xMax + (margins.left - legLeftPadding));
@@ -271,7 +275,7 @@ export function LargeChart(mschart, node) {
 
       var yscale = chart.yScale();
       var xscale = chart.xScale();
-      var xMax = xscale(mschart.domain[1].valueOf());
+      var xMax = xscale(domain[1].valueOf());
       var yMax = yscale(mschart.range[1]);
       var yMin = yscale(mschart.range[0]);
       var yRange = yMin - yMax;
