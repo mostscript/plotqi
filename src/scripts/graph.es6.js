@@ -1,6 +1,6 @@
 /*jshint esnext:true, eqnull:true */
 /*globals require */
-import {getObjects} from './init';
+import {getObjects} from './utils';
 import {Chart} from './chartviz';
 import {SmallMultiplesChart} from './smallMultiplesChart';
 import {LargeChart} from './largeFormatChart';

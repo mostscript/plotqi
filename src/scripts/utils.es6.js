@@ -19,36 +19,9 @@ export function getObjects(jsonFile, callback) {
 	});
 };
 
-export function addStylesheetRules (rules) {
-  var styleEl = document.createElement('style'),
-      styleSheet;
-
-  // Apparently some version of Safari needs the following line? I dunno.
-  styleEl.appendChild(document.createTextNode(''));
-
-  // Append style element to head
-  document.head.appendChild(styleEl);
-
-  // Grab style sheet
-  styleSheet = styleEl.sheet;
-
-  for (var i = 0, rl = rules.length; i < rl; i++) {
-    var j = 1, rule = rules[i], selector = rules[i][0], propStr = '';
-    // If the second argument of a rule is an array of arrays, correct our variables.
-    if (Object.prototype.toString.call(rule[1][0]) === '[object Array]') {
-      rule = rule[1];
-      j = 0;
-    }
-
-    for (var pl = rule.length; j < pl; j++) {
-      var prop = rule[j];
-      propStr += prop[0] + ':' + prop[1] + (prop[2] ? ' !important' : '') + ';\n';
-    }
-
-    // Insert CSS Rule
-    styleSheet.insertRule(selector + '{' + propStr + '}', styleSheet.cssRules.length);
-  }
-};
+var styleEl = document.createElement('style');
+document.head.appendChild(styleEl);
+export var styleSheet = styleEl.sheet;
 
 //Taken from Underscore, licensed under the MIT license
 //Copyright (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -69,9 +42,9 @@ export function debounce(func, wait, immediate) {
 };
 
 /*
-Taken from an upcoming version of d3
+Taken from an upcoming version of d3, heavily altered to suit needs of UPIQ
  */
-export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom) {
+export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, dataFunc) {
     paddingRightLeft = paddingRightLeft != null ? paddingRightLeft : 5; //Default padding (5px)
     paddingTopBottom = (paddingTopBottom != null ? paddingTopBottom : 5) - 2; //Default padding (5px), remove 2 pixels because of the borders
     var maxWidth = width; //I store the tooltip max width
@@ -80,12 +53,11 @@ export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom) {
     var arrLineCreatedCount = [];
     text.each(function() {
         var text = d3.select(this),
-            words = text.text().split(/[ \f\n\r\t\v]+/).reverse(), //Don't cut non-breaking space (\xA0), as well as the Unicode characters \u00A0 \u2028 \u2029)
+            words = text.text().split(' ').reverse(),
             word,
             line = [],
             lineNumber = 0,
             lineHeight = 1.2, //Ems
-            x,
             y = parseFloat(text.attr("y")),
             dy = parseFloat(text.attr("dy")),
             createdLineCount = 1, //Total line created count
@@ -94,39 +66,9 @@ export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom) {
         //Clean the data in case <text> does not define those values
         if (isNaN(dy)) dy = 0; //Default padding (0em) : the 'dy' attribute on the first <tspan> _must_ be identical to the 'dy' specified on the <text> element, or start at '0em' if undefined
 
-        //Offset the text position based on the text-anchor
-        var wrapTickLabels = d3.select(text.node().parentNode).classed('tick'); //Don't wrap the 'normal untranslated' <text> element and the translated <g class='tick'><text></text></g> elements the same way..
-        if (wrapTickLabels) {
-            switch (textAlign) {
-                case 'start':
-                    x = -width / 2;
-                    break;
-                case 'middle':
-                    x = 0;
-                    break;
-                case 'end':
-                    x = width / 2;
-                    break;
-                default :
-            }
-        }
-        else { //untranslated <text> elements
-            switch (textAlign) {
-                case 'start':
-                    x = paddingRightLeft;
-                    break;
-                case 'middle':
-                    x = maxWidth / 2;
-                    break;
-                case 'end':
-                    x = maxWidth - paddingRightLeft;
-                    break;
-                default :
-            }
-        }
         y = +((null === y)?paddingTopBottom:y);
 
-        var tspan = text.text(null).append("tspan").attr("x", x)/*.attr("y", y)*/.attr("dy", dy + "em");
+        var tspan = text.text(null).append("tspan").attr("x", 0)/*.attr("y", y)*/.attr("dy", dy + "em");
         //noinspection JSHint
         while (word = words.pop()) {
             line.push(word);
@@ -135,7 +77,7 @@ export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom) {
                 line.pop();
                 tspan.text(line.join(" "));
                 line = [word];
-                tspan = text.append("tspan").attr("x", x)/*.attr("y", y)*/.attr("dy", /*(++lineNumber * )*/ lineHeight + dy + "em").text(word);
+                tspan = text.append("tspan").attr("x", 0)/*.attr("y", y)*/.attr("dy", /*(++lineNumber * )*/ lineHeight + dy + "em").text(word);
                 ++createdLineCount;
             }
         }

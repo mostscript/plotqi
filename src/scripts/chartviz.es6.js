@@ -35,19 +35,6 @@ export class DataSeries extends Klass {
     obj = obj || {};
     obj.schema = obj.schema || dataSeriesSchema;
     super(obj);
-    /*Object.defineProperty(this, 'data', function () {
-      var data = [];
-      return {
-        enumerable: true,
-        configurable: true,
-        get: () => data,
-        set: function (d) {
-          data = d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
-          .filter( (v, i) => (i === 0 || v.key != d[i-1].key) )
-          .map( datum => new DataPoint(datum) );
-        }
-      };
-    }());*/
     this.data = obj.data || [];
   }
 

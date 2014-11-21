@@ -3,7 +3,7 @@
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
-import {addStylesheetRules, debounce, d3textWrap} from './init';
+import {styleSheet, debounce, d3textWrap} from './utils';
 
 export function LargeChart(mschart, node) {
   node = node || d3.select('body').append('div').attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
@@ -30,13 +30,13 @@ export function LargeChart(mschart, node) {
 
   if(relative) {
     if(ratio)
-      addStylesheetRules([
-        ['#' + parentNode.attr('id') + ' .chart-div:after',
-          ['content', '""'],
-          ['display', 'block'],
-          ['margin-top', (ratio * 100) + '%']
-        ]
-      ]);
+      styleSheet.insertRule (
+        `#${parentNode.attr('id')} .chart-div:after {` +
+          'content: "";' +
+          'display: block;' +
+          `margin-top: ${(ratio * 100)}%;` +
+        '}', styleSheet.cssRules.length
+      );
     else
       node.style('height', mschart.height + mschart.height_units);
   } else {
@@ -56,6 +56,14 @@ export function LargeChart(mschart, node) {
   var tick_domain = domain.slice();
   tick_domain[1] = d3.time.month.offset(domain[1], 1);
   var tickVals = d3.time.months(...tick_domain).map( month => month.valueOf() );
+  var yTickVals = function (n) {
+    var out = [];
+    var range = mschart.range;
+    var interval = (range[1] - range[0]) / n;
+    for(var i = range[0]; i <= range[1]; i += interval) {
+      out.push(i);
+    }
+  };
   var tabular = mschart.legend_placement === 'tabular';
 
   return function () {
@@ -81,14 +89,15 @@ export function LargeChart(mschart, node) {
 
     chart.xAxis
          //.tickFormat( d => d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) )
-         .tickFormat( tabular ? () => '' : d => d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) )
+         .tickFormat( tabular ? () => '' : d => mschart.labels[moment(d).format('YYYY-MM-DD')] || '' )
+          //d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) :
          .tickValues(tickVals)
          .showMaxMin(false)
          .tickPadding(6)
          .rotateLabels(-45);
     chart.yAxis
          .tickFormat(d3.format(','))
-         .ticks(5)
+         .tickValues(yTickVals(5))
          .showMaxMin(false)
          .tickPadding(6);
     chart
@@ -199,9 +208,11 @@ export function LargeChart(mschart, node) {
         legend.enter().append('g')
                       .attr('class', 'nv-leg-row');
 
+        var ycurr = 0;
+        var intervalX = xscale(tickVals[1]) - xscale(tickVals[0]);
         legend.each(function (d, i) {
           var el = d3.select(this);
-          if(d === 'header') {
+          if(i === 0) {
             el.append('rect')
                 .attr('height', 16)
                 .style('fill', '#ccc');
@@ -216,8 +227,10 @@ export function LargeChart(mschart, node) {
                                           .attr('class', 'nv-leg-cell')
                                           .attr('y', legPadding + 3)
                                           .style('text-anchor', 'middle')
-                                          .text( d => d.label );
-            cells.transition().duration(500).attr('x', d => margins.left - legLeftPadding + xscale(d.x) );
+                                          .text( d => d.label )//;
+            /*cells*/.call(d3textWrap, intervalX, 0);
+            cells.transition().duration(500)
+                 .attr('transform', d => `translate(${(margins.left - legLeftPadding + xscale(d.x))}, 0)` );
             el.select('rect').transition().duration(500).attr('width', xMax + (margins.left - legLeftPadding));
           }
           else {
@@ -225,14 +238,15 @@ export function LargeChart(mschart, node) {
             .attr('y', i * 16)
                 .attr('height', 16)
                 .style('fill', d.color);
-            var cells = el.selectAll('.nv-leg-cell').data(d.data.values());
+            var cells = el.selectAll('.nv-leg-cell').data([d.title].concat(d.data.values()));
             var cellsEnter = cells.enter().append('text')
                                           .attr('class', 'nv-leg-cell')
                                           .attr('y', (i * 16) + legPadding + 3)
-                                          .style('text-anchor', 'middle')
+                                          .style('text-anchor', (d, i) => i === 0 ? 'start' : 'middle')
                                           .style('fill', '#eee')
-                                          .text( d => yformat(d.value) );
-            cells.transition().duration(500).attr('x', d => margins.left - legLeftPadding + xscale(d.key.valueOf()) );
+                                          .text( (d, i) => i === 0 ? d : yformat(d.value) );
+            cells.transition().duration(500)
+                 .attr('x', (d, i) => i === 0 ? legLeftPadding : margins.left - legLeftPadding + xscale(d.key.valueOf()) );
             el.select('rect').transition().duration(500)
                              .attr('width', xMax + (margins.left - legLeftPadding));
           }

@@ -202,7 +202,7 @@
       "url": "http://nohost/qiteamspace/toxic-stress/jupiter-pediatrics/data-report/of-patients-screened-for-exposure-of-adverse-events-2", 
       "goal_color": "#ff0000", 
       "width_units": "%", 
-      "legend_placement": "tabular",
+      "legend_placement": "inside",
       "aspect_ratio": [2, 1],
       "x_label": "Months",
       "y_label": "% of Patients"

@@ -451,11 +451,11 @@ export class MultiSeriesChartSchema extends Schema {
             vocabulary: [
               'n',        // top
               'e',        // right of grid, vertical align at middle
-              'w',        // left of grid, vertical align at middle
-              's',        // bottom, below plot
-              'nw',       // left of grid, top-aligned
+              'w',        // left of grid, vertical align at middle //DEPRECATED
+              's',        // bottom, below plot //DEPRECATED
+              'nw',       // left of grid, top-aligned //DEPRECATED
               'ne',       // right of grid, top-aligned
-              'sw',       // left of grid, bottom-aligned
+              'sw',       // left of grid, bottom-aligned //DEPRECATED
               'se'        // right of grid, bottom-aligned
             ],
             defaultValue: 'e',

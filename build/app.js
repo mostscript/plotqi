@@ -9470,38 +9470,11 @@
 		});
 	}
 
-	exports.getObjects = getObjects;function addStylesheetRules (rules) {
-	  var styleEl = document.createElement('style'),
-	      styleSheet;
-
-	  // Apparently some version of Safari needs the following line? I dunno.
-	  styleEl.appendChild(document.createTextNode(''));
-
-	  // Append style element to head
-	  document.head.appendChild(styleEl);
-
-	  // Grab style sheet
-	  styleSheet = styleEl.sheet;
-
-	  for (var i = 0, rl = rules.length; i < rl; i++) {
-	    var j = 1, rule = rules[i], selector = rules[i][0], propStr = '';
-	    // If the second argument of a rule is an array of arrays, correct our variables.
-	    if (Object.prototype.toString.call(rule[1][0]) === '[object Array]') {
-	      rule = rule[1];
-	      j = 0;
-	    }
-
-	    for (var pl = rule.length; j < pl; j++) {
-	      var prop = rule[j];
-	      propStr += prop[0] + ':' + prop[1] + (prop[2] ? ' !important' : '') + ';\n';
-	    }
-
-	    // Insert CSS Rule
-	    styleSheet.insertRule(selector + '{' + propStr + '}', styleSheet.cssRules.length);
-	  }
-	}
-
-	exports.addStylesheetRules = addStylesheetRules;//Taken from Underscore, licensed under the MIT license
+	exports.getObjects = getObjects;var styleEl = document.createElement('style');
+	document.head.appendChild(styleEl);
+	var styleSheet = styleEl.sheet;
+	exports.styleSheet = styleSheet;
+	//Taken from Underscore, licensed under the MIT license
 	//Copyright (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	//Full MIT copyright notice can be found in the project root
 	function debounce(func, wait, immediate) {
@@ -9524,9 +9497,9 @@
 	}
 
 	exports.debounce = debounce;/*
-	Taken from an upcoming version of d3
+	Taken from an upcoming version of d3, heavily altered to suit needs of UPIQ
 	 */
-	function d3textWrap(text, width, paddingRightLeft, paddingTopBottom) {
+	function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, dataFunc) {
 	    paddingRightLeft = paddingRightLeft != null ? paddingRightLeft : 5; //Default padding (5px)
 	    paddingTopBottom = (paddingTopBottom != null ? paddingTopBottom : 5) - 2; //Default padding (5px), remove 2 pixels because of the borders
 	    var maxWidth = width; //I store the tooltip max width
@@ -9535,12 +9508,11 @@
 	    var arrLineCreatedCount = [];
 	    text.each(function() {
 	        var text = d3.select(this),
-	            words = text.text().split(/[ \f\n\r\t\v]+/).reverse(), //Don't cut non-breaking space (\xA0), as well as the Unicode characters \u00A0 \u2028 \u2029)
+	            words = text.text().split(' ').reverse(),
 	            word,
 	            line = [],
 	            lineNumber = 0,
 	            lineHeight = 1.2, //Ems
-	            x,
 	            y = parseFloat(text.attr("y")),
 	            dy = parseFloat(text.attr("dy")),
 	            createdLineCount = 1, //Total line created count
@@ -9549,39 +9521,9 @@
 	        //Clean the data in case <text> does not define those values
 	        if (isNaN(dy)) dy = 0; //Default padding (0em) : the 'dy' attribute on the first <tspan> _must_ be identical to the 'dy' specified on the <text> element, or start at '0em' if undefined
 
-	        //Offset the text position based on the text-anchor
-	        var wrapTickLabels = d3.select(text.node().parentNode).classed('tick'); //Don't wrap the 'normal untranslated' <text> element and the translated <g class='tick'><text></text></g> elements the same way..
-	        if (wrapTickLabels) {
-	            switch (textAlign) {
-	                case 'start':
-	                    x = -width / 2;
-	                    break;
-	                case 'middle':
-	                    x = 0;
-	                    break;
-	                case 'end':
-	                    x = width / 2;
-	                    break;
-	                default :
-	            }
-	        }
-	        else { //untranslated <text> elements
-	            switch (textAlign) {
-	                case 'start':
-	                    x = paddingRightLeft;
-	                    break;
-	                case 'middle':
-	                    x = maxWidth / 2;
-	                    break;
-	                case 'end':
-	                    x = maxWidth - paddingRightLeft;
-	                    break;
-	                default :
-	            }
-	        }
 	        y = +((null === y)?paddingTopBottom:y);
 
-	        var tspan = text.text(null).append("tspan").attr("x", x)/*.attr("y", y)*/.attr("dy", dy + "em");
+	        var tspan = text.text(null).append("tspan").attr("x", 0)/*.attr("y", y)*/.attr("dy", dy + "em");
 	        //noinspection JSHint
 	        while (word = words.pop()) {
 	            line.push(word);
@@ -9590,7 +9532,7 @@
 	                line.pop();
 	                tspan.text(line.join(" "));
 	                line = [word];
-	                tspan = text.append("tspan").attr("x", x)/*.attr("y", y)*/.attr("dy", /*(++lineNumber * )*/ lineHeight + dy + "em").text(word);
+	                tspan = text.append("tspan").attr("x", 0)/*.attr("y", y)*/.attr("dy", /*(++lineNumber * )*/ lineHeight + dy + "em").text(word);
 	                ++createdLineCount;
 	            }
 	        }
@@ -9735,19 +9677,6 @@
 	    obj = obj || {};
 	    obj.schema = obj.schema || dataSeriesSchema;
 	    $__Object$getPrototypeOf(DataSeries.prototype).constructor.call(this, obj);
-	    /*Object.defineProperty(this, 'data', function () {
-	      var data = [];
-	      return {
-	        enumerable: true,
-	        configurable: true,
-	        get: () => data,
-	        set: function (d) {
-	          data = d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
-	          .filter( (v, i) => (i === 0 || v.key != d[i-1].key) )
-	          .map( datum => new DataPoint(datum) );
-	        }
-	      };
-	    }());*/
 	    this.data = obj.data || [];
 	  }
 
@@ -10430,7 +10359,7 @@
 	var moment = __webpack_require__(2);
 	var d3 = __webpack_require__(4);
 	var nv = __webpack_require__(12);
-	var addStylesheetRules = __webpack_require__(5).addStylesheetRules;
+	var styleSheet = __webpack_require__(5).styleSheet;
 	var debounce = __webpack_require__(5).debounce;
 	var d3textWrap = __webpack_require__(5).d3textWrap;
 
@@ -10462,13 +10391,13 @@
 
 	  if(relative) {
 	    if(ratio)
-	      addStylesheetRules([
-	        ['#' + parentNode.attr('id') + ' .chart-div:after',
-	          ['content', '""'],
-	          ['display', 'block'],
-	          ['margin-top', (ratio * 100) + '%']
-	        ]
-	      ]);
+	      styleSheet.insertRule (
+	        "#" + parentNode.attr('id') + " .chart-div:after {" +
+	          'content: "";' +
+	          'display: block;' +
+	          ("margin-top: " + ratio * 100 + "%;") +
+	        '}', styleSheet.cssRules.length
+	      );
 	    else
 	      node.style('height', mschart.height + mschart.height_units);
 	  } else {
@@ -10491,6 +10420,15 @@
 	  var tickVals = ($__0 = d3.time).months.apply($__0, $__Array$prototype$slice.call(tick_domain)).map( function(month) {
 	    return month.valueOf();
 	  } );
+
+	  var yTickVals = function (n) {
+	    var out = [];
+	    var range = mschart.range;
+	    var interval = (range[1] - range[0]) / n;
+	    for(var i = range[0]; i <= range[1]; i += interval) {
+	      out.push(i);
+	    }
+	  };
 
 	  var tabular = mschart.legend_placement === 'tabular';
 
@@ -10520,15 +10458,16 @@
 	         .tickFormat( tabular ? function() {
 	      return '';
 	    } : function(d) {
-	      return d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d));
+	      return mschart.labels[moment(d).format('YYYY-MM-DD')] || '';
 	    } )
+	          //d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) :
 	         .tickValues(tickVals)
 	         .showMaxMin(false)
 	         .tickPadding(6)
 	         .rotateLabels(-45);
 	    chart.yAxis
 	         .tickFormat(d3.format(','))
-	         .ticks(5)
+	         .tickValues(yTickVals(5))
 	         .showMaxMin(false)
 	         .tickPadding(6);
 	    chart
@@ -10651,9 +10590,11 @@
 	        legend.enter().append('g')
 	                      .attr('class', 'nv-leg-row');
 
+	        var ycurr = 0;
+	        var intervalX = xscale(tickVals[1]) - xscale(tickVals[0]);
 	        legend.each(function (d, i) {
 	          var el = d3.select(this);
-	          if(d === 'header') {
+	          if(i === 0) {
 	            el.append('rect')
 	                .attr('height', 16)
 	                .style('fill', '#ccc');
@@ -10670,9 +10611,11 @@
 	                                          .style('text-anchor', 'middle')
 	                                          .text( function(d) {
 	              return d.label;
-	            } );
-	            cells.transition().duration(500).attr('x', function(d) {
-	              return margins.left - legLeftPadding + xscale(d.x);
+	            } )//;
+	            /*cells*/.call(d3textWrap, intervalX, 0);
+	            cells.transition().duration(500)
+	                 .attr('transform', function(d) {
+	              return "translate(" + (margins.left - legLeftPadding + xscale(d.x)) + ", 0)";
 	            } );
 	            el.select('rect').transition().duration(500).attr('width', xMax + (margins.left - legLeftPadding));
 	          }
@@ -10681,17 +10624,20 @@
 	            .attr('y', i * 16)
 	                .attr('height', 16)
 	                .style('fill', d.color);
-	            var cells = el.selectAll('.nv-leg-cell').data(d.data.values());
+	            var cells = el.selectAll('.nv-leg-cell').data([d.title].concat(d.data.values()));
 	            var cellsEnter = cells.enter().append('text')
 	                                          .attr('class', 'nv-leg-cell')
 	                                          .attr('y', (i * 16) + legPadding + 3)
-	                                          .style('text-anchor', 'middle')
+	                                          .style('text-anchor', function(d, i) {
+	              return i === 0 ? 'start' : 'middle';
+	            })
 	                                          .style('fill', '#eee')
-	                                          .text( function(d) {
-	              return yformat(d.value);
+	                                          .text( function(d, i) {
+	              return i === 0 ? d : yformat(d.value);
 	            } );
-	            cells.transition().duration(500).attr('x', function(d) {
-	              return margins.left - legLeftPadding + xscale(d.key.valueOf());
+	            cells.transition().duration(500)
+	                 .attr('x', function(d, i) {
+	              return i === 0 ? legLeftPadding : margins.left - legLeftPadding + xscale(d.key.valueOf());
 	            } );
 	            el.select('rect').transition().duration(500)
 	                             .attr('width', xMax + (margins.left - legLeftPadding));
@@ -11519,11 +11465,11 @@
 	            vocabulary: [
 	              'n',        // top
 	              'e',        // right of grid, vertical align at middle
-	              'w',        // left of grid, vertical align at middle
-	              's',        // bottom, below plot
-	              'nw',       // left of grid, top-aligned
+	              'w',        // left of grid, vertical align at middle //DEPRECATED
+	              's',        // bottom, below plot //DEPRECATED
+	              'nw',       // left of grid, top-aligned //DEPRECATED
 	              'ne',       // right of grid, top-aligned
-	              'sw',       // left of grid, bottom-aligned
+	              'sw',       // left of grid, bottom-aligned //DEPRECATED
 	              'se'        // right of grid, bottom-aligned
 	            ],
 	            defaultValue: 'e',
