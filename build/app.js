@@ -10454,7 +10454,6 @@
 	                  chart.lines.scatter.onlyCircles(false).useVoronoi(false);
 
 	    chart.xAxis
-	         //.tickFormat( d => d3.time.format('%B')(new Date(d)).slice(0,3) + " " + d3.time.format('%Y')(new Date(d)) )
 	         .tickFormat( tabular ? function() {
 	      return '';
 	    } : function(d) {
@@ -10475,8 +10474,8 @@
 	      return x.valueOf();
 	    } ))
 	         .yDomain(mschart.range);
-	    //if(mschart.x_label)
-	      //chart.xAxis.axisLabel(mschart.x_label)
+	    if(!tabular && mschart.x_label)
+	      chart.xAxis.axisLabel(mschart.x_label)
 	    if(mschart.y_label)
 	      chart.yAxis.axisLabel(mschart.y_label)
 	                 .axisLabelDistance(48);
@@ -10590,7 +10589,7 @@
 	        legend.enter().append('g')
 	                      .attr('class', 'nv-leg-row');
 
-	        var ycurr = 0;
+	        var ycurr = legPadding + 3;
 	        var intervalX = xscale(tickVals[1]) - xscale(tickVals[0]);
 	        legend.each(function (d, i) {
 	          var el = d3.select(this);
@@ -10607,7 +10606,7 @@
 	            var cells = el.selectAll('.nv-leg-cell').data(labels);
 	            var cellsEnter = cells.enter().append('text')
 	                                          .attr('class', 'nv-leg-cell')
-	                                          .attr('y', legPadding + 3)
+	                                          .attr('y', ycurr)
 	                                          .style('text-anchor', 'middle')
 	                                          .text( function(d) {
 	              return d.label;
@@ -10617,17 +10616,18 @@
 	                 .attr('transform', function(d) {
 	              return "translate(" + (margins.left - legLeftPadding + xscale(d.x)) + ", 0)";
 	            } );
-	            el.select('rect').transition().duration(500).attr('width', xMax + (margins.left - legLeftPadding));
+	            el.select('rect').transition().duration(500)
+	                             .attr('height', this.getBoundingClientRect().height)
+	                             .attr('width', xMax + (margins.left - legLeftPadding));
 	          }
 	          else {
 	            el.append('rect')
-	            .attr('y', i * 16)
-	                .attr('height', 16)
+	            //.attr('y', ycurr)
 	                .style('fill', d.color);
 	            var cells = el.selectAll('.nv-leg-cell').data([d.title].concat(d.data.values()));
 	            var cellsEnter = cells.enter().append('text')
 	                                          .attr('class', 'nv-leg-cell')
-	                                          .attr('y', (i * 16) + legPadding + 3)
+	                                          //.attr('y', 3)
 	                                          .style('text-anchor', function(d, i) {
 	              return i === 0 ? 'start' : 'middle';
 	            })
@@ -10640,12 +10640,14 @@
 	              return i === 0 ? legLeftPadding : margins.left - legLeftPadding + xscale(d.key.valueOf());
 	            } );
 	            el.select('rect').transition().duration(500)
+	                             .attr('height', this.getBoundingClientRect().height)
 	                             .attr('width', xMax + (margins.left - legLeftPadding));
+	            el.attr('transform', "translate(0, " + ycurr + ")")
 	          }
-
-	          legWrap.transition().duration(500).attr('transform', 'translate(' + legLeftPadding + ',' + (yMin + margins.top + legPadding) + ')');
+	          ycurr += this.getBoundingClientRect().height;
 	        });
-	        var legHeight = legWrap.node().getBoundingClientRect().height + 15;
+	        legWrap.transition().duration(500).attr('transform', "translate(" + legLeftPadding + ", " + (yMin + margins.top + legPadding) + ")");
+	        var legHeight = legWrap.node().getBoundingClientRect().height;
 	      }
 
 
