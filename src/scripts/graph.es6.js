@@ -4,7 +4,6 @@ import {getObjects} from './utils';
 import {Chart} from './chartviz';
 import {SmallMultiplesChart} from './smallMultiplesChart';
 import {LargeChart} from './largeFormatChart';
-var d3 = require('d3');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
 getObjects('report.json', function (charts) {
   charts = charts.map( graph => Chart(graph) )

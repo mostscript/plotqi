@@ -68,7 +68,7 @@ export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, data
 
         y = +((null === y)?paddingTopBottom:y);
 
-        var tspan = text.text(null).append("tspan").attr("x", 0)/*.attr("y", y)*/.attr("dy", dy + "em");
+        var tspan = text.text(null).append("tspan").attr("x", paddingRightLeft).attr("dy", dy + "em");
         //noinspection JSHint
         while (word = words.pop()) {
             line.push(word);
@@ -77,7 +77,7 @@ export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, data
                 line.pop();
                 tspan.text(line.join(" "));
                 line = [word];
-                tspan = text.append("tspan").attr("x", 0)/*.attr("y", y)*/.attr("dy", /*(++lineNumber * )*/ lineHeight + dy + "em").text(word);
+                tspan = text.append("tspan").attr("x", paddingRightLeft).attr("dy", lineHeight + dy + "em").text(word);
                 ++createdLineCount;
             }
         }
@@ -85,4 +85,10 @@ export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, data
         arrLineCreatedCount.push(createdLineCount); //Store the line count in the array
     });
     return arrLineCreatedCount;
+}
+
+export function colorIsDark(color) {
+    color = d3.rgb(color);
+    color = [color.r, color.g, color.b];
+    return (color.reduce( (a, b) => a + b ) / 3) < 128
 }

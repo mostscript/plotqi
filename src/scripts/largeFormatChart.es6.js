@@ -1,9 +1,8 @@
 /*jshint esnext:true, eqnull:true */
 /*globals require */
 var moment = require('moment');
-var d3 = require('d3');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
-import {styleSheet, debounce, d3textWrap} from './utils';
+import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
 
 export function LargeChart(mschart, node) {
   node = node || d3.select('body').append('div').attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
@@ -63,12 +62,13 @@ export function LargeChart(mschart, node) {
     for(var i = range[0]; i <= range[1]; i += interval) {
       out.push(i);
     }
+    return out;
   };
   var tabular = mschart.legend_placement === 'tabular';
 
   return function () {
     if(tabular) {
-      margins.left = 150;
+      margins.left = 125;
       margins.bottom = 150;
     } else {
       margins.right = 120;
@@ -150,7 +150,7 @@ export function LargeChart(mschart, node) {
     return chart;
 
     function render() {
-      var rightHandLegend = function() {
+      function rightHandLegend() {
         //Legend
         if(mschart.series.length > 1) {
           var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;;
@@ -195,26 +195,28 @@ export function LargeChart(mschart, node) {
         }
       }
 
-      var tabularLegend = function() {
+      function tabularLegend() {
         var yformat = d3.format(',.1f');
         var legPadding = 10;
         var legLeftPadding = 5;
         var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
         var legWrapEnter = legWrap.enter().append('g')
                                    .attr('class', 'nvd3 nv-legend')
-                                   .attr('transform', 'translate(' + legLeftPadding + ',' + (yMin + margins.top + legPadding) + ')');
+                                   .attr('transform', `translate(${legLeftPadding}, ${(yMin + margins.top + legPadding)})`);
         var legend = legWrap.selectAll('g.nv-leg-row').data(['header'].concat(mschart.series));
         legend.enter().append('g')
                       .attr('class', 'nv-leg-row');
 
         var ycurr = legPadding + 3;
-        var intervalX = xscale(tickVals[1]) - xscale(tickVals[0]);
+        var intervalX = Math.floor(xscale(tickVals[1]) - xscale(tickVals[0]));
         legend.each(function (d, i) {
           var el = d3.select(this);
+
           if(i === 0) {
-            el.append('rect')
-                .attr('height', 16)
-                .style('fill', '#ccc');
+
+            el.selectAll('rect').data(['bg']).enter()
+              .append('rect')
+              .attr('class', 'nv-leg-header-bg');
             var labels = [];
             for(var lbl in mschart.labels) {
               if(mschart.labels.hasOwnProperty(lbl)) {
@@ -226,38 +228,67 @@ export function LargeChart(mschart, node) {
                                           .attr('class', 'nv-leg-cell')
                                           .attr('y', ycurr)
                                           .style('text-anchor', 'middle')
+                                          .style('font-size', '12px')
                                           .text( d => d.label )//;
-            /*cells*/.call(d3textWrap, intervalX, 0);
+                                          .call(d3textWrap, 45, 0)
+                                          .attr('textLength', intervalX)
+                                          .attr('lengthAdjust', 'spacingAndGlyphs')
+                                        .selectAll('tspan')
+                                          .attr('textLength', intervalX)
+                                          .attr('lengthAdjust', 'spacingAndGlyphs');
             cells.transition().duration(500)
-                 .attr('transform', d => `translate(${(margins.left - legLeftPadding + xscale(d.x))}, 0)` );
+                 .attr('transform', d => `translate(${(margins.left - legLeftPadding + xscale(d.x))}, 0)` )
+                 .style('font-family', intervalX <= 25 ? 'silkscreennormal' : null)
+                 .style('font-size', intervalX <= 25 ? '6pt' : intervalX <= 35 ? '11px' : null)
+                 .attr('textLength', intervalX <= 50 ? intervalX : null)
+              .selectAll('tspan')
+                 .attr('textLength', intervalX <= 30 ? intervalX : null);
             el.select('rect').transition().duration(500)
                              .attr('height', this.getBoundingClientRect().height)
                              .attr('width', xMax + (margins.left - legLeftPadding));
-          }
-          else {
-            el.append('rect')
-            //.attr('y', ycurr)
-                .style('fill', d.color);
+          } else {
+
+            el.selectAll('rect').data(['bg']).enter()
+              .append('rect')
+              .attr('y', -12)
+              .style('fill', d.color);
             var cells = el.selectAll('.nv-leg-cell').data([d.title].concat(d.data.values()));
             var cellsEnter = cells.enter().append('text')
                                           .attr('class', 'nv-leg-cell')
-                                          //.attr('y', 3)
                                           .style('text-anchor', (d, i) => i === 0 ? 'start' : 'middle')
-                                          .style('fill', '#eee')
+                                          .classed(colorIsDark(d.color) ? 'light-text' : 'dark-text', true)
+                                          .attr('lengthAdjust', (d,i) => i === 0 ? null : 'spacingAndGlyphs')
                                           .text( (d, i) => i === 0 ? d : yformat(d.value) );
+            var numberOfLines = 0;
+            cellsEnter.filter( (d,i) => i === 0 )
+                      .call(d3textWrap, margins.left, legLeftPadding)
+                      .selectAll('tspan')
+                      .each( () => numberOfLines++ );
+            if(!cellsEnter.empty()) {
+              el.select('rect')
+                .attr('height', 16 * numberOfLines);
+              el.selectAll('.nv-leg-cell').filter( (d,i) => i !== 0 )
+                .attr('y', ((16 * numberOfLines) / 2) - 8)
+            }
+
             cells.transition().duration(500)
-                 .attr('x', (d, i) => i === 0 ? legLeftPadding : margins.left - legLeftPadding + xscale(d.key.valueOf()) );
-            el.select('rect').transition().duration(500)
-                             .attr('height', this.getBoundingClientRect().height)
-                             .attr('width', xMax + (margins.left - legLeftPadding));
+                 .attr('x', (d, i) => i === 0 ? legLeftPadding : margins.left - legLeftPadding + xscale(d.key.valueOf()) )
+                 .attr('textLength', (d,i) => i === 0 ? null : (yformat(d.value).length <= 3 || intervalX > 35) ? null :
+                 (yformat(d.value).length <= 4 && intervalX > 30) ? null : intervalX - (intervalX >= 20 ? 8 : 5));
             el.attr('transform', `translate(0, ${ycurr})`)
+            el.select('rect').transition().duration(500)
+                             .attr('width', xMax + (margins.left - legLeftPadding));
           }
+
           ycurr += this.getBoundingClientRect().height;
         });
-        legWrap.transition().duration(500).attr('transform', `translate(${legLeftPadding}, ${(yMin + margins.top + legPadding)})`);
-        var legHeight = legWrap.node().getBoundingClientRect().height;
-      }
 
+        var legHeight = legWrap.node().getBoundingClientRect().height + 10;
+        margins.bottom = legHeight;
+        chart.margin(margins).update();
+        var yMin = yscale(mschart.range[0]);
+        legWrap.transition().duration(500).attr('transform', `translate(${legLeftPadding}, ${(yMin + margins.top + legPadding)})`);
+      }
 
 
       chart.update();

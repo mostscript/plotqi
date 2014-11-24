@@ -48,9 +48,9 @@
 	/*globals require */
 	'use strict';
 	__webpack_require__(1);
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 	var moment = __webpack_require__(2);
-	__webpack_require__(3);
+	__webpack_require__(4);
 
 /***/ },
 /* 1 */
@@ -121,31 +121,6 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	/*jshint esnext:true, eqnull:true */
-	/*globals require */
-	var getObjects = __webpack_require__(5).getObjects;
-	var Chart = __webpack_require__(6).Chart;
-	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
-	var LargeChart = __webpack_require__(8).LargeChart;
-	var d3 = __webpack_require__(4);
-	var nv = __webpack_require__(12);
-	getObjects('report.json', function (charts) {
-	  charts = charts.map( function(graph) {
-	    return Chart(graph);
-	  } )
-	  window.charts = charts;
-
-	  var small_div = d3.select('#small-chart-div-test_numero_dos');
-	  var lg_div = d3.select('#chart-div-test_numero_dos');
-	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-	  nv.addGraph(LargeChart(charts[0], lg_div));
-	});
-
-/***/ },
-/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -9365,6 +9340,30 @@
 	}();
 
 /***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/*jshint esnext:true, eqnull:true */
+	/*globals require */
+	var getObjects = __webpack_require__(5).getObjects;
+	var Chart = __webpack_require__(6).Chart;
+	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
+	var LargeChart = __webpack_require__(8).LargeChart;
+	var nv = __webpack_require__(12);
+	getObjects('report.json', function (charts) {
+	  charts = charts.map( function(graph) {
+	    return Chart(graph);
+	  } )
+	  window.charts = charts;
+
+	  var small_div = d3.select('#small-chart-div-test_numero_dos');
+	  var lg_div = d3.select('#chart-div-test_numero_dos');
+	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
+	  nv.addGraph(LargeChart(charts[0], lg_div));
+	});
+
+/***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9523,7 +9522,7 @@
 
 	        y = +((null === y)?paddingTopBottom:y);
 
-	        var tspan = text.text(null).append("tspan").attr("x", 0)/*.attr("y", y)*/.attr("dy", dy + "em");
+	        var tspan = text.text(null).append("tspan").attr("x", paddingRightLeft).attr("dy", dy + "em");
 	        //noinspection JSHint
 	        while (word = words.pop()) {
 	            line.push(word);
@@ -9532,7 +9531,7 @@
 	                line.pop();
 	                tspan.text(line.join(" "));
 	                line = [word];
-	                tspan = text.append("tspan").attr("x", 0)/*.attr("y", y)*/.attr("dy", /*(++lineNumber * )*/ lineHeight + dy + "em").text(word);
+	                tspan = text.append("tspan").attr("x", paddingRightLeft).attr("dy", lineHeight + dy + "em").text(word);
 	                ++createdLineCount;
 	            }
 	        }
@@ -9541,7 +9540,15 @@
 	    });
 	    return arrLineCreatedCount;
 	}
-	exports.d3textWrap = d3textWrap;
+
+	exports.d3textWrap = d3textWrap;function colorIsDark(color) {
+	    color = d3.rgb(color);
+	    color = [color.r, color.g, color.b];
+	    return (color.reduce( function(a, b) {
+	        return a + b;
+	    } ) / 3) < 128
+	}
+	exports.colorIsDark = colorIsDark;
 
 /***/ },
 /* 6 */
@@ -9619,16 +9626,16 @@
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
 	'use strict';
-	var Klass = __webpack_require__(9).Klass;
+	var Klass = __webpack_require__(10).Klass;
 	var dataSym = Symbol();
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 
-	var dataPointSchema = __webpack_require__(10).dataPointSchema;
-	var timeDataPointSchema = __webpack_require__(10).timeDataPointSchema;
-	var dataSeriesSchema = __webpack_require__(10).dataSeriesSchema;
-	var timeDataSeriesSchema = __webpack_require__(10).timeDataSeriesSchema;
-	var multiSeriesChartSchema = __webpack_require__(10).multiSeriesChartSchema;
-	var timeSeriesChartSchema = __webpack_require__(10).timeSeriesChartSchema;
+	var dataPointSchema = __webpack_require__(11).dataPointSchema;
+	var timeDataPointSchema = __webpack_require__(11).timeDataPointSchema;
+	var dataSeriesSchema = __webpack_require__(11).dataSeriesSchema;
+	var timeDataSeriesSchema = __webpack_require__(11).timeDataSeriesSchema;
+	var multiSeriesChartSchema = __webpack_require__(11).multiSeriesChartSchema;
+	var timeSeriesChartSchema = __webpack_require__(11).timeSeriesChartSchema;
 
 	var moment = __webpack_require__(2);
 
@@ -10017,11 +10024,11 @@
 	/*globals require */
 	var $__Array$prototype$slice = Array.prototype.slice;
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 	var nv = __webpack_require__(12);
-	var shapePath = __webpack_require__(11).shapePath;
-	var shapes = __webpack_require__(11).shapes;
-	var legendMarkers = __webpack_require__(11).legendMarkers;
+	var shapePath = __webpack_require__(9).shapePath;
+	var shapes = __webpack_require__(9).shapes;
+	var legendMarkers = __webpack_require__(9).legendMarkers;
 
 	function SmallMultiplesChart(mschart, node, size) {
 	  var $__0;
@@ -10357,11 +10364,11 @@
 	/*globals require */
 	var $__Array$prototype$slice = Array.prototype.slice;
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(4);
 	var nv = __webpack_require__(12);
 	var styleSheet = __webpack_require__(5).styleSheet;
 	var debounce = __webpack_require__(5).debounce;
 	var d3textWrap = __webpack_require__(5).d3textWrap;
+	var colorIsDark = __webpack_require__(5).colorIsDark;
 
 	function LargeChart(mschart, node) {
 	  var $__0;
@@ -10428,13 +10435,14 @@
 	    for(var i = range[0]; i <= range[1]; i += interval) {
 	      out.push(i);
 	    }
+	    return out;
 	  };
 
 	  var tabular = mschart.legend_placement === 'tabular';
 
 	  return function () {
 	    if(tabular) {
-	      margins.left = 150;
+	      margins.left = 125;
 	      margins.bottom = 150;
 	    } else {
 	      margins.right = 120;
@@ -10528,7 +10536,7 @@
 	    return chart;
 
 	    function render() {
-	      var rightHandLegend = function() {
+	      function rightHandLegend() {
 	        //Legend
 	        if(mschart.series.length > 1) {
 	          var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;;
@@ -10577,26 +10585,28 @@
 	        }
 	      }
 
-	      var tabularLegend = function() {
+	      function tabularLegend() {
 	        var yformat = d3.format(',.1f');
 	        var legPadding = 10;
 	        var legLeftPadding = 5;
 	        var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
 	        var legWrapEnter = legWrap.enter().append('g')
 	                                   .attr('class', 'nvd3 nv-legend')
-	                                   .attr('transform', 'translate(' + legLeftPadding + ',' + (yMin + margins.top + legPadding) + ')');
+	                                   .attr('transform', "translate(" + legLeftPadding + ", " + (yMin + margins.top + legPadding) + ")");
 	        var legend = legWrap.selectAll('g.nv-leg-row').data(['header'].concat(mschart.series));
 	        legend.enter().append('g')
 	                      .attr('class', 'nv-leg-row');
 
 	        var ycurr = legPadding + 3;
-	        var intervalX = xscale(tickVals[1]) - xscale(tickVals[0]);
+	        var intervalX = Math.floor(xscale(tickVals[1]) - xscale(tickVals[0]));
 	        legend.each(function (d, i) {
 	          var el = d3.select(this);
+
 	          if(i === 0) {
-	            el.append('rect')
-	                .attr('height', 16)
-	                .style('fill', '#ccc');
+
+	            el.selectAll('rect').data(['bg']).enter()
+	              .append('rect')
+	              .attr('class', 'nv-leg-header-bg');
 	            var labels = [];
 	            for(var lbl in mschart.labels) {
 	              if(mschart.labels.hasOwnProperty(lbl)) {
@@ -10608,48 +10618,87 @@
 	                                          .attr('class', 'nv-leg-cell')
 	                                          .attr('y', ycurr)
 	                                          .style('text-anchor', 'middle')
+	                                          .style('font-size', '12px')
 	                                          .text( function(d) {
 	              return d.label;
 	            } )//;
-	            /*cells*/.call(d3textWrap, intervalX, 0);
+	                                          .call(d3textWrap, 45, 0)
+	                                          .attr('textLength', intervalX)
+	                                          .attr('lengthAdjust', 'spacingAndGlyphs')
+	                                        .selectAll('tspan')
+	                                          .attr('textLength', intervalX)
+	                                          .attr('lengthAdjust', 'spacingAndGlyphs');
 	            cells.transition().duration(500)
 	                 .attr('transform', function(d) {
 	              return "translate(" + (margins.left - legLeftPadding + xscale(d.x)) + ", 0)";
-	            } );
+	            } )
+	                 .style('font-family', intervalX <= 25 ? 'silkscreennormal' : null)
+	                 .style('font-size', intervalX <= 25 ? '6pt' : intervalX <= 35 ? '11px' : null)
+	                 .attr('textLength', intervalX <= 50 ? intervalX : null)
+	              .selectAll('tspan')
+	                 .attr('textLength', intervalX <= 30 ? intervalX : null);
 	            el.select('rect').transition().duration(500)
 	                             .attr('height', this.getBoundingClientRect().height)
 	                             .attr('width', xMax + (margins.left - legLeftPadding));
-	          }
-	          else {
-	            el.append('rect')
-	            //.attr('y', ycurr)
-	                .style('fill', d.color);
+	          } else {
+
+	            el.selectAll('rect').data(['bg']).enter()
+	              .append('rect')
+	              .attr('y', -12)
+	              .style('fill', d.color);
 	            var cells = el.selectAll('.nv-leg-cell').data([d.title].concat(d.data.values()));
 	            var cellsEnter = cells.enter().append('text')
 	                                          .attr('class', 'nv-leg-cell')
-	                                          //.attr('y', 3)
 	                                          .style('text-anchor', function(d, i) {
 	              return i === 0 ? 'start' : 'middle';
 	            })
-	                                          .style('fill', '#eee')
+	                                          .classed(colorIsDark(d.color) ? 'light-text' : 'dark-text', true)
+	                                          .attr('lengthAdjust', function(d, i) {
+	              return i === 0 ? null : 'spacingAndGlyphs';
+	            })
 	                                          .text( function(d, i) {
 	              return i === 0 ? d : yformat(d.value);
 	            } );
+	            var numberOfLines = 0;
+	            cellsEnter.filter( function(d, i) {
+	              return i === 0;
+	            } )
+	                      .call(d3textWrap, margins.left, legLeftPadding)
+	                      .selectAll('tspan')
+	                      .each( function() {
+	              return numberOfLines++;
+	            } );
+	            if(!cellsEnter.empty()) {
+	              el.select('rect')
+	                .attr('height', 16 * numberOfLines);
+	              el.selectAll('.nv-leg-cell').filter( function(d, i) {
+	                return i !== 0;
+	              } )
+	                .attr('y', ((16 * numberOfLines) / 2) - 8)
+	            }
+
 	            cells.transition().duration(500)
 	                 .attr('x', function(d, i) {
 	              return i === 0 ? legLeftPadding : margins.left - legLeftPadding + xscale(d.key.valueOf());
-	            } );
-	            el.select('rect').transition().duration(500)
-	                             .attr('height', this.getBoundingClientRect().height)
-	                             .attr('width', xMax + (margins.left - legLeftPadding));
+	            } )
+	                 .attr('textLength', function(d, i) {
+	              return i === 0 ? null : (yformat(d.value).length <= 3 || intervalX > 35) ? null :
+	                   (yformat(d.value).length <= 4 && intervalX > 30) ? null : intervalX - (intervalX >= 20 ? 8 : 5);
+	            });
 	            el.attr('transform', "translate(0, " + ycurr + ")")
+	            el.select('rect').transition().duration(500)
+	                             .attr('width', xMax + (margins.left - legLeftPadding));
 	          }
+
 	          ycurr += this.getBoundingClientRect().height;
 	        });
-	        legWrap.transition().duration(500).attr('transform', "translate(" + legLeftPadding + ", " + (yMin + margins.top + legPadding) + ")");
-	        var legHeight = legWrap.node().getBoundingClientRect().height;
-	      }
 
+	        var legHeight = legWrap.node().getBoundingClientRect().height + 10;
+	        margins.bottom = legHeight;
+	        chart.margin(margins).update();
+	        var yMin = yscale(mschart.range[0]);
+	        legWrap.transition().duration(500).attr('transform', "translate(" + legLeftPadding + ", " + (yMin + margins.top + legPadding) + ")");
+	      }
 
 
 	      chart.update();
@@ -10805,6 +10854,209 @@
 	"use strict";
 	/*jshint esnext:true, eqnull:true */
 	/*globals require */
+	var $__getIteratorRange = function(iterator, index, begin, len) {
+	  if (index > begin) {
+	    throw new RangeError();
+	  }
+
+	  if (typeof len === "undefined") {
+	    len = Infinity;
+	  }
+
+	  var range = [], end = begin + len;
+
+	  while (index < end) {
+	    var next = iterator.next();
+
+	    if (next.done) {
+	      break;
+	    }
+
+	    if (index >= begin) {
+	      range.push(next.value);
+	    }
+
+	    index++;
+	  }
+
+	  return {
+	    range: range,
+	    index: index
+	  };
+	};
+
+	var $__getIterator = function(iterable) {
+	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+
+	  if (typeof iterable[sym] === "function") {
+	    return iterable[sym]();
+	  } else if (typeof iterable === "object" || typeof iterable === "function") {
+	    return $__getArrayIterator(iterable);
+	  } else {
+	    throw new TypeError();
+	  }
+	};
+
+	var $__getArrayIterator = function(array) {
+	  var index = 0;
+
+	  return {
+	    next: function() {
+	      if (index < array.length) {
+	        return {
+	          done: false,
+	          value: array[index++]
+	        };
+	      } else {
+	        return {
+	          done: true,
+	          value: void 0
+	        };
+	      }
+	    }
+	  };
+	};
+
+	function shapePath(node) {
+	  var spec = (arguments[1] !== void 0 ? arguments[1] : shapes.square);
+	  var size = (arguments[2] !== void 0 ? arguments[2] : 3);
+	  var d = "";
+	  var normalizer = spec.normalizer || 1;
+	  var multiplier = size * normalizer;
+
+	  spec.path.forEach(function () {
+	    var $__arguments0 = arguments;
+	    var $__arguments = $__arguments0;
+
+	    var var$0 = $__arguments[0],
+	        iterator$0 = $__getIterator(var$0),
+	        iteratorValue$0 = {
+	          index: 0
+	        },
+	        cmd = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]),
+	        args = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, Infinity), iteratorValue$0.range);
+
+	    d += cmd;
+
+	    args.forEach(function (arg, i) {
+	      if(i !== 0)
+	        d += ' ';
+	      if(arg.length)
+	        arg.forEach(function (sub_arg, sub_i) {
+	          if(arg)
+	          if(sub_i === 0){
+	                if(String(arg).indexOf('#') === -1)
+	              d += (multiplier * sub_arg);
+	            else
+	              d += sub_arg.slice(1);
+	          } else {
+	            if(String(arg).indexOf('#') === -1)
+	              d += "," + (multiplier * sub_arg);
+	            else
+	              d += "," + arg.slice(1);
+	          }
+	        });
+	      else {
+	        if(String(arg).indexOf('#') === -1)
+	          d += (multiplier * arg);
+	        else
+	          d += arg.slice(1);
+	      }
+	    });
+	  });
+
+	  node.attr('d', d)
+	      .classed('smooth-shape', spec.smooth ? true : false)
+	      .classed('crisp-shape', spec.smooth ? false : true);
+	}
+
+	exports.shapePath = shapePath;function legendMarkers (selection, size) {
+	  size = size || 4;
+	  selection.each(function (d, i) {
+	    var sel = d3.select(this);
+	    var shape_name = d.marker_style || 'square';
+	    if(shape_name === 'cross') shape_name = 'legend_cross';
+	    var shape = shapes[shape_name] || shapes.square;
+	    sel.call(shapePath, shape, size)
+	  });
+	}
+
+	exports.legendMarkers = legendMarkers;var shapes = {
+	  square: {
+	    normalizer: 1 /2,
+	    path: [
+	      ['m', -1, -1],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['z']
+	    ]
+	  },
+	  diamond: {
+	    normalizer: 1 / 2,
+	    path: [
+	      ['m', -1, 0],
+	      ['l', 1, -1],
+	      ['l', 1, 1],
+	      ['l', -1, 1],
+	      ['z']
+	    ]
+	  },
+	  cross: {
+	    normalizer: 1 / 6,
+	    path: [
+	      ['m', -1, -1],
+	      ['v', -2],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['v', -2],
+	      ['h', -2],
+	      ['v', -2],
+	      ['z']
+	    ]
+	  },
+	  legend_cross: {
+	    normalizer: 1 / 4,
+	    path: [
+	      ['m', -1, -1],
+	      ['v', -1],
+	      ['h', 2],
+	      ['v', 1],
+	      ['h', 1],
+	      ['v', 2],
+	      ['h', -1],
+	      ['v', 1],
+	      ['h', -2],
+	      ['v', -1],
+	      ['h', -1],
+	      ['v', -2],
+	      ['z']
+	    ]
+	  },
+	  circle: {
+	    normalizer: 1 / 2,
+	    path: [
+	      ['m', -1, 0],
+	      ['a', [1, 1], [0], ['#1',0], [2,0]],
+	      ['a', [1, 1], [0], ['#1',0], [-2,0]]
+	    ],
+	    smooth: true
+	  }
+	}
+	exports.shapes = shapes;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/*jshint esnext:true, eqnull:true */
+	/*globals require */
 	var $__Object$defineProperty = Object.defineProperty;
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
@@ -10954,7 +11206,7 @@
 	exports.Klass = Klass;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10963,10 +11215,10 @@
 	var $__Object$defineProperty = Object.defineProperty;
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
-	var Schema = __webpack_require__(9).Schema;
-	var schematize = __webpack_require__(9).schematize;
-	var ValidationError = __webpack_require__(9).ValidationError;
-	var ValidationTypeError = __webpack_require__(9).ValidationTypeError;
+	var Schema = __webpack_require__(10).Schema;
+	var schematize = __webpack_require__(10).schematize;
+	var ValidationError = __webpack_require__(10).ValidationError;
+	var ValidationTypeError = __webpack_require__(10).ValidationTypeError;
 	var moment = __webpack_require__(2);
 
 	function dateTypeConstraint(value) {
@@ -11637,214 +11889,11 @@
 	exports.timeSeriesChartSchema = timeSeriesChartSchema;
 
 /***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	/*jshint esnext:true, eqnull:true */
-	/*globals require */
-	var $__getIteratorRange = function(iterator, index, begin, len) {
-	  if (index > begin) {
-	    throw new RangeError();
-	  }
-
-	  if (typeof len === "undefined") {
-	    len = Infinity;
-	  }
-
-	  var range = [], end = begin + len;
-
-	  while (index < end) {
-	    var next = iterator.next();
-
-	    if (next.done) {
-	      break;
-	    }
-
-	    if (index >= begin) {
-	      range.push(next.value);
-	    }
-
-	    index++;
-	  }
-
-	  return {
-	    range: range,
-	    index: index
-	  };
-	};
-
-	var $__getIterator = function(iterable) {
-	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
-
-	  if (typeof iterable[sym] === "function") {
-	    return iterable[sym]();
-	  } else if (typeof iterable === "object" || typeof iterable === "function") {
-	    return $__getArrayIterator(iterable);
-	  } else {
-	    throw new TypeError();
-	  }
-	};
-
-	var $__getArrayIterator = function(array) {
-	  var index = 0;
-
-	  return {
-	    next: function() {
-	      if (index < array.length) {
-	        return {
-	          done: false,
-	          value: array[index++]
-	        };
-	      } else {
-	        return {
-	          done: true,
-	          value: void 0
-	        };
-	      }
-	    }
-	  };
-	};
-
-	function shapePath(node) {
-	  var spec = (arguments[1] !== void 0 ? arguments[1] : shapes.square);
-	  var size = (arguments[2] !== void 0 ? arguments[2] : 3);
-	  var d = "";
-	  var normalizer = spec.normalizer || 1;
-	  var multiplier = size * normalizer;
-
-	  spec.path.forEach(function () {
-	    var $__arguments0 = arguments;
-	    var $__arguments = $__arguments0;
-
-	    var var$0 = $__arguments[0],
-	        iterator$0 = $__getIterator(var$0),
-	        iteratorValue$0 = {
-	          index: 0
-	        },
-	        cmd = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]),
-	        args = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, Infinity), iteratorValue$0.range);
-
-	    d += cmd;
-
-	    args.forEach(function (arg, i) {
-	      if(i !== 0)
-	        d += ' ';
-	      if(arg.length)
-	        arg.forEach(function (sub_arg, sub_i) {
-	          if(arg)
-	          if(sub_i === 0){
-	                if(String(arg).indexOf('#') === -1)
-	              d += (multiplier * sub_arg);
-	            else
-	              d += sub_arg.slice(1);
-	          } else {
-	            if(String(arg).indexOf('#') === -1)
-	              d += "," + (multiplier * sub_arg);
-	            else
-	              d += "," + arg.slice(1);
-	          }
-	        });
-	      else {
-	        if(String(arg).indexOf('#') === -1)
-	          d += (multiplier * arg);
-	        else
-	          d += arg.slice(1);
-	      }
-	    });
-	  });
-
-	  node.attr('d', d)
-	      .classed('smooth-shape', spec.smooth ? true : false)
-	      .classed('crisp-shape', spec.smooth ? false : true);
-	}
-
-	exports.shapePath = shapePath;function legendMarkers (selection, size) {
-	  size = size || 4;
-	  selection.each(function (d, i) {
-	    var sel = d3.select(this);
-	    var shape_name = d.marker_style || 'square';
-	    if(shape_name === 'cross') shape_name = 'legend_cross';
-	    var shape = shapes[shape_name] || shapes.square;
-	    sel.call(shapePath, shape, size)
-	  });
-	}
-
-	exports.legendMarkers = legendMarkers;var shapes = {
-	  square: {
-	    normalizer: 1 /2,
-	    path: [
-	      ['m', -1, -1],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['z']
-	    ]
-	  },
-	  diamond: {
-	    normalizer: 1 / 2,
-	    path: [
-	      ['m', -1, 0],
-	      ['l', 1, -1],
-	      ['l', 1, 1],
-	      ['l', -1, 1],
-	      ['z']
-	    ]
-	  },
-	  cross: {
-	    normalizer: 1 / 6,
-	    path: [
-	      ['m', -1, -1],
-	      ['v', -2],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['v', -2],
-	      ['h', -2],
-	      ['v', -2],
-	      ['z']
-	    ]
-	  },
-	  legend_cross: {
-	    normalizer: 1 / 4,
-	    path: [
-	      ['m', -1, -1],
-	      ['v', -1],
-	      ['h', 2],
-	      ['v', 1],
-	      ['h', 1],
-	      ['v', 2],
-	      ['h', -1],
-	      ['v', 1],
-	      ['h', -2],
-	      ['v', -1],
-	      ['h', -1],
-	      ['v', -2],
-	      ['z']
-	    ]
-	  },
-	  circle: {
-	    normalizer: 1 / 2,
-	    path: [
-	      ['m', -1, 0],
-	      ['a', [1, 1], [0], ['#1',0], [2,0]],
-	      ['a', [1, 1], [0], ['#1',0], [-2,0]]
-	    ],
-	    smooth: true
-	  }
-	}
-	exports.shapes = shapes;
-
-/***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 
 	(function(){
 
