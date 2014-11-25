@@ -191,11 +191,15 @@ export function LargeChart(mschart, node) {
 
       function rightHandLegend() {
         if(mschart.series.length > 1) {
-          var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;;
+          var firstRun = false;
+          var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;
           var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
           var legWrapEnter = legWrap.enter().append('g')
                                      .attr('class', 'nvd3 nv-legend')
-                                     .attr('transform', 'translate(' + (xMax + margins.left) + ',' + margins.top + ')');
+                                     .attr('transform', 'translate(' + (xMax + margins.left) + ',' + margins.top + ')')
+                                  .append('rect')
+                                     .attr('class', 'nv-leg-bg');
+          var firstRun = !legWrapEnter.empty();
 
           var legend = legWrap.selectAll('g.nv-leg-entry').data(mschart.series);
           var legEnter = legend.enter().append('g')
@@ -220,22 +224,24 @@ export function LargeChart(mschart, node) {
                 .style('fill-opacity', 0.5 );
           });
           var legHeight = legWrap.node().getBoundingClientRect().height + 15;
-
-          legWrapEnter.append('rect')
-                      .attr('x', legPadding)
-                      .attr('height', legHeight)
-                      .attr('width', legWidth)
-                      .attr('stroke', 'black')
-                      .attr('stroke-opacity', 0.5)
-                      .attr('stroke-width', 1)
-                      .attr('fill-opacity', 0);
+          if(firstRun) {
+            legWrap.select('rect')
+                   .attr('x', legPadding)
+                   .attr('height', legHeight)
+                   .attr('width', legWidth)
+                   .attr('stroke', 'black')
+                   .attr('stroke-opacity', 0.5)
+                   .attr('stroke-width', 1)
+                   .attr('fill-opacity', 0);
+          }
           legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (margins.top + (yRange / 2) - (legHeight / 2)) + ')');
         }
       }
 
       function tabularLegend() {
         var firstRun = false;
-        var yformat = d3.format(',.1f');
+        var __yformat = d3.format(',.1f');
+        var yformat = (y => typeof y === 'number' ? __yformat(y) : 'N/A');
         var legPadding = 10;
         var legLeftPadding = 5;
         var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
@@ -330,7 +336,7 @@ export function LargeChart(mschart, node) {
 
         if(firstRun) {
           var legHeight = legWrap.node().getBoundingClientRect().height + 20;
-          margins.bottom = legHeight;
+          margins.bottom = Math.floor(legHeight);
           chart.margin(margins).update();
           yscale = chart.yScale();
           yMin = yscale(mschart.range[0]);

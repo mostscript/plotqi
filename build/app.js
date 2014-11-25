@@ -48,9 +48,9 @@
 	/*globals require */
 	'use strict';
 	__webpack_require__(1);
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(4);
 	var moment = __webpack_require__(2);
-	__webpack_require__(4);
+	__webpack_require__(3);
 
 /***/ },
 /* 1 */
@@ -121,6 +121,30 @@
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/*jshint esnext:true, eqnull:true */
+	/*globals require */
+	var getObjects = __webpack_require__(5).getObjects;
+	var Chart = __webpack_require__(6).Chart;
+	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
+	var LargeChart = __webpack_require__(8).LargeChart;
+	var nv = __webpack_require__(12);
+	getObjects('report.json', function (charts) {
+	  charts = charts.map( function(graph) {
+	    return Chart(graph);
+	  } )
+	  window.charts = charts;
+
+	  var small_div = d3.select('#small-chart-div-test_numero_dos');
+	  var lg_div = d3.select('#chart-div-test_numero_dos');
+	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
+	  nv.addGraph(LargeChart(charts[0], lg_div));
+	});
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -9340,30 +9364,6 @@
 	}();
 
 /***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	/*jshint esnext:true, eqnull:true */
-	/*globals require */
-	var getObjects = __webpack_require__(5).getObjects;
-	var Chart = __webpack_require__(6).Chart;
-	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
-	var LargeChart = __webpack_require__(8).LargeChart;
-	var nv = __webpack_require__(12);
-	getObjects('report.json', function (charts) {
-	  charts = charts.map( function(graph) {
-	    return Chart(graph);
-	  } )
-	  window.charts = charts;
-
-	  var small_div = d3.select('#small-chart-div-test_numero_dos');
-	  var lg_div = d3.select('#chart-div-test_numero_dos');
-	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-	  nv.addGraph(LargeChart(charts[0], lg_div));
-	});
-
-/***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9626,16 +9626,16 @@
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
 	'use strict';
-	var Klass = __webpack_require__(10).Klass;
+	var Klass = __webpack_require__(9).Klass;
 	var dataSym = Symbol();
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(4);
 
-	var dataPointSchema = __webpack_require__(11).dataPointSchema;
-	var timeDataPointSchema = __webpack_require__(11).timeDataPointSchema;
-	var dataSeriesSchema = __webpack_require__(11).dataSeriesSchema;
-	var timeDataSeriesSchema = __webpack_require__(11).timeDataSeriesSchema;
-	var multiSeriesChartSchema = __webpack_require__(11).multiSeriesChartSchema;
-	var timeSeriesChartSchema = __webpack_require__(11).timeSeriesChartSchema;
+	var dataPointSchema = __webpack_require__(10).dataPointSchema;
+	var timeDataPointSchema = __webpack_require__(10).timeDataPointSchema;
+	var dataSeriesSchema = __webpack_require__(10).dataSeriesSchema;
+	var timeDataSeriesSchema = __webpack_require__(10).timeDataSeriesSchema;
+	var multiSeriesChartSchema = __webpack_require__(10).multiSeriesChartSchema;
+	var timeSeriesChartSchema = __webpack_require__(10).timeSeriesChartSchema;
 
 	var moment = __webpack_require__(2);
 
@@ -10024,11 +10024,11 @@
 	/*globals require */
 	var $__Array$prototype$slice = Array.prototype.slice;
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(4);
 	var nv = __webpack_require__(12);
-	var shapePath = __webpack_require__(9).shapePath;
-	var shapes = __webpack_require__(9).shapes;
-	var legendMarkers = __webpack_require__(9).legendMarkers;
+	var shapePath = __webpack_require__(11).shapePath;
+	var shapes = __webpack_require__(11).shapes;
+	var legendMarkers = __webpack_require__(11).legendMarkers;
 
 	function SmallMultiplesChart(mschart, node, size) {
 	  var $__0;
@@ -10579,11 +10579,15 @@
 
 	      function rightHandLegend() {
 	        if(mschart.series.length > 1) {
-	          var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;;
+	          var firstRun = false;
+	          var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;
 	          var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
 	          var legWrapEnter = legWrap.enter().append('g')
 	                                     .attr('class', 'nvd3 nv-legend')
-	                                     .attr('transform', 'translate(' + (xMax + margins.left) + ',' + margins.top + ')');
+	                                     .attr('transform', 'translate(' + (xMax + margins.left) + ',' + margins.top + ')')
+	                                  .append('rect')
+	                                     .attr('class', 'nv-leg-bg');
+	          var firstRun = !legWrapEnter.empty();
 
 	          var legend = legWrap.selectAll('g.nv-leg-entry').data(mschart.series);
 	          var legEnter = legend.enter().append('g')
@@ -10612,22 +10616,26 @@
 	                .style('fill-opacity', 0.5 );
 	          });
 	          var legHeight = legWrap.node().getBoundingClientRect().height + 15;
-
-	          legWrapEnter.append('rect')
-	                      .attr('x', legPadding)
-	                      .attr('height', legHeight)
-	                      .attr('width', legWidth)
-	                      .attr('stroke', 'black')
-	                      .attr('stroke-opacity', 0.5)
-	                      .attr('stroke-width', 1)
-	                      .attr('fill-opacity', 0);
+	          if(firstRun) {
+	            legWrap.select('rect')
+	                   .attr('x', legPadding)
+	                   .attr('height', legHeight)
+	                   .attr('width', legWidth)
+	                   .attr('stroke', 'black')
+	                   .attr('stroke-opacity', 0.5)
+	                   .attr('stroke-width', 1)
+	                   .attr('fill-opacity', 0);
+	          }
 	          legWrap.transition().duration(500).attr('transform', 'translate(' + (margins.left + xMax) + ',' + (margins.top + (yRange / 2) - (legHeight / 2)) + ')');
 	        }
 	      }
 
 	      function tabularLegend() {
 	        var firstRun = false;
-	        var yformat = d3.format(',.1f');
+	        var __yformat = d3.format(',.1f');
+	        var yformat = (function(y) {
+	          return typeof y === 'number' ? __yformat(y) : 'N/A';
+	        });
 	        var legPadding = 10;
 	        var legLeftPadding = 5;
 	        var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
@@ -10742,7 +10750,7 @@
 
 	        if(firstRun) {
 	          var legHeight = legWrap.node().getBoundingClientRect().height + 20;
-	          margins.bottom = legHeight;
+	          margins.bottom = Math.floor(legHeight);
 	          chart.margin(margins).update();
 	          yscale = chart.yScale();
 	          yMin = yscale(mschart.range[0]);
@@ -10863,209 +10871,6 @@
 
 /***/ },
 /* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	/*jshint esnext:true, eqnull:true */
-	/*globals require */
-	var $__getIteratorRange = function(iterator, index, begin, len) {
-	  if (index > begin) {
-	    throw new RangeError();
-	  }
-
-	  if (typeof len === "undefined") {
-	    len = Infinity;
-	  }
-
-	  var range = [], end = begin + len;
-
-	  while (index < end) {
-	    var next = iterator.next();
-
-	    if (next.done) {
-	      break;
-	    }
-
-	    if (index >= begin) {
-	      range.push(next.value);
-	    }
-
-	    index++;
-	  }
-
-	  return {
-	    range: range,
-	    index: index
-	  };
-	};
-
-	var $__getIterator = function(iterable) {
-	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
-
-	  if (typeof iterable[sym] === "function") {
-	    return iterable[sym]();
-	  } else if (typeof iterable === "object" || typeof iterable === "function") {
-	    return $__getArrayIterator(iterable);
-	  } else {
-	    throw new TypeError();
-	  }
-	};
-
-	var $__getArrayIterator = function(array) {
-	  var index = 0;
-
-	  return {
-	    next: function() {
-	      if (index < array.length) {
-	        return {
-	          done: false,
-	          value: array[index++]
-	        };
-	      } else {
-	        return {
-	          done: true,
-	          value: void 0
-	        };
-	      }
-	    }
-	  };
-	};
-
-	function shapePath(node) {
-	  var spec = (arguments[1] !== void 0 ? arguments[1] : shapes.square);
-	  var size = (arguments[2] !== void 0 ? arguments[2] : 3);
-	  var d = "";
-	  var normalizer = spec.normalizer || 1;
-	  var multiplier = size * normalizer;
-
-	  spec.path.forEach(function () {
-	    var $__arguments0 = arguments;
-	    var $__arguments = $__arguments0;
-
-	    var var$0 = $__arguments[0],
-	        iterator$0 = $__getIterator(var$0),
-	        iteratorValue$0 = {
-	          index: 0
-	        },
-	        cmd = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]),
-	        args = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, Infinity), iteratorValue$0.range);
-
-	    d += cmd;
-
-	    args.forEach(function (arg, i) {
-	      if(i !== 0)
-	        d += ' ';
-	      if(arg.length)
-	        arg.forEach(function (sub_arg, sub_i) {
-	          if(arg)
-	          if(sub_i === 0){
-	                if(String(arg).indexOf('#') === -1)
-	              d += (multiplier * sub_arg);
-	            else
-	              d += sub_arg.slice(1);
-	          } else {
-	            if(String(arg).indexOf('#') === -1)
-	              d += "," + (multiplier * sub_arg);
-	            else
-	              d += "," + arg.slice(1);
-	          }
-	        });
-	      else {
-	        if(String(arg).indexOf('#') === -1)
-	          d += (multiplier * arg);
-	        else
-	          d += arg.slice(1);
-	      }
-	    });
-	  });
-
-	  node.attr('d', d)
-	      .classed('smooth-shape', spec.smooth ? true : false)
-	      .classed('crisp-shape', spec.smooth ? false : true);
-	}
-
-	exports.shapePath = shapePath;function legendMarkers (selection, size) {
-	  size = size || 4;
-	  selection.each(function (d, i) {
-	    var sel = d3.select(this);
-	    var shape_name = d.marker_style || 'square';
-	    if(shape_name === 'cross') shape_name = 'legend_cross';
-	    var shape = shapes[shape_name] || shapes.square;
-	    sel.call(shapePath, shape, size)
-	  });
-	}
-
-	exports.legendMarkers = legendMarkers;var shapes = {
-	  square: {
-	    normalizer: 1 /2,
-	    path: [
-	      ['m', -1, -1],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['z']
-	    ]
-	  },
-	  diamond: {
-	    normalizer: 1 / 2,
-	    path: [
-	      ['m', -1, 0],
-	      ['l', 1, -1],
-	      ['l', 1, 1],
-	      ['l', -1, 1],
-	      ['z']
-	    ]
-	  },
-	  cross: {
-	    normalizer: 1 / 6,
-	    path: [
-	      ['m', -1, -1],
-	      ['v', -2],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', 2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['v', 2],
-	      ['h', -2],
-	      ['v', -2],
-	      ['h', -2],
-	      ['v', -2],
-	      ['z']
-	    ]
-	  },
-	  legend_cross: {
-	    normalizer: 1 / 4,
-	    path: [
-	      ['m', -1, -1],
-	      ['v', -1],
-	      ['h', 2],
-	      ['v', 1],
-	      ['h', 1],
-	      ['v', 2],
-	      ['h', -1],
-	      ['v', 1],
-	      ['h', -2],
-	      ['v', -1],
-	      ['h', -1],
-	      ['v', -2],
-	      ['z']
-	    ]
-	  },
-	  circle: {
-	    normalizer: 1 / 2,
-	    path: [
-	      ['m', -1, 0],
-	      ['a', [1, 1], [0], ['#1',0], [2,0]],
-	      ['a', [1, 1], [0], ['#1',0], [-2,0]]
-	    ],
-	    smooth: true
-	  }
-	}
-	exports.shapes = shapes;
-
-/***/ },
-/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -11220,7 +11025,7 @@
 	exports.Klass = Klass;
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -11229,10 +11034,10 @@
 	var $__Object$defineProperty = Object.defineProperty;
 	var $__Object$create = Object.create;
 	var $__Object$getPrototypeOf = Object.getPrototypeOf;
-	var Schema = __webpack_require__(10).Schema;
-	var schematize = __webpack_require__(10).schematize;
-	var ValidationError = __webpack_require__(10).ValidationError;
-	var ValidationTypeError = __webpack_require__(10).ValidationTypeError;
+	var Schema = __webpack_require__(9).Schema;
+	var schematize = __webpack_require__(9).schematize;
+	var ValidationError = __webpack_require__(9).ValidationError;
+	var ValidationTypeError = __webpack_require__(9).ValidationTypeError;
 	var moment = __webpack_require__(2);
 
 	function dateTypeConstraint(value) {
@@ -11903,11 +11708,214 @@
 	exports.timeSeriesChartSchema = timeSeriesChartSchema;
 
 /***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/*jshint esnext:true, eqnull:true */
+	/*globals require */
+	var $__getIteratorRange = function(iterator, index, begin, len) {
+	  if (index > begin) {
+	    throw new RangeError();
+	  }
+
+	  if (typeof len === "undefined") {
+	    len = Infinity;
+	  }
+
+	  var range = [], end = begin + len;
+
+	  while (index < end) {
+	    var next = iterator.next();
+
+	    if (next.done) {
+	      break;
+	    }
+
+	    if (index >= begin) {
+	      range.push(next.value);
+	    }
+
+	    index++;
+	  }
+
+	  return {
+	    range: range,
+	    index: index
+	  };
+	};
+
+	var $__getIterator = function(iterable) {
+	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+
+	  if (typeof iterable[sym] === "function") {
+	    return iterable[sym]();
+	  } else if (typeof iterable === "object" || typeof iterable === "function") {
+	    return $__getArrayIterator(iterable);
+	  } else {
+	    throw new TypeError();
+	  }
+	};
+
+	var $__getArrayIterator = function(array) {
+	  var index = 0;
+
+	  return {
+	    next: function() {
+	      if (index < array.length) {
+	        return {
+	          done: false,
+	          value: array[index++]
+	        };
+	      } else {
+	        return {
+	          done: true,
+	          value: void 0
+	        };
+	      }
+	    }
+	  };
+	};
+
+	function shapePath(node) {
+	  var spec = (arguments[1] !== void 0 ? arguments[1] : shapes.square);
+	  var size = (arguments[2] !== void 0 ? arguments[2] : 3);
+	  var d = "";
+	  var normalizer = spec.normalizer || 1;
+	  var multiplier = size * normalizer;
+
+	  spec.path.forEach(function () {
+	    var $__arguments0 = arguments;
+	    var $__arguments = $__arguments0;
+
+	    var var$0 = $__arguments[0],
+	        iterator$0 = $__getIterator(var$0),
+	        iteratorValue$0 = {
+	          index: 0
+	        },
+	        cmd = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 0, 1), iteratorValue$0.range[0]),
+	        args = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, Infinity), iteratorValue$0.range);
+
+	    d += cmd;
+
+	    args.forEach(function (arg, i) {
+	      if(i !== 0)
+	        d += ' ';
+	      if(arg.length)
+	        arg.forEach(function (sub_arg, sub_i) {
+	          if(arg)
+	          if(sub_i === 0){
+	                if(String(arg).indexOf('#') === -1)
+	              d += (multiplier * sub_arg);
+	            else
+	              d += sub_arg.slice(1);
+	          } else {
+	            if(String(arg).indexOf('#') === -1)
+	              d += "," + (multiplier * sub_arg);
+	            else
+	              d += "," + arg.slice(1);
+	          }
+	        });
+	      else {
+	        if(String(arg).indexOf('#') === -1)
+	          d += (multiplier * arg);
+	        else
+	          d += arg.slice(1);
+	      }
+	    });
+	  });
+
+	  node.attr('d', d)
+	      .classed('smooth-shape', spec.smooth ? true : false)
+	      .classed('crisp-shape', spec.smooth ? false : true);
+	}
+
+	exports.shapePath = shapePath;function legendMarkers (selection, size) {
+	  size = size || 4;
+	  selection.each(function (d, i) {
+	    var sel = d3.select(this);
+	    var shape_name = d.marker_style || 'square';
+	    if(shape_name === 'cross') shape_name = 'legend_cross';
+	    var shape = shapes[shape_name] || shapes.square;
+	    sel.call(shapePath, shape, size)
+	  });
+	}
+
+	exports.legendMarkers = legendMarkers;var shapes = {
+	  square: {
+	    normalizer: 1 /2,
+	    path: [
+	      ['m', -1, -1],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['z']
+	    ]
+	  },
+	  diamond: {
+	    normalizer: 1 / 2,
+	    path: [
+	      ['m', -1, 0],
+	      ['l', 1, -1],
+	      ['l', 1, 1],
+	      ['l', -1, 1],
+	      ['z']
+	    ]
+	  },
+	  cross: {
+	    normalizer: 1 / 6,
+	    path: [
+	      ['m', -1, -1],
+	      ['v', -2],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', 2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['v', 2],
+	      ['h', -2],
+	      ['v', -2],
+	      ['h', -2],
+	      ['v', -2],
+	      ['z']
+	    ]
+	  },
+	  legend_cross: {
+	    normalizer: 1 / 4,
+	    path: [
+	      ['m', -1, -1],
+	      ['v', -1],
+	      ['h', 2],
+	      ['v', 1],
+	      ['h', 1],
+	      ['v', 2],
+	      ['h', -1],
+	      ['v', 1],
+	      ['h', -2],
+	      ['v', -1],
+	      ['h', -1],
+	      ['v', -2],
+	      ['z']
+	    ]
+	  },
+	  circle: {
+	    normalizer: 1 / 2,
+	    path: [
+	      ['m', -1, 0],
+	      ['a', [1, 1], [0], ['#1',0], [2,0]],
+	      ['a', [1, 1], [0], ['#1',0], [-2,0]]
+	    ],
+	    smooth: true
+	  }
+	}
+	exports.shapes = shapes;
+
+/***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(4);
 
 	(function(){
 
