@@ -4,21 +4,20 @@ var moment = require('moment');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
 import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
 
-export function timeLineChart(mschart, node) {
+export function timeLineChart(mschart, node) { return function() {
   var relative = (mschart.width_units == '%');
   var margins = mschart.margins;
-  var data = extractData(mschart);
 
   var interval = ({
     'weekly': 'week', 'monthly': 'month', 'yearly': 'year', 'quarterly': 'month'
-  })[mschart.frequency] || month;
-  var step = mschart.frequency === 'quarterly' ? 3 : 1;
-  var rawOffset = d3.time[interval].offset;
-  var offset = (date, n) => rawOffset(date, n * step);
-  var xRange = (start, stop) => d3.time[interval].range(start, stop, step);
+  })[mschart.frequency] || 'month';
+  var timeStep = (mschart.frequency === 'quarterly') ? 3 : 1;
+  var time = d3.time[interval];
+  var timeOffset = (date, n) => time.offset(date, n * timeStep);
+  var timeRange = (start, stop) => time.range(start, stop, timeStep);
 
-  var domain = [ offset(mschart.domain[0], -1), offset(mschart.domain[1], +1) ];
-  var tickVals = xRange(domain[0], offset(domain[1], +1) ).map( date => date.valueOf() );
+  var domain = [ timeOffset(mschart.domain[0], -1), timeOffset(mschart.domain[1], +1) ];
+  var tickVals = timeRange(domain[0], timeOffset(domain[1], +1) ).map( date => date.valueOf() );
 
   var yTickVals = function (n) {
     var out = [];
@@ -30,6 +29,8 @@ export function timeLineChart(mschart, node) {
     return out;
   };
   var yformat = ( y => (typeof y === 'number') ? d3.format(',.1f')(y) : 'N/A' );
+
+  var data = extractData(mschart);
 
   var tabular = mschart.legend_placement === 'tabular';
   if(tabular) {
@@ -94,12 +95,11 @@ export function timeLineChart(mschart, node) {
 
   //Graph Title
   if(mschart.title) {
-    var parentNode = d3.select(node.node().parentElement);
-    parentNode.insert('h4', 'div.chart-div')
+    node.outerNode.insert('h4', 'div.chart-div')
               .attr('class', 'chart-title')
               .text(mschart.title);
               if(mschart.description) {
-                parentNode.insert('p', 'div.chart-div')
+                node.outerNode.insert('p', 'div.chart-div')
                           .attr('class', 'chart-desc')
                           .text(mschart.description);
               }
@@ -115,8 +115,6 @@ export function timeLineChart(mschart, node) {
     node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( d => d.dashed )
         .remove();
 
-    var yscale = chart.yScale();
-    var xscale = chart.xScale();
     var xMax = xscale(domain[1].valueOf());
     var yMax = yscale(mschart.range[1]);
     var yMin = yscale(mschart.range[0]);
@@ -124,10 +122,8 @@ export function timeLineChart(mschart, node) {
     var chartHeight = node.node().getBoundingClientRect().height;
 
     //Legend
-    if(tabular)
-      tabularLegend();
-    else
-      rightHandLegend();
+    if(tabular) tabularLegend();
+    else rightHandLegend();
 
     //Goal Line
     if(mschart.goal) {
@@ -312,7 +308,7 @@ export function timeLineChart(mschart, node) {
 
   function extractData(mschart) {
     var data = [];
-    var keys = xRange( ...[ mschart.domain[0], offset(mschart.domain[1], +2) ] );
+    var keys = timeRange( ...[ mschart.domain[0], timeOffset(mschart.domain[1], +2) ] );
     mschart.series.map(function (series, index) {
       var obj = {
         key: series.title,
@@ -398,4 +394,4 @@ export function timeLineChart(mschart, node) {
 
     return data;
   }
-}
+} }

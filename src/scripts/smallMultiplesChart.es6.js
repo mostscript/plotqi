@@ -184,7 +184,6 @@ export function SmallMultiplesChart(mschart, node, size) {
         .attr('y1', -0.5)
         .attr('y2', -0.5);
     });*/
-    console.log(chart);
     return chart;
   };
 }
