@@ -524,10 +524,10 @@ mark,
   color: #777;
   }
 .text-primary {
-  color: #428bca;
+  color: #337ab7;
   }
 a.text-primary:hover {
-  color: #3071a9;
+  color: #286090;
   }
 .text-success {
   color: #3c763d;
@@ -555,10 +555,10 @@ a.text-danger:hover {
   }
 .bg-primary {
   color: #fff;
-  background-color: #428bca;
+  background-color: #337ab7;
   }
 a.bg-primary:hover {
-  background-color: #3071a9;
+  background-color: #286090;
   }
 .bg-success {
   background-color: #dff0d8;

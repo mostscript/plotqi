@@ -48,7 +48,7 @@ export function LargeChart(mschart, node) {
   node = node.append('svg')
              .attr('class', 'upiq-chart chart-svg');
 
-  var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
+  var margins = {top: 10, bottom: 75, left: 40, right: 10};
   var data = extractData(mschart);
   var domain = mschart.domain;
   domain = [d3.time.month.offset(domain[0], -1), d3.time.month.offset(domain[1], 1)];
@@ -425,8 +425,7 @@ function extractData(mschart) {
         thickness: series.thickness,
         markerThickness: series.markerThickness,
         dashed: i % 2 === 1
-      };
-      else if(i % 2 === 0) return {
+      }; else if(i % 2 === 0) return {
         key: series.key + '::' + i,
         color: series.color,
         values: poly_line,
