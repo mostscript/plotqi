@@ -75,18 +75,19 @@ export function timeLineChart(mschart, node) { return function() {
   var yscale = chart.yScale();
   var xscale = chart.xScale();
 
+  //Manually insert the layer for the Goal Line before the graph layer in the DOM (Since SVG has no z-order)
   node.select('.nv-wrap.nv-lineChart > g')
       .insert('g', '.nv-linesWrap')
       .attr('class', 'nvd3 nv-distribution');
 
-  //Dashed lines for all missing areas
+  //Dashed lines for all gaps in the data labeled as dashed. Also, apply line thickness
   node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group')
       .style('stroke-dasharray', d => d.dashed ? '5 5' : 'none' )
       .style('stroke-width', d => d.thickness );
   node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group')
       .style('stroke-width', d => d.markerThickness );
 
-  //Fix Axis Ticks
+  //Add axis ticks for the y-axis
   node.selectAll('.nv-y.nv-axis .nvd3.nv-wrap.nv-axis g.tick:not(:nth-of-type(1)):not(:nth-last-of-type(1))')
     .append('line')
     .attr('y2', 0)
@@ -308,7 +309,7 @@ export function timeLineChart(mschart, node) { return function() {
 
   function extractData(mschart) {
     var data = [];
-    var keys = timeRange( ...[ mschart.domain[0], timeOffset(mschart.domain[1], +2) ] );
+    var keys = timeRange(mschart.domain[0], timeOffset(mschart.domain[1], +2));
     mschart.series.map(function (series, index) {
       var obj = {
         key: series.title,

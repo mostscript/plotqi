@@ -10417,8 +10417,8 @@
 
 	  var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
 	  node.outerNode = parentNode;
-
 	  return timeBarChart(mschart, node);
+	  return mschart.chart_type === 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
 	}
 	exports.LargeChart = LargeChart;
 
@@ -11486,7 +11486,6 @@
 	"use strict";
 	/*jshint esnext:true, eqnull:true */
 	/*globals require */
-	var $__Array$prototype$slice = Array.prototype.slice;
 	var moment = __webpack_require__(2);
 	var nv = __webpack_require__(15);
 	var styleSheet = __webpack_require__(5).styleSheet;
@@ -11844,7 +11843,7 @@
 
 	  function extractData(mschart) {
 	    var data = [];
-	    var keys = timeRange.apply(null, $__Array$prototype$slice.call([ mschart.domain[0], timeOffset(mschart.domain[1], +2) ]));
+	    var keys = timeRange(mschart.domain[0], timeOffset(mschart.domain[1], +2));
 	    mschart.series.map(function (series, index) {
 	      var obj = {
 	        key: series.title,
@@ -11940,7 +11939,6 @@
 	"use strict";
 	/*jshint esnext:true, eqnull:true */
 	/*globals require */
-	var $__Array$prototype$slice = Array.prototype.slice;
 	var moment = __webpack_require__(2);
 	var nv = __webpack_require__(15);
 	var styleSheet = __webpack_require__(5).styleSheet;
@@ -12287,8 +12285,7 @@
 	  }
 
 	  function extractData(mschart) {
-	    var data = [];
-	    var keys = timeRange.apply(null, $__Array$prototype$slice.call([ mschart.domain[0], timeOffset(mschart.domain[1], +2) ]));
+	    var keys = timeRange(mschart.domain[0], timeOffset(mschart.domain[1], +2));
 	    return mschart.series.map(function (series, index) {
 	      var obj = {
 	        key: series.title,
@@ -12321,59 +12318,7 @@
 
 	      return obj;
 
-	    })/*.forEach(function (series, i) {
-	      var poly_set = [];
-	      var poly_line, prev_pt = {missing: true};
-	      var hidden = series.incomplete === 'hidden';
-	      var solid = series.incomplete === 'solid';
-	      series.values.forEach(function (pt, i) {
-	        if(!pt.missing) {
-	          if(!poly_line) poly_line = [], prev_pt = pt;
-	          if(!prev_pt.missing) poly_line.push(pt);
-
-	          else {
-	            poly_line.push(pt);
-	            if(!solid) {
-	              poly_set.push(poly_line);
-	              poly_line = [ pt ];
-	            }
-	          }
-	          if(i === (series.values.length)) poly_set.push(poly_line);
-	        } else {
-	           if( !(prev_pt.missing || solid) ) {
-	            poly_set.push(poly_line);
-	            poly_line = [ prev_pt ];
-	          }
-	        }
-
-	        prev_pt = pt;
-	      });
-
-	      if(solid) poly_set = [ poly_line ];
-
-	      data = data.concat( poly_set.map( function (poly_line, i) {
-	        if(!hidden) return {
-	          key: `${series.key}::${i}`,
-	          color: series.color,
-	          values: poly_line,
-	          format: series.format,
-	          thickness: series.thickness,
-	          markerThickness: series.markerThickness,
-	          dashed: i % 2 === 1
-	        }; else if(i % 2 === 0) return {
-	          key: `${series.key}::${i}`,
-	          color: series.color,
-	          values: poly_line,
-	          format: series.format,
-	          thickness: series.thickness,
-	          markerThickness: series.markerThickness,
-	          dashed: false
-	        };
-
-	      }) );
-	    });*/
-
-	    return data;
+	    });
 	  }
 	} }
 	exports.timeBarChart = timeBarChart;
