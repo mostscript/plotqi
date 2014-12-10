@@ -1409,6 +1409,13 @@ body * {
 .nvtooltip h3 {
   font-size: 12pt;
   }
+.nv-hover text {
+  text-anchor: end;
+  }
+.nv-hover rect {
+  fill: lightgray;
+  fill-opacity: 50%;
+  }
 .chart-svg {
   position: absolute;
   top: 0;
@@ -1468,13 +1475,9 @@ svg.upiq-chart .nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatt
 svg.upiq-chart .nv-legend rect {
   shape-rendering: crispEdges;
   }
-.nv-y.nv-axis .nvd3.nv-wrap.nv-axis path.domain {
-  stroke: dimgray;
-  }
-.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line {
-  stroke: dimgray;
-  }
-.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line {
+.nv-y.nv-axis .nv-wrap.nv-axis .tick:nth-last-of-type(1) line,
+.nv-y.nv-axis .nv-wrap.nv-axis .tick:nth-of-type(1) line,
+.nv-y.nv-axis .nv-wrap.nv-axis path.domain {
   stroke: dimgray;
   }
 svg .dark-text {
@@ -1485,4 +1488,11 @@ svg .light-text {
   }
 svg .nv-leg-header-bg {
   fill: #dde;
+  }
+svg .nv-wrap.nv-line .nv-scatterWrap .nv-wrap.nv-scatter .nv-groups path.nv-point {
+  pointer-events: all;
+  cursor: pointer;
+  }
+svg .nv-linesWrap .nv-wrap.nv-line > g > .nv-groups path {
+  pointer-events: none;
   }

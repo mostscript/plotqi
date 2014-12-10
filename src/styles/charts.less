@@ -35,6 +35,16 @@ body * {
   }
 }
 
+.nv-hover {
+  text {
+    text-anchor: end;
+  }
+  rect {
+    fill: lightgray;
+    fill-opacity: 50%;
+  }
+}
+
 .chart-svg {
   position: absolute;
   top: 0;
@@ -109,27 +119,28 @@ svg.upiq-chart {
   shape-rendering: crispEdges;
 }
 
-.nv-y.nv-axis .nvd3.nv-wrap.nv-axis path.domain {
-  stroke: dimgray;
+.nv-y.nv-axis .nv-wrap.nv-axis {
+    .tick:nth-last-of-type(1) line, .tick:nth-of-type(1) line, path.domain {
+    //stroke-width: 2px;
+    stroke: dimgray;
+  }
 }
 
-.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-last-of-type(1) line {
-  //stroke-width: 2px;
-  stroke: dimgray;
-}
-
-.nv-y.nv-axis .nvd3.nv-wrap.nv-axis .tick:nth-of-type(1) line {
-  //stroke-width: 2px;
-  stroke: dimgray;
-}
-
-svg .dark-text {
-  fill: #222;
-}
-svg .light-text {
-  fill: #eee;
-}
-
-svg .nv-leg-header-bg {
-  fill: #dde;
+svg {
+  .dark-text {
+    fill: #222;
+  }
+  .light-text {
+    fill: #eee;
+  }
+  .nv-leg-header-bg {
+    fill: #dde;
+  }
+  .nv-wrap.nv-line .nv-scatterWrap .nv-wrap.nv-scatter .nv-groups path.nv-point {
+    pointer-events: all;
+    cursor: pointer;
+  }
+  .nv-linesWrap .nv-wrap.nv-line > g > .nv-groups path {
+    pointer-events: none;
+  }
 }

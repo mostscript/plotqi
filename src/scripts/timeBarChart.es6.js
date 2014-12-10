@@ -283,7 +283,7 @@ export function timeBarChart(mschart, node) { return function() {
                            .attr('width', xMax + (margins.left - legLeftPadding));
         }
 
-        ycurr += this.getBoundingClientRect().height;
+        ycurr += Math.floor(this.getBoundingClientRect().height) + 4;
 
       });
 
@@ -310,10 +310,7 @@ export function timeBarChart(mschart, node) { return function() {
         key: series.title,
         color: series.color,
         values: [],
-        format: d3.format(series.display_format),
-        incomplete: series.break_lines,
-        thickness: series.line_width,
-        markerThickness: series.marker_width
+        format: d3.format(series.display_format)
       };
 
       keys.forEach(function (key) {
@@ -322,8 +319,6 @@ export function timeBarChart(mschart, node) { return function() {
           obj.values.push({
             x: moment(datapoint.key).valueOf(),
             y: datapoint.value,
-            size: series.marker_size,
-            shape: series.marker_style,
             note: datapoint.note,
             title: datapoint.title,
             });

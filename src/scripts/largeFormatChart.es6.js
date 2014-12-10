@@ -42,10 +42,8 @@ export function LargeChart(mschart, node) {
     else
       node.style('height', mschart.height + mschart.height_units);
   } else {
-    if(!ratio)
-      node.style('height', mschart.height + mschart.height_units);
-    else
-      node.style('height', (ratio * mschart.width) + 'px')
+    if(!ratio) node.style('height', mschart.height + mschart.height_units);
+    else node.style('height', (ratio * mschart.width) + 'px')
   }
 
   node = node.append('svg')
@@ -53,6 +51,5 @@ export function LargeChart(mschart, node) {
 
   var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
   node.outerNode = parentNode;
-  return timeBarChart(mschart, node);
   return mschart.chart_type === 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
 }

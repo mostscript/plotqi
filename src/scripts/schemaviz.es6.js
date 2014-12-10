@@ -137,12 +137,15 @@ export class DataSeriesSchema extends Schema {
             constraint: function (value, obj) {
               if(value === 'x') return 'cross';
               if(value === 'filledCircle') {
+                obj.filled = true;
                 return 'circle';
               }
               if(value === 'filledSquare') {
+                obj.filled = true;
                 return 'square';
               }
               if(value === 'filledDiamond') {
+                obj.filled = true;
                 return 'diamond';
               }
             },

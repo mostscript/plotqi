@@ -106,6 +106,12 @@ export function timeLineChart(mschart, node) { return function() {
               }
   }
 
+  //Click events
+  node.selectAll('.nv-wrap.nv-line .nv-scatterWrap .nv-wrap.nv-scatter .nv-groups path.nv-point')
+      .on('click', onPtClick)
+      .on('mouseenter', onPtMouseOver)
+      .on('mouseleave', onPtMouseOut);
+
   render();
   console.log(chart);
   if(relative) nv.utils.windowResize(debounce(render, 250, false));
@@ -113,8 +119,6 @@ export function timeLineChart(mschart, node) { return function() {
 
   function render() {
     chart.update();
-    node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( d => d.dashed )
-        .remove();
 
     var xMax = xscale(domain[1].valueOf());
     var yMax = yscale(mschart.range[1]);
@@ -125,6 +129,9 @@ export function timeLineChart(mschart, node) { return function() {
     //Legend
     if(tabular) tabularLegend();
     else rightHandLegend();
+
+    node.selectAll('.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group').filter( d => d.dashed )
+        .remove();
 
     //Goal Line
     if(mschart.goal) {
@@ -209,7 +216,7 @@ export function timeLineChart(mschart, node) { return function() {
       legend.enter().append('g')
                     .attr('class', 'nv-leg-row');
 
-      var ycurr = legPadding + 3;
+      var ycurr = 0;
       var intervalX = Math.floor(xscale(tickVals[1]) - xscale(tickVals[0]));
       legend.each(function (d, i) {
         var el = d3.select(this);
@@ -221,14 +228,16 @@ export function timeLineChart(mschart, node) { return function() {
             .attr('class', 'nv-leg-header-bg');
           var labels = [];
           for(var lbl in mschart.labels) {
-            if(mschart.labels.hasOwnProperty(lbl)) {
-              labels.push({label: mschart.labels[lbl], x: moment(lbl, 'YYYY-MM-DD')})
-            }
+            if(mschart.labels.hasOwnProperty(lbl)) labels.push(
+              {
+                label: mschart.labels[lbl],
+                x: moment(lbl, 'YYYY-MM-DD').valueOf()
+              });
           }
           var cells = el.selectAll('.nv-leg-cell').data(labels);
           var cellsEnter = cells.enter().append('text')
                                         .attr('class', 'nv-leg-cell')
-                                        .attr('y', ycurr)
+                                        .attr('y', '1em')
                                         .style('text-anchor', 'middle')
                                         .style('font-size', '12px')
                                         .text( d => d.label )
@@ -253,13 +262,13 @@ export function timeLineChart(mschart, node) { return function() {
 
           el.selectAll('rect').data(['bg']).enter()
             .append('rect')
-            .attr('y', -12)
             .style('fill', d.color);
           var $d;
           var data = d.data;
           var cells = el.selectAll('.nv-leg-cell').data([d.title].concat(tickVals));
           var cellsEnter = cells.enter().append('text')
                                         .attr('class', 'nv-leg-cell')
+                                        .attr('y', '1em')
                                         .style('text-anchor', (d, i) => i === 0 ? 'start' : 'middle')
                                         .classed(colorIsDark(d.color) ? 'light-text' : 'dark-text', true)
                                         .attr('lengthAdjust', (d,i) => i === 0 ? null : 'spacingAndGlyphs')
@@ -274,7 +283,7 @@ export function timeLineChart(mschart, node) { return function() {
           if(!cellsEnter.empty()) {
             firstRun = true;
             el.selectAll('.nv-leg-cell').filter( (d,i) => i !== 0 )
-              .attr('y', `${((numberOfLines / 2) - .5)}em`)
+              .attr('y', `${((numberOfLines / 2) + .5)}em`)
           }
 
           cells.transition().duration(500)
@@ -287,8 +296,8 @@ export function timeLineChart(mschart, node) { return function() {
                            .attr('width', xMax + (margins.left - legLeftPadding));
         }
 
-        ycurr += this.getBoundingClientRect().height;
-
+        ycurr += this.getBoundingClientRect().height + 4;
+        el.on('click', d => console.log("Legend Clicked", d) );
       });
 
       if(firstRun) {
@@ -307,6 +316,48 @@ export function timeLineChart(mschart, node) { return function() {
 
   }
 
+  function calcDataPosition(d) {
+    var n;
+    var seriesIndex = d.seriesIndex;
+    var seriesData = mschart.series[seriesIndex].data.values().sort( (a, b) => a.key - b.key );
+    for(var i in seriesData) {
+      if(d.x === seriesData[i].key.valueOf()) n = i;
+    }
+    return [seriesData, seriesIndex, n];
+  }
+
+  function onPtClick(d) {
+    showClickPopup.apply(null, calcDataPosition(d));
+  }
+
+  function showClickPopup(series, i, n) {
+    var pt = series[n];
+    series = mschart.series[i];
+    node.select('.nv-tooltip').remove();
+    var el = node.append('g').attr('class', 'nv-tooltip')
+                 .attr('transform', `translate(${(xscale(pt.key.valueOf()) + margins.left)}, ` +
+                  `${(yscale(pt.value) + margins.top)})`);
+    el.append('text')
+    .text(`<tspan class='nv-popup nv-title'>${series.title}</tspan>`);
+  }
+
+  function onPtMouseOver(d) {
+    var $d = calcDataPosition(d), series = $d[0], i = $d[1], n = $d[2];
+    var pt = series[n];
+    node.selectAll('.nv-hover').remove();
+    var el = node.append('g').attr('class', 'nv-hover')
+                 .attr('transform', `translate(${(xscale(pt.key.valueOf()) + margins.left)}, ` +
+                  `${(yscale(pt.value) + margins.top)})`);
+    el.append('rect');
+    el.append('text').attr('x', -5).text(yformat(pt.value));
+    var width = el.node().getBoundingClientRect().width;
+    el.select('rect').attr('y', '-1em').attr('height', '1.5em').attr('x', -width - 5).attr('width', width + 5);
+  }
+
+  function onPtMouseOut() {
+    node.selectAll('.nv-hover').remove();
+  }
+
   function extractData(mschart) {
     var data = [];
     var keys = timeRange(mschart.domain[0], timeOffset(mschart.domain[1], +2));
@@ -323,20 +374,19 @@ export function timeLineChart(mschart, node) { return function() {
 
       keys.forEach(function (key) {
         var datapoint = series.data.get(key);
-        if(series.data.has(key))
-          obj.values.push({
-            x: moment(datapoint.key).valueOf(),
-            y: datapoint.value,
-            size: series.marker_size,
-            shape: series.marker_style,
-            note: datapoint.note,
-            title: datapoint.title,
-            });
-        else
-          obj.values.push({
-            x: new Date(key).valueOf(),
-            missing: true
-          });
+        if(series.data.has(key)) obj.values.push({
+          x: moment(datapoint.key).valueOf(),
+          y: datapoint.value,
+          size: series.marker_size,
+          shape: series.marker_style,
+          note: datapoint.note,
+          title: datapoint.title,
+          seriesIndex: index
+        });
+        else obj.values.push({
+          x: new Date(key).valueOf(),
+          missing: true
+        });
       });
 
       return obj;
@@ -365,7 +415,6 @@ export function timeLineChart(mschart, node) { return function() {
             poly_line = [ prev_pt ];
           }
         }
-
         prev_pt = pt;
       });
 
