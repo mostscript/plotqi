@@ -1393,28 +1393,52 @@ html {
 body * {
   pointer-events: auto;
   }
-.nvtooltip {
-  max-width: 400px;
+.nv-tooltip {
+  max-width: 145px;
   overflow: hidden;
   word-wrap: break-word;
   white-space: pre-line;
+  pointer-events: none;
 
   overflow-wrap: break-word;
   }
-.nvtooltip .footer {
+.nv-tooltip .nv-footer {
   font-size: 8pt;
-  color: gray;
-  text-align: center;
+
+  fill: gray;
+  text-anchor: middle;
   }
-.nvtooltip h3 {
-  font-size: 12pt;
+.nv-tooltip .nv-header {
+  font-size: 10pt;
+  }
+.nv-tooltip rect {
+  pointer-events: none;
+
+  fill: yellow;
+  fill-opacity: .75;
+  }
+.nv-tooltip circle {
+  pointer-events: all;
+  cursor: pointer;
+
+  fill: darkred;
+  }
+.nv-tooltip path {
+  pointer-events: none;
+
+  stroke: grey;
+  stroke-width: 2px;
+  }
+.nv-hover {
+  pointer-events: none;
   }
 .nv-hover text {
   text-anchor: end;
+  fill: #eef;
   }
 .nv-hover rect {
-  fill: lightgray;
-  fill-opacity: 50%;
+  fill: #2f4f4f;
+  fill-opacity: .75;
   }
 .chart-svg {
   position: absolute;

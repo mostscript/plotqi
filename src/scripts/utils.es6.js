@@ -44,11 +44,11 @@ export function debounce(func, wait, immediate) {
 /*
 Taken from an upcoming version of d3, heavily altered to suit needs of UPIQ
  */
-export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, dataFunc) {
+export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, ignorePadding) {
     paddingRightLeft = paddingRightLeft != null ? paddingRightLeft : 5; //Default padding (5px)
     paddingTopBottom = (paddingTopBottom != null ? paddingTopBottom : 5) - 2; //Default padding (5px), remove 2 pixels because of the borders
     var maxWidth = width; //I store the tooltip max width
-    width = width - (paddingRightLeft * 2); //Take the padding into account
+    width = ignorePadding ? width : width - (paddingRightLeft * 2); //Take the padding into account
 
     var arrLineCreatedCount = [];
     text.each(function() {
@@ -90,5 +90,5 @@ export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, data
 export function colorIsDark(color) {
     color = d3.rgb(color);
     color = [color.r, color.g, color.b];
-    return (color.reduce( (a, b) => a + b ) / 3) < 128
+    return (color.reduce( (a, b) => a + b ) / 3) < 128;
 }

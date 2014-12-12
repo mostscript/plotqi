@@ -333,23 +333,53 @@ export function timeLineChart(mschart, node) { return function() {
   function showClickPopup(series, i, n) {
     var pt = series[n];
     series = mschart.series[i];
+    var format = d3.format(series.display_format);
     node.select('.nv-tooltip').remove();
     var el = node.append('g').attr('class', 'nv-tooltip')
-                 .attr('transform', `translate(${(xscale(pt.key.valueOf()) + margins.left)}, ` +
+                 .attr('transform', `translate(${(xscale(pt.key.valueOf()) + margins.left - 150)}, ` +
                   `${(yscale(pt.value) + margins.top)})`);
-    el.append('text')
-    .text(`<tspan class='nv-popup nv-title'>${series.title}</tspan>`);
+    el.append('rect').attr('width', 150).attr('x', -5);
+    var lineCt = d3textWrap(el.append('text')
+                              .attr('class', 'nv-header')
+                              .attr('y', '1.25em')
+                              .attr('x', 72.5)
+                              .style('text-anchor', 'middle')
+                              .text(series.title)
+      , 140, 72.5, null, true)[0];
+  lineCt += 2;
+  lineCt += d3textWrap(el.append('text')
+                         .attr('y', `${lineCt}em`)
+                         .attr('x', 72.5)
+                         .style('text-anchor', 'middle')
+                         .text(pt.note)
+    , 140, 72.5, null, true)[0] * 1.2;
+  lineCt += .25;
+  el.append('text')
+    .attr('y', `${lineCt}em`)
+    .attr('x', 72.5)
+    .style('text-anchor', 'middle')
+    .text(`${format(pt.value / 100)} (${pt.title})`);
+  var height = el.node().getBoundingClientRect().height + 5;
+  el.select('rect').attr('height', height);
+  el.append('circle')
+    .attr('cx', 150)
+    .attr('r', 8)
+    .on('click', () => (el.remove(), d3.event.stopPropagation()));
+  el.append('path')
+    .attr('d', 'M 150 0 m -4 -4 l 8 8 M 150 0 m -4 4 l 8 -8');
   }
 
   function onPtMouseOver(d) {
-    var $d = calcDataPosition(d), series = $d[0], i = $d[1], n = $d[2];
+    var $d = calcDataPosition(d), series = $d[0], i = $d[1], n = $d[2];//var [series, i, n] = calcDataPosition(d);
     var pt = series[n];
+    series = mschart.series[i];
+    var format = d3.format(series.display_format);
     node.selectAll('.nv-hover').remove();
     var el = node.append('g').attr('class', 'nv-hover')
                  .attr('transform', `translate(${(xscale(pt.key.valueOf()) + margins.left)}, ` +
                   `${(yscale(pt.value) + margins.top)})`);
     el.append('rect');
-    el.append('text').attr('x', -5).text(yformat(pt.value));
+    el.append('text').attr('x', -5).text(format(pt.value / 100));
     var width = el.node().getBoundingClientRect().width;
     el.select('rect').attr('y', '-1em').attr('height', '1.5em').attr('x', -width - 5).attr('width', width + 5);
   }

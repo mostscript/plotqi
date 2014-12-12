@@ -17,31 +17,51 @@ body * {
   //stroke-opacity: 100% !important;
 }
 
-.nvtooltip {
-  max-width: 400px;
+.nv-tooltip {
+  pointer-events: none;
+  max-width: 145px;
   word-wrap: break-word;
   overflow: hidden;
   overflow-wrap: break-word;
   white-space: pre-line;
 
-  .footer {
-    font-size: 8pt; 
-    color: gray;
-    text-align: center;
+  .nv-footer {
+    font-size: 8pt;
+    fill: gray;
+    text-anchor: middle;
   }
 
-  h3 {
-    font-size: 12pt;
+  .nv-header {
+    font-size: 10pt;
+  }
+
+  rect {
+    fill: yellow;
+    fill-opacity: .75;
+  }
+
+  circle {
+    pointer-events: all;
+    cursor: pointer;
+    fill: darkred;
+  }
+
+  path {
+    pointer-events: none;
+    stroke: grey;
+    stroke-width: 2px;
   }
 }
 
 .nv-hover {
+  pointer-events: none;
   text {
     text-anchor: end;
+    fill: #eef;
   }
   rect {
-    fill: lightgray;
-    fill-opacity: 50%;
+    fill: #2f4f4f;
+    fill-opacity: .75;
   }
 }
 
