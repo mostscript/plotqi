@@ -344,6 +344,7 @@ export function timeLineChart(mschart, node) { return function() {
   function showClickPopup(series, pt) {
     var format = d3.format(series.display_format);
     node.select('.nv-tooltip').remove();
+    if(!pt) return;
     var el = node.append('g').attr('class', 'nv-tooltip')
                  .attr('transform', `translate(${(xscale(pt.key.valueOf()) + margins.left - 150)}, ` +
                   `${(yscale(pt.value) + margins.top)})`);

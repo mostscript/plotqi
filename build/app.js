@@ -48,9 +48,9 @@
 	/*globals require */
 	'use strict';
 	__webpack_require__(1);
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 	var moment = __webpack_require__(2);
-	__webpack_require__(3);
+	__webpack_require__(4);
 
 /***/ },
 /* 1 */
@@ -121,30 +121,6 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	/*jshint esnext:true, eqnull:true */
-	/*globals require */
-	var getObjects = __webpack_require__(5).getObjects;
-	var Chart = __webpack_require__(6).Chart;
-	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
-	var LargeChart = __webpack_require__(8).LargeChart;
-	var nv = __webpack_require__(15);
-	getObjects('report.json', function (charts) {
-	  charts = charts.map( function(graph) {
-	    return Chart(graph);
-	  } )
-	  window.charts = charts;
-
-	  var small_div = d3.select('#small-chart-div-test_numero_dos');
-	  var lg_div = d3.select('#chart-div-test_numero_dos');
-	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-	  nv.addGraph(LargeChart(charts[0], lg_div));
-	});
-
-/***/ },
-/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -9364,6 +9340,30 @@
 	}();
 
 /***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/*jshint esnext:true, eqnull:true */
+	/*globals require */
+	var getObjects = __webpack_require__(5).getObjects;
+	var Chart = __webpack_require__(6).Chart;
+	var SmallMultiplesChart = __webpack_require__(7).SmallMultiplesChart;
+	var LargeChart = __webpack_require__(8).LargeChart;
+	var nv = __webpack_require__(15);
+	getObjects('report.json', function (charts) {
+	  charts = charts.map( function(graph) {
+	    return Chart(graph);
+	  } )
+	  window.charts = charts;
+
+	  var small_div = d3.select('#small-chart-div-test_numero_dos');
+	  var lg_div = d3.select('#chart-div-test_numero_dos');
+	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
+	  nv.addGraph(LargeChart(charts[0], lg_div));
+	});
+
+/***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9628,7 +9628,7 @@
 	'use strict';
 	var Klass = __webpack_require__(10).Klass;
 	var dataSym = Symbol();
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 
 	var dataPointSchema = __webpack_require__(11).dataPointSchema;
 	var timeDataPointSchema = __webpack_require__(11).timeDataPointSchema;
@@ -10024,7 +10024,7 @@
 	/*globals require */
 	var $__Array$prototype$slice = Array.prototype.slice;
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 	var nv = __webpack_require__(15);
 	var shapePath = __webpack_require__(12).shapePath;
 	var shapes = __webpack_require__(12).shapes;
@@ -11885,6 +11885,7 @@
 	  function showClickPopup(series, pt) {
 	    var format = d3.format(series.display_format);
 	    node.select('.nv-tooltip').remove();
+	    if(!pt) return;
 	    var el = node.append('g').attr('class', 'nv-tooltip')
 	                 .attr('transform', "translate(" + (xscale(pt.key.valueOf()) + margins.left - 150) + ", " +
 	                  ("" + (yscale(pt.value) + margins.top) + ")"));
@@ -12417,7 +12418,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
-	var d3 = __webpack_require__(4);
+	var d3 = __webpack_require__(3);
 
 	(function(){
 
