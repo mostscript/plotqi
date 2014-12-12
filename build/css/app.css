@@ -1412,8 +1412,6 @@ body * {
   font-size: 10pt;
   }
 .nv-tooltip rect {
-  pointer-events: none;
-
   fill: yellow;
   fill-opacity: .75;
   }
@@ -1433,10 +1431,14 @@ body * {
   pointer-events: none;
   }
 .nv-hover text {
+  pointer-events: none;
+
   text-anchor: end;
   fill: #eef;
   }
 .nv-hover rect {
+  pointer-events: none;
+
   fill: #2f4f4f;
   fill-opacity: .75;
   }
@@ -1512,6 +1514,16 @@ svg .light-text {
   }
 svg .nv-leg-header-bg {
   fill: #dde;
+  }
+svg g.nv-leg-row:not( :nth-of-type(1)) text.nv-leg-cell:not( :nth-of-type(1)):hover {
+  text-decoration: underline;
+  cursor: pointer;
+  }
+svg g.nv-leg-row:not( :nth-of-type(1)) text.nv-leg-cell:not( :nth-of-type(1)):hover.dark-text {
+  fill: blue;
+  }
+svg g.nv-leg-row:not( :nth-of-type(1)) text.nv-leg-cell:not( :nth-of-type(1)):hover.light-text {
+  fill: lightblue;
   }
 svg .nv-wrap.nv-line .nv-scatterWrap .nv-wrap.nv-scatter .nv-groups path.nv-point {
   pointer-events: all;

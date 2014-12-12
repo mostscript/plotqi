@@ -56,10 +56,12 @@ body * {
 .nv-hover {
   pointer-events: none;
   text {
+    pointer-events: none;
     text-anchor: end;
     fill: #eef;
   }
   rect {
+    pointer-events: none;
     fill: #2f4f4f;
     fill-opacity: .75;
   }
@@ -155,6 +157,16 @@ svg {
   }
   .nv-leg-header-bg {
     fill: #dde;
+  }
+  g.nv-leg-row:not(:nth-of-type(1)) text.nv-leg-cell:not(:nth-of-type(1)):hover {
+    cursor: pointer;
+    text-decoration: underline;
+    &.dark-text {
+      fill: blue;
+    }
+    &.light-text {
+      fill: lightblue;
+    }
   }
   .nv-wrap.nv-line .nv-scatterWrap .nv-wrap.nv-scatter .nv-groups path.nv-point {
     pointer-events: all;

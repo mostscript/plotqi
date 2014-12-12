@@ -297,7 +297,7 @@ export function timeLineChart(mschart, node) { return function() {
         }
 
         ycurr += this.getBoundingClientRect().height + 4;
-        el.on('click', d => console.log("Legend Clicked", d) );
+        //el.on('click', (d, i, j) => console.log(`${i} ${j}Legend Clicked`, d) );
       });
 
       if(firstRun) {
@@ -309,6 +309,8 @@ export function timeLineChart(mschart, node) { return function() {
         yMax = yscale(mschart.range[1]);
         yRange = yMin - yMax;
       }
+      legWrap.selectAll('.nv-leg-row').filter( (d, i) => i > 0 ).selectAll('text').filter( (d, i) => i > 0 )
+      .on('click', showLegendPopup)
 
       legWrap.transition().duration(500)
              .attr('transform', `translate(${legLeftPadding}, ${(yMin + margins.top + legPadding)})`);
@@ -323,16 +325,23 @@ export function timeLineChart(mschart, node) { return function() {
     for(var i in seriesData) {
       if(d.x === seriesData[i].key.valueOf()) n = i;
     }
-    return [seriesData, seriesIndex, n];
+    //return [seriesData, seriesIndex, n];
+    var pt = seriesData[n];
+    seriesData = mschart.series[seriesIndex];
+    return [seriesData, pt];
   }
 
   function onPtClick(d) {
     showClickPopup.apply(null, calcDataPosition(d));
   }
 
-  function showClickPopup(series, i, n) {
-    var pt = series[n];
-    series = mschart.series[i];
+  function showLegendPopup(d, i, j) {
+    var parent = d3.select(this.parentElement);
+    var series = parent.datum();
+    var pt = series.data.get(new Date(d));
+    showClickPopup(series, pt);
+  }
+  function showClickPopup(series, pt) {
     var format = d3.format(series.display_format);
     node.select('.nv-tooltip').remove();
     var el = node.append('g').attr('class', 'nv-tooltip')
