@@ -50,7 +50,7 @@
 	__webpack_require__(1);
 	var d3 = __webpack_require__(3);
 	var moment = __webpack_require__(2);
-	__webpack_require__(5);
+	__webpack_require__(4);
 
 /***/ },
 /* 1 */
@@ -9340,31 +9340,49 @@
 	}();
 
 /***/ },
-/* 4 */,
-/* 5 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	/*jshint esnext:true, eqnull:true */
 	/*globals require */
 	var getObjects = __webpack_require__(6).getObjects;
+	var styleSheet = __webpack_require__(6).styleSheet;
 	var Chart = __webpack_require__(7).Chart;
 	var SmallMultiplesChart = __webpack_require__(8).SmallMultiplesChart;
-	var LargeChart = __webpack_require__(9).LargeChart;
 	var nv = __webpack_require__(16);
-	getObjects('report.json', function (charts) {
-	  charts = charts.map( function(graph) {
-	    return Chart(graph);
-	  } )
-	  window.charts = charts;
+	var moment = __webpack_require__(2);
+	var timeLineChart = __webpack_require__(10).timeLineChart;
+	var timeBarChart = __webpack_require__(11).timeBarChart;
 
-	  var small_div = d3.select('#small-chart-div-test_numero_dos');
-	  var lg_div = d3.select('#chart-div-test_numero_dos');
-	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-	  nv.addGraph(LargeChart(charts[0], lg_div));
-	});
+	window.renderSVG = function(chart, height, width) {
+	  chart = Chart(chart);
+	  window.charts = charts;
+	  var div = d3.select('#chart-div');
+	  nv.addGraph(LargeChart(chart, div, height, width));
+	};
+
+	function LargeChart(mschart, node, height, width) {
+	  var parentNode = node;
+	  node = parentNode.append('div')
+	             .classed('chart-div', true)
+	             .style("width", width)
+	             .style('height', height);
+
+	  node = node.append('svg')
+	             .attr('class', 'upiq-chart chart-svg');
+
+	  mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
+	  mschart.title = mschart.description = undefined;
+	  mschart.height = height;
+	  mschart.width = width;
+	  mschart.width_units = 'px';
+	  node.outerNode = parentNode;
+	  return mschart.chart_type === 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
+	}
 
 /***/ },
+/* 5 */,
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -10356,68 +10374,7 @@
 	}
 
 /***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	/*jshint esnext:true, eqnull:true */
-	/*globals require */
-	var moment = __webpack_require__(2);
-	var nv = __webpack_require__(16);
-	var styleSheet = __webpack_require__(6).styleSheet;
-	var timeLineChart = __webpack_require__(10).timeLineChart;
-	var timeBarChart = __webpack_require__(11).timeBarChart;
-
-	function LargeChart(mschart, node) {
-	  node = node || d3.select('body').append('div');
-	  if(!node.attr('id')) node.attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
-	  var parentNode = node;
-	  node = parentNode.append('div')
-	             .classed('chart-div', true)
-	             .style("width", mschart.width + mschart.width_units);
-
-	  var relative = (mschart.width_units == '%');
-	  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : undefined;
-	  var yMax, xMax;
-	  if(relative) {
-	    yMax = mschart.range_max - mschart.range_min;
-	    xMax = ratio * (mschart.range_max - mschart.range_min);
-	  } else {
-	    if(!ratio) {
-	      yMax = mschart.height;
-	      xMax = mschart.width;
-	    } else {
-	      yMax = ratio * mschart.width;
-	      xMax = mschart.width;
-	    }
-	  }
-
-	  if(relative) {
-	    if(ratio)
-	      styleSheet.insertRule (
-	        "#" + parentNode.attr('id') + " .chart-div::after {" +
-	          'content: "";' +
-	          'display: block;' +
-	          ("margin-top: " + ratio * 100 + "%;") +
-	        '}', styleSheet.cssRules.length
-	      );
-	    else
-	      node.style('height', mschart.height + mschart.height_units);
-	  } else {
-	    if(!ratio) node.style('height', mschart.height + mschart.height_units);
-	    else node.style('height', (ratio * mschart.width) + 'px')
-	  }
-
-	  node = node.append('svg')
-	             .attr('class', 'upiq-chart chart-svg');
-
-	  var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
-	  node.outerNode = parentNode;
-	  return mschart.chart_type !== 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
-	}
-	exports.LargeChart = LargeChart;
-
-/***/ },
+/* 9 */,
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 

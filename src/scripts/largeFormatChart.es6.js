@@ -2,7 +2,7 @@
 /*globals require */
 var moment = require('moment');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
-import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
+import {styleSheet} from './utils';
 import {timeLineChart} from './timeLineChart';
 import {timeBarChart} from './timeBarChart';
 
@@ -33,7 +33,7 @@ export function LargeChart(mschart, node) {
   if(relative) {
     if(ratio)
       styleSheet.insertRule (
-        `#${parentNode.attr('id')} .chart-div:after {` +
+        `#${parentNode.attr('id')} .chart-div::after {` +
           'content: "";' +
           'display: block;' +
           `margin-top: ${(ratio * 100)}%;` +
@@ -51,5 +51,5 @@ export function LargeChart(mschart, node) {
 
   var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
   node.outerNode = parentNode;
-  return mschart.chart_type === 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
+  return mschart.chart_type !== 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
 }

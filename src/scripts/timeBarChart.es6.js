@@ -119,6 +119,12 @@ export function timeBarChart(mschart, node) { return function() {
     if(tabular) tabularLegend();
     else rightHandLegend();
 
+      //Click events
+  node.selectAll('.nv-wrap.nv-multiBarWithLegend .nv-barsWrap .nv-wrap.nv-multibar .nv-groups rect.nv-bar')
+      .on('click', onPtClick(xInterval))
+      .on('mouseenter', onPtMouseOver(xInterval))
+      .on('mouseleave', onPtMouseOut);
+
     //Goal Line
     if(mschart.goal) {
       var goal = node.select('g.nv-distribution').selectAll('g.nv-dist.nv-goal').data([mschart.goal]);
@@ -296,12 +302,96 @@ export function timeBarChart(mschart, node) { return function() {
         yMax = yscale(mschart.range[1]);
         yRange = yMin - yMax;
       }
+      legWrap.selectAll('.nv-leg-row').filter( (d, i) => i > 0 ).selectAll('text').filter( (d, i) => i > 0 )
+             .on('click', showLegendPopup(xInterval));
 
       legWrap.transition().duration(500)
              .attr('transform', `translate(${legLeftPadding}, ${(yMin + margins.top + legPadding)})`);
     }
 
   }
+
+  function calcDataPosition(d) {
+    var n;
+    var seriesIndex = d.seriesIndex;
+    var seriesData = mschart.series[seriesIndex].data.values().sort( (a, b) => a.key - b.key );
+    for(var i in seriesData) {
+      if(d.x === seriesData[i].key.valueOf()) n = i;
+    }
+    var pt = seriesData[n];
+    seriesData = mschart.series[seriesIndex];
+    return [seriesData, pt];
+  }
+
+  function onPtClick(xInterval) {
+    return (d) => showClickPopup.apply(xInterval, calcDataPosition(d));
+  }
+
+  function showLegendPopup(xInterval) {
+    return function(d, i, j) {
+      var parent = d3.select(this.parentElement);
+      var series = parent.datum();
+      var pt = series.data.get(new Date(d));
+      showClickPopup.call(xInterval, series, pt);
+    }
+  }
+  function showClickPopup(series, pt) {
+    var format = d3.format(series.display_format);
+    node.select('.nv-tooltip').remove();
+    if(!pt) return;
+    var el = node.append('g').attr('class', 'nv-tooltip')
+                 .attr('transform', `translate(${(xscale(pt.key.valueOf()) + margins.left - 150 + (this / 2))}, ` +
+                  `${(yscale(pt.value) + margins.top)})`);
+    el.append('rect').attr('width', 150).attr('x', -5);
+    var lineCt = d3textWrap(el.append('text')
+                              .attr('class', 'nv-header')
+                              .attr('y', '1.25em')
+                              .attr('x', 72.5)
+                              .style('text-anchor', 'middle')
+                              .text(series.title)
+      , 140, 72.5, null, true)[0];
+  lineCt += 2;
+  lineCt += d3textWrap(el.append('text')
+                         .attr('y', `${lineCt}em`)
+                         .attr('x', 72.5)
+                         .style('text-anchor', 'middle')
+                         .text(pt.note)
+    , 140, 72.5, null, true)[0] * 1.2;
+  lineCt += .25;
+  el.append('text')
+    .attr('y', `${lineCt}em`)
+    .attr('x', 72.5)
+    .style('text-anchor', 'middle')
+    .text(`${format(pt.value / 100)} (${pt.title})`);
+  var height = el.node().getBoundingClientRect().height + 5;
+  el.select('rect').attr('height', height);
+  el.append('circle')
+    .attr('cx', 150)
+    .attr('r', 8)
+    .on('click', () => (el.remove(), d3.event.stopPropagation()));
+  el.append('path')
+    .attr('d', 'M 150 0 m -4 -4 l 8 8 M 150 0 m -4 4 l 8 -8');
+  }
+
+  function onPtMouseOver(xInterval) {
+    return function(d) {
+      var series = mschart.series[d.seriesIndex];
+      var format = d3.format(series.display_format);
+      node.selectAll('.nv-hover').remove();
+      var el = node.append('g').attr('class', 'nv-hover')
+                   .attr('transform', `translate(${(xscale(d.x) + margins.left + (xInterval / 2))}, ` +
+                    `${(yscale(d.y) + margins.top)})`);
+      el.append('rect');
+      el.append('text').attr('x', -5).text(format(d.y / 100));
+      var width = el.node().getBoundingClientRect().width;
+      el.select('rect').attr('y', '-1em').attr('height', '1.5em').attr('x', -width - 5).attr('width', width + 5);
+    }
+  }
+
+  function onPtMouseOut() {
+    node.selectAll('.nv-hover').remove();
+  }
+
 
   function extractData(mschart) {
     var keys = timeRange(mschart.domain[0], timeOffset(mschart.domain[1], +2));
@@ -321,6 +411,7 @@ export function timeBarChart(mschart, node) { return function() {
             y: datapoint.value,
             note: datapoint.note,
             title: datapoint.title,
+            seriesIndex: index
             });
         else
           obj.values.push({

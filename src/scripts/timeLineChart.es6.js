@@ -310,7 +310,7 @@ export function timeLineChart(mschart, node) { return function() {
         yRange = yMin - yMax;
       }
       legWrap.selectAll('.nv-leg-row').filter( (d, i) => i > 0 ).selectAll('text').filter( (d, i) => i > 0 )
-      .on('click', showLegendPopup)
+             .on('click', showLegendPopup)
 
       legWrap.transition().duration(500)
              .attr('transform', `translate(${legLeftPadding}, ${(yMin + margins.top + legPadding)})`);
@@ -325,7 +325,6 @@ export function timeLineChart(mschart, node) { return function() {
     for(var i in seriesData) {
       if(d.x === seriesData[i].key.valueOf()) n = i;
     }
-    //return [seriesData, seriesIndex, n];
     var pt = seriesData[n];
     seriesData = mschart.series[seriesIndex];
     return [seriesData, pt];
@@ -380,16 +379,14 @@ export function timeLineChart(mschart, node) { return function() {
   }
 
   function onPtMouseOver(d) {
-    var $d = calcDataPosition(d), series = $d[0], i = $d[1], n = $d[2];//var [series, i, n] = calcDataPosition(d);
-    var pt = series[n];
-    series = mschart.series[i];
+    var series = mschart.series[d.seriesIndex];
     var format = d3.format(series.display_format);
     node.selectAll('.nv-hover').remove();
     var el = node.append('g').attr('class', 'nv-hover')
-                 .attr('transform', `translate(${(xscale(pt.key.valueOf()) + margins.left)}, ` +
-                  `${(yscale(pt.value) + margins.top)})`);
+                 .attr('transform', `translate(${(xscale(d.x) + margins.left)}, ` +
+                  `${(yscale(d.y) + margins.top)})`);
     el.append('rect');
-    el.append('text').attr('x', -5).text(format(pt.value / 100));
+    el.append('text').attr('x', -5).text(format(d.y / 100));
     var width = el.node().getBoundingClientRect().width;
     el.select('rect').attr('y', '-1em').attr('height', '1.5em').attr('x', -width - 5).attr('width', width + 5);
   }

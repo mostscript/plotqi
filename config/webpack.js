@@ -9,7 +9,7 @@ module.exports = function (release) {
   return {
     output: {
       path: './build/',
-      filename: 'app.js',
+      filename: '[name].js',
       publicPatch: './build/'
     },
 
@@ -17,7 +17,11 @@ module.exports = function (release) {
     debug: !release,
     devtool: false,
     //devtool: 'source-map',
-    entry: './src/App.js',
+    entry: {
+      app: './src/App.js',
+      headless: './src/headless.js'
+    },
+    //entry: './src/App.js',
 
     stats: {
       colors: true,
