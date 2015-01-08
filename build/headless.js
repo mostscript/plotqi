@@ -9352,8 +9352,8 @@
 	var SmallMultiplesChart = __webpack_require__(8).SmallMultiplesChart;
 	var nv = __webpack_require__(16);
 	var moment = __webpack_require__(2);
-	var timeLineChart = __webpack_require__(10).timeLineChart;
-	var timeBarChart = __webpack_require__(11).timeBarChart;
+	var timeLineChart = __webpack_require__(9).timeLineChart;
+	var timeBarChart = __webpack_require__(10).timeBarChart;
 
 	window.renderSVG = function(chart, height, width) {
 	  chart = Chart(chart);
@@ -10374,8 +10374,7 @@
 	}
 
 /***/ },
-/* 9 */,
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10803,7 +10802,11 @@
 	    .attr('y', "" + lineCt + "em")
 	    .attr('x', 72.5)
 	    .style('text-anchor', 'middle')
-	    .text("" + format(pt.value / 100) + " (" + pt.title + ")");
+	    .text("" + format(pt.value / 100) + " (" + pt.title + ")")
+	    .classed('svg-link', !!pt.uri)
+	    .on('click', pt.uri ? function() {
+	    return window.open(pt.uri);
+	  } : undefined);
 	  var height = el.node().getBoundingClientRect().height + 5;
 	  el.select('rect').attr('height', height);
 	  el.append('circle')
@@ -10856,6 +10859,7 @@
 	          shape: series.marker_style,
 	          note: datapoint.note,
 	          title: datapoint.title,
+	          uri: datapoint.uri,
 	          seriesIndex: index
 	        });
 	        else obj.values.push({
@@ -10923,7 +10927,7 @@
 	exports.timeLineChart = timeLineChart;
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -11389,6 +11393,7 @@
 	            y: datapoint.value,
 	            note: datapoint.note,
 	            title: datapoint.title,
+	            url: datapoint.uri,
 	            seriesIndex: index
 	            });
 	        else
@@ -11407,6 +11412,7 @@
 	exports.timeBarChart = timeBarChart;
 
 /***/ },
+/* 11 */,
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 

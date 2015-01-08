@@ -1512,6 +1512,15 @@ svg .dark-text {
 svg .light-text {
   fill: #eee;
   }
+svg .svg-link {
+  pointer-events: all;
+
+  fill: blue;
+  }
+svg .svg-link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  }
 svg .nv-leg-header-bg {
   fill: #dde;
   }

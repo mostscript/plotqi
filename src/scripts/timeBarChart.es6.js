@@ -362,7 +362,9 @@ export function timeBarChart(mschart, node) { return function() {
     .attr('y', `${lineCt}em`)
     .attr('x', 72.5)
     .style('text-anchor', 'middle')
-    .text(`${format(pt.value / 100)} (${pt.title})`);
+    .text(`${format(pt.value / 100)} (${pt.title})`)
+    .classed('svg-link', !!pt.uri)
+    .on('click', pt.uri ? () => window.open(pt.uri) : undefined);
   var height = el.node().getBoundingClientRect().height + 5;
   el.select('rect').attr('height', height);
   el.append('circle')
@@ -411,6 +413,7 @@ export function timeBarChart(mschart, node) { return function() {
             y: datapoint.value,
             note: datapoint.note,
             title: datapoint.title,
+            uri: datapoint.uri,
             seriesIndex: index
             });
         else

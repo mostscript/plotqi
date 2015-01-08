@@ -51,5 +51,5 @@ export function LargeChart(mschart, node) {
 
   var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
   node.outerNode = parentNode;
-  return mschart.chart_type !== 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
+  return mschart.chart_type == 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
 }
