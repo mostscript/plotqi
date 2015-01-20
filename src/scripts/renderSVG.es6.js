@@ -6,53 +6,67 @@ Function.prototype.bind = Function.prototype.bind || function (thisp) {
         return fn.apply(thisp, arguments);
     };
 };
-import {getObjects, styleSheet} from './utils';
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
 var moment = require('moment');
+import {styleSheet} from './utils';
 import {timeLineChart} from './timeLineChart';
 import {timeBarChart} from './timeBarChart';
 import {Chart} from './chartviz';
-import {SmallMultiplesChart} from './smallMultiplesChart';
-import {LargeChart} from './largeFormatChart';
+import {LargeChart} from './largeFormatChart'
 
 export function renderSVG(chart, width) {
   chart = getChartObj(chart);
+
+  var ratio = chart.aspect_ratio ? (chart.aspect_ratio[1] / chart.aspect_ratio[0]) : (chart.height / chart.width);
+  chart.margins = {top: 10, bottom: 75, left: 40, right: 10};
+  chart.title = chart.description = undefined;
+  chart.height = ratio * width;
+  chart.width = width;
+  chart.width_units = chart.height_units = 'px';
+
   chart = Chart(chart);
+
   var div = d3.select('#chart-div');
-  nv.addGraph(LargeChart(chart, div, width));
+  window._data1 = chart.series[0].data;
+  nv.addGraph(LargeChart(chart, div));
 };
 
-function getChartObj(charts) {
-    var obj = {};
+function getChartObj(jsonData) {
+    var objs = [];
 
-    if(charts.length)
-      obj = charts[0][1];
+    if(jsonData.length)
+      objs = jsonData.map( function ([, obj]) { return obj; } );
     else //if the JSON payload wasn't an array
-      obj = charts; //then we were given a single object
+      objs = [ jsonData ]; //then we were given a single object
 
-    obj.series.forEach( function (serum) {
-      serum.data = serum.data.map( function ([, datum]) { return datum; } )
+    objs.forEach( function (obj) { 
+      obj.series.forEach( function (serum) {
+        serum.data = serum.data.map( function ([, datum]) { return datum; } )
+        })
     });
-    return obj;
+    return objs[0];
 };
 
-function LargeChart(mschart, node, width) {
-  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : (mschart.height / mschart.width);
-
+function aLargeChart(mschart, node, width) {
   var parentNode = node;
   node = parentNode.append('div')
              .classed('chart-div', true)
-             .style("width", width)
-             .style('height', ratio * width);
+             .style('width', `${width}px`);
+
+  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : (mschart.height / mschart.width);
+
+  styleSheet.insertRule (
+    `#${parentNode.attr('id')} .chart-div::after {` +
+      'content: "";' +
+      'display: block;' +
+      `margin-top: ${(ratio * 100)}%;` +
+    '}', styleSheet.cssRules.length
+  );
 
   node = node.append('svg')
              .attr('class', 'upiq-chart chart-svg');
 
-  mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
-  mschart.title = mschart.description = undefined;
-  mschart.height = ratio * width;
-  mschart.width = width;
-  mschart.width_units = 'px';
+  var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
   node.outerNode = parentNode;
-  return mschart.chart_type === 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
+  return mschart.chart_type == 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
 }

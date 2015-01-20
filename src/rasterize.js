@@ -9,7 +9,7 @@ Function.prototype.bind = Function.prototype.bind || function (thisp) {
 };
 var json = JSON.parse(stdin.read());
 var width;
-width = args[1];
+width = +args[1] || 500;
 /*args.forEach( function (arg, i) {
   if(i > 0) {
     //
@@ -18,10 +18,10 @@ width = args[1];
 page.open('build/headless.html', function (argument) {
 
   var rasterize = function () {
-    page.evaluate(function (width, chart) {
-      window.renderSVG(chart, width);
+    page.evaluate(function (chart, width) {
+      window.renderSVG(chart, +width);
       //return document.querySelector('#chart-div').getBoundingClientRect();
-    }, width, json);
+    }, json, width);
 
     var clip = setTimeout(function () {
       var clipRect = page.evaluate(function() {return document.querySelector('#chart-div').getBoundingClientRect();});
@@ -32,6 +32,9 @@ page.open('build/headless.html', function (argument) {
           height: clipRect.height
       };*/
 
+      /*console.log(page.evaluate(function () {
+        return JSON.stringify(window._data4);
+      }));*/
       var base64 = page.renderBase64('PNG');
       console.log(base64);
       phantom.exit();
