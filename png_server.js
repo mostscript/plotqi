@@ -2,10 +2,12 @@ var path = require('path')
 var childProcess = require('child_process')
 var phantomjs = require('phantomjs')
 var phantomPath = phantomjs.path
+var stream = require('stream')
+var Readable = stream.Readable
 
 var express = require('express')
 var bodyParser = require('body-parser')
-var gm = require('gm');
+//var gm = require('gm');
 
 var app = express()
 
@@ -14,40 +16,31 @@ app.use(bodyParser.json())
 
 app.post('/', function (req, res) {
 //TODO: do stuff to req
+  var width = +req.body.width;
+  var json = JSON.parse(req.body.json);
+
   var childArgs = [
     path.join(__dirname, 'src/rasterize.js'),
-    'url (passed to phantomjs script)'
+    '' + width
   ]
+  res.type('png');
 
-  var height = +req.body.param('height'), width = +req.body.param('width');
-  var dpi = +req.param('dpi') || 72;
-  var zoom = +req.body.param('zoom') || dpi / 72;
-  var json = req.body.param('json');
-
-  childProcess.execFile(phantomPath, childArgs, function(err, stdout, stderr) {
-    res.type('png');
-    gm(stdout).density(width, height).stream(function(err, stdout, stderr) {
+  /*childProcess.execFile(phantomPath, childArgs, function(err, stdout, stderr) {
+    //res.type('png');
+    /*gm(stdout).density(width, height).stream(function(err, stdout, stderr) {
       stdout.pipe(res);
     });
-  });
-
-  childProcess.spawn(phantomPath)
-
+    stdout.pipe(res);
+  });*/
+  var phant = childProcess.spawn(phantomPath, childArgs);
+  phant.stdin.write(JSON.stringify(json));
+  phant.stdin.end();
+  phant.stdout.on('data', function (data) {
+    res.write(data);
+  })
+  phant.on('close', function () {
+    res.end();
+  })
 });
 
-var server = app.listen(4000, function () {
-
-  var host = server.address().address
-  var port = server.address().port
-
-  console.log('Example app listening at http://%s:%s', host, port)
-
-})
-
-
-//Another file for phantom
-page.open('http://phantomjs.org', function (status) {
-  var base64 = page.renderBase64('PNG');
-  console.log(base64);
-  phantom.exit();
-});
+var server = app.listen(4000, function () {})

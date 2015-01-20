@@ -48,9 +48,9 @@
 	/*globals require */
 	'use strict';
 	__webpack_require__(1);
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(5);
 	var moment = __webpack_require__(2);
-	__webpack_require__(5);
+	__webpack_require__(3);
 
 /***/ },
 /* 1 */
@@ -121,6 +121,31 @@
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/*jshint esnext:true, eqnull:true */
+	/*globals require */
+	var getObjects = __webpack_require__(6).getObjects;
+	var Chart = __webpack_require__(7).Chart;
+	var SmallMultiplesChart = __webpack_require__(8).SmallMultiplesChart;
+	var LargeChart = __webpack_require__(9).LargeChart;
+	var nv = __webpack_require__(16);
+	getObjects('report.json', function (charts) {
+	  charts = charts.map( function(graph) {
+	    return Chart(graph);
+	  } )
+	  window.charts = charts;
+
+	  var small_div = d3.select('#small-chart-div-test_numero_dos');
+	  var lg_div = d3.select('#chart-div-test_numero_dos');
+	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
+	  nv.addGraph(LargeChart(charts[0], lg_div));
+	});
+
+/***/ },
+/* 4 */,
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -9340,31 +9365,6 @@
 	}();
 
 /***/ },
-/* 4 */,
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	/*jshint esnext:true, eqnull:true */
-	/*globals require */
-	var getObjects = __webpack_require__(6).getObjects;
-	var Chart = __webpack_require__(7).Chart;
-	var SmallMultiplesChart = __webpack_require__(8).SmallMultiplesChart;
-	var LargeChart = __webpack_require__(11).LargeChart;
-	var nv = __webpack_require__(16);
-	getObjects('report.json', function (charts) {
-	  charts = charts.map( function(graph) {
-	    return Chart(graph);
-	  } )
-	  window.charts = charts;
-
-	  var small_div = d3.select('#small-chart-div-test_numero_dos');
-	  var lg_div = d3.select('#chart-div-test_numero_dos');
-	  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-	  nv.addGraph(LargeChart(charts[0], lg_div));
-	});
-
-/***/ },
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9629,7 +9629,7 @@
 	'use strict';
 	var Klass = __webpack_require__(13).Klass;
 	var dataSym = Symbol();
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(5);
 
 	var dataPointSchema = __webpack_require__(14).dataPointSchema;
 	var timeDataPointSchema = __webpack_require__(14).timeDataPointSchema;
@@ -10025,7 +10025,7 @@
 	/*globals require */
 	var $__Array$prototype$slice = Array.prototype.slice;
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(5);
 	var nv = __webpack_require__(16);
 	var shapePath = __webpack_require__(15).shapePath;
 	var shapes = __webpack_require__(15).shapes;
@@ -10357,6 +10357,68 @@
 
 /***/ },
 /* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/*jshint esnext:true, eqnull:true */
+	/*globals require */
+	var moment = __webpack_require__(2);
+	var nv = __webpack_require__(16);
+	var styleSheet = __webpack_require__(6).styleSheet;
+	var timeLineChart = __webpack_require__(10).timeLineChart;
+	var timeBarChart = __webpack_require__(11).timeBarChart;
+
+	function LargeChart(mschart, node) {
+	  node = node || d3.select('body').append('div');
+	  if(!node.attr('id')) node.attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
+	  var parentNode = node;
+	  node = parentNode.append('div')
+	             .classed('chart-div', true)
+	             .style("width", mschart.width + mschart.width_units);
+
+	  var relative = (mschart.width_units == '%');
+	  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : undefined;
+	  var yMax, xMax;
+	  if(relative) {
+	    yMax = mschart.range_max - mschart.range_min;
+	    xMax = ratio * (mschart.range_max - mschart.range_min);
+	  } else {
+	    if(!ratio) {
+	      yMax = mschart.height;
+	      xMax = mschart.width;
+	    } else {
+	      yMax = ratio * mschart.width;
+	      xMax = mschart.width;
+	    }
+	  }
+
+	  if(relative) {
+	    if(ratio)
+	      styleSheet.insertRule (
+	        "#" + parentNode.attr('id') + " .chart-div::after {" +
+	          'content: "";' +
+	          'display: block;' +
+	          ("margin-top: " + ratio * 100 + "%;") +
+	        '}', styleSheet.cssRules.length
+	      );
+	    else
+	      node.style('height', mschart.height + mschart.height_units);
+	  } else {
+	    if(!ratio) node.style('height', mschart.height + mschart.height_units);
+	    else node.style('height', (ratio * mschart.width) + 'px')
+	  }
+
+	  node = node.append('svg')
+	             .attr('class', 'upiq-chart chart-svg');
+
+	  var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
+	  node.outerNode = parentNode;
+	  return mschart.chart_type == 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
+	}
+	exports.LargeChart = LargeChart;
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10909,7 +10971,7 @@
 	exports.timeLineChart = timeLineChart;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -11324,7 +11386,11 @@
 	    .attr('y', "" + lineCt + "em")
 	    .attr('x', 72.5)
 	    .style('text-anchor', 'middle')
-	    .text("" + format(pt.value / 100) + " (" + pt.title + ")");
+	    .text("" + format(pt.value / 100) + " (" + pt.title + ")")
+	    .classed('svg-link', !!pt.uri)
+	    .on('click', pt.uri ? function() {
+	    return window.open(pt.uri);
+	  } : undefined);
 	  var height = el.node().getBoundingClientRect().height + 5;
 	  el.select('rect').attr('height', height);
 	  el.append('circle')
@@ -11375,7 +11441,7 @@
 	            y: datapoint.value,
 	            note: datapoint.note,
 	            title: datapoint.title,
-	            url: datapoint.uri,
+	            uri: datapoint.uri,
 	            seriesIndex: index
 	            });
 	        else
@@ -11392,68 +11458,6 @@
 	  }
 	} }
 	exports.timeBarChart = timeBarChart;
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	/*jshint esnext:true, eqnull:true */
-	/*globals require */
-	var moment = __webpack_require__(2);
-	var nv = __webpack_require__(16);
-	var styleSheet = __webpack_require__(6).styleSheet;
-	var timeLineChart = __webpack_require__(9).timeLineChart;
-	var timeBarChart = __webpack_require__(10).timeBarChart;
-
-	function LargeChart(mschart, node) {
-	  node = node || d3.select('body').append('div');
-	  if(!node.attr('id')) node.attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
-	  var parentNode = node;
-	  node = parentNode.append('div')
-	             .classed('chart-div', true)
-	             .style("width", mschart.width + mschart.width_units);
-
-	  var relative = (mschart.width_units == '%');
-	  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : undefined;
-	  var yMax, xMax;
-	  if(relative) {
-	    yMax = mschart.range_max - mschart.range_min;
-	    xMax = ratio * (mschart.range_max - mschart.range_min);
-	  } else {
-	    if(!ratio) {
-	      yMax = mschart.height;
-	      xMax = mschart.width;
-	    } else {
-	      yMax = ratio * mschart.width;
-	      xMax = mschart.width;
-	    }
-	  }
-
-	  if(relative) {
-	    if(ratio)
-	      styleSheet.insertRule (
-	        "#" + parentNode.attr('id') + " .chart-div::after {" +
-	          'content: "";' +
-	          'display: block;' +
-	          ("margin-top: " + ratio * 100 + "%;") +
-	        '}', styleSheet.cssRules.length
-	      );
-	    else
-	      node.style('height', mschart.height + mschart.height_units);
-	  } else {
-	    if(!ratio) node.style('height', mschart.height + mschart.height_units);
-	    else node.style('height', (ratio * mschart.width) + 'px')
-	  }
-
-	  node = node.append('svg')
-	             .attr('class', 'upiq-chart chart-svg');
-
-	  var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
-	  node.outerNode = parentNode;
-	  return mschart.chart_type == 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
-	}
-	exports.LargeChart = LargeChart;
 
 /***/ },
 /* 12 */
@@ -12520,7 +12524,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(5);
 
 	(function(){
 

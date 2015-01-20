@@ -48,9 +48,9 @@
 	/*globals require */
 	'use strict';
 	__webpack_require__(1);
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(5);
 	var moment = __webpack_require__(2);
-	__webpack_require__(4);
+	window.renderSVG = __webpack_require__(4).renderSVG;
 
 /***/ },
 /* 1 */
@@ -120,7 +120,147 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)(module)))
 
 /***/ },
-/* 3 */
+/* 3 */,
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/*jshint esnext:true, eqnull:true */
+	/*globals require */
+	var $__getIteratorRange = function(iterator, index, begin, len) {
+	  if (index > begin) {
+	    throw new RangeError();
+	  }
+
+	  if (typeof len === "undefined") {
+	    len = Infinity;
+	  }
+
+	  var range = [], end = begin + len;
+
+	  while (index < end) {
+	    var next = iterator.next();
+
+	    if (next.done) {
+	      break;
+	    }
+
+	    if (index >= begin) {
+	      range.push(next.value);
+	    }
+
+	    index++;
+	  }
+
+	  return {
+	    range: range,
+	    index: index
+	  };
+	};
+
+	var $__getIterator = function(iterable) {
+	  var sym = typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+
+	  if (typeof iterable[sym] === "function") {
+	    return iterable[sym]();
+	  } else if (typeof iterable === "object" || typeof iterable === "function") {
+	    return $__getArrayIterator(iterable);
+	  } else {
+	    throw new TypeError();
+	  }
+	};
+
+	var $__getArrayIterator = function(array) {
+	  var index = 0;
+
+	  return {
+	    next: function() {
+	      if (index < array.length) {
+	        return {
+	          done: false,
+	          value: array[index++]
+	        };
+	      } else {
+	        return {
+	          done: true,
+	          value: void 0
+	        };
+	      }
+	    }
+	  };
+	};
+
+	Function.prototype.bind = Function.prototype.bind || function (thisp) {
+	    var fn = this;
+	    return function () {
+	      var $__arguments0 = arguments;
+	      var $__arguments = $__arguments0;
+	      return fn.apply(thisp, $__arguments);
+	    };
+	};
+
+	var getObjects = __webpack_require__(6).getObjects;
+	var styleSheet = __webpack_require__(6).styleSheet;
+	var nv = __webpack_require__(16);
+	var moment = __webpack_require__(2);
+	var timeLineChart = __webpack_require__(10).timeLineChart;
+	var timeBarChart = __webpack_require__(11).timeBarChart;
+	var Chart = __webpack_require__(7).Chart;
+	var SmallMultiplesChart = __webpack_require__(8).SmallMultiplesChart;
+	var LargeChart = __webpack_require__(9).LargeChart;
+
+	function renderSVG(chart, width) {
+	  chart = getChartObj(chart);
+	  chart = Chart(chart);
+	  var div = d3.select('#chart-div');
+	  nv.addGraph(LargeChart(chart, div, width));
+	}
+
+	exports.renderSVG = renderSVG;function getChartObj(charts) {
+	    var obj = {};
+
+	    if(charts.length)
+	      obj = charts[0][1];
+	    else //if the JSON payload wasn't an array
+	      obj = charts; //then we were given a single object
+
+	    obj.series.forEach( function (serum) {
+	      serum.data = serum.data.map( function(arg$0) {
+	        var iterator$0 = $__getIterator(arg$0),
+	            iteratorValue$0 = {
+	              index: 0
+	            },
+	            datum = (iteratorValue$0 = $__getIteratorRange(iterator$0, iteratorValue$0.index, 1, 1), iteratorValue$0.range[0]);
+
+	        return datum;
+	      } )
+	    });
+	    return obj;
+	}
+
+	function LargeChart(mschart, node, width) {
+	  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : (mschart.height / mschart.width);
+
+	  var parentNode = node;
+	  node = parentNode.append('div')
+	             .classed('chart-div', true)
+	             .style("width", width)
+	             .style('height', ratio * width);
+
+	  node = node.append('svg')
+	             .attr('class', 'upiq-chart chart-svg');
+
+	  mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
+	  mschart.title = mschart.description = undefined;
+	  mschart.height = ratio * width;
+	  mschart.width = width;
+	  mschart.width_units = 'px';
+	  node.outerNode = parentNode;
+	  return mschart.chart_type === 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
+	}
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -9340,49 +9480,6 @@
 	}();
 
 /***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	/*jshint esnext:true, eqnull:true */
-	/*globals require */
-	var getObjects = __webpack_require__(6).getObjects;
-	var styleSheet = __webpack_require__(6).styleSheet;
-	var Chart = __webpack_require__(7).Chart;
-	var SmallMultiplesChart = __webpack_require__(8).SmallMultiplesChart;
-	var nv = __webpack_require__(16);
-	var moment = __webpack_require__(2);
-	var timeLineChart = __webpack_require__(9).timeLineChart;
-	var timeBarChart = __webpack_require__(10).timeBarChart;
-
-	window.renderSVG = function(chart, height, width) {
-	  chart = Chart(chart);
-	  window.charts = charts;
-	  var div = d3.select('#chart-div');
-	  nv.addGraph(LargeChart(chart, div, height, width));
-	};
-
-	function LargeChart(mschart, node, height, width) {
-	  var parentNode = node;
-	  node = parentNode.append('div')
-	             .classed('chart-div', true)
-	             .style("width", width)
-	             .style('height', height);
-
-	  node = node.append('svg')
-	             .attr('class', 'upiq-chart chart-svg');
-
-	  mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
-	  mschart.title = mschart.description = undefined;
-	  mschart.height = height;
-	  mschart.width = width;
-	  mschart.width_units = 'px';
-	  node.outerNode = parentNode;
-	  return mschart.chart_type === 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
-	}
-
-/***/ },
-/* 5 */,
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9647,7 +9744,7 @@
 	'use strict';
 	var Klass = __webpack_require__(13).Klass;
 	var dataSym = Symbol();
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(5);
 
 	var dataPointSchema = __webpack_require__(14).dataPointSchema;
 	var timeDataPointSchema = __webpack_require__(14).timeDataPointSchema;
@@ -10043,7 +10140,7 @@
 	/*globals require */
 	var $__Array$prototype$slice = Array.prototype.slice;
 	var moment = __webpack_require__(2);
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(5);
 	var nv = __webpack_require__(16);
 	var shapePath = __webpack_require__(15).shapePath;
 	var shapes = __webpack_require__(15).shapes;
@@ -10375,6 +10472,68 @@
 
 /***/ },
 /* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/*jshint esnext:true, eqnull:true */
+	/*globals require */
+	var moment = __webpack_require__(2);
+	var nv = __webpack_require__(16);
+	var styleSheet = __webpack_require__(6).styleSheet;
+	var timeLineChart = __webpack_require__(10).timeLineChart;
+	var timeBarChart = __webpack_require__(11).timeBarChart;
+
+	function LargeChart(mschart, node) {
+	  node = node || d3.select('body').append('div');
+	  if(!node.attr('id')) node.attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
+	  var parentNode = node;
+	  node = parentNode.append('div')
+	             .classed('chart-div', true)
+	             .style("width", mschart.width + mschart.width_units);
+
+	  var relative = (mschart.width_units == '%');
+	  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : undefined;
+	  var yMax, xMax;
+	  if(relative) {
+	    yMax = mschart.range_max - mschart.range_min;
+	    xMax = ratio * (mschart.range_max - mschart.range_min);
+	  } else {
+	    if(!ratio) {
+	      yMax = mschart.height;
+	      xMax = mschart.width;
+	    } else {
+	      yMax = ratio * mschart.width;
+	      xMax = mschart.width;
+	    }
+	  }
+
+	  if(relative) {
+	    if(ratio)
+	      styleSheet.insertRule (
+	        "#" + parentNode.attr('id') + " .chart-div::after {" +
+	          'content: "";' +
+	          'display: block;' +
+	          ("margin-top: " + ratio * 100 + "%;") +
+	        '}', styleSheet.cssRules.length
+	      );
+	    else
+	      node.style('height', mschart.height + mschart.height_units);
+	  } else {
+	    if(!ratio) node.style('height', mschart.height + mschart.height_units);
+	    else node.style('height', (ratio * mschart.width) + 'px')
+	  }
+
+	  node = node.append('svg')
+	             .attr('class', 'upiq-chart chart-svg');
+
+	  var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
+	  node.outerNode = parentNode;
+	  return mschart.chart_type == 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
+	}
+	exports.LargeChart = LargeChart;
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10927,7 +11086,7 @@
 	exports.timeLineChart = timeLineChart;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -11342,7 +11501,11 @@
 	    .attr('y', "" + lineCt + "em")
 	    .attr('x', 72.5)
 	    .style('text-anchor', 'middle')
-	    .text("" + format(pt.value / 100) + " (" + pt.title + ")");
+	    .text("" + format(pt.value / 100) + " (" + pt.title + ")")
+	    .classed('svg-link', !!pt.uri)
+	    .on('click', pt.uri ? function() {
+	    return window.open(pt.uri);
+	  } : undefined);
 	  var height = el.node().getBoundingClientRect().height + 5;
 	  el.select('rect').attr('height', height);
 	  el.append('circle')
@@ -11393,7 +11556,7 @@
 	            y: datapoint.value,
 	            note: datapoint.note,
 	            title: datapoint.title,
-	            url: datapoint.uri,
+	            uri: datapoint.uri,
 	            seriesIndex: index
 	            });
 	        else
@@ -11412,7 +11575,6 @@
 	exports.timeBarChart = timeBarChart;
 
 /***/ },
-/* 11 */,
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -12477,7 +12639,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
-	var d3 = __webpack_require__(3);
+	var d3 = __webpack_require__(5);
 
 	(function(){
 
