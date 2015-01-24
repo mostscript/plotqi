@@ -1,7 +1,5 @@
 var path = require('path')
 var childProcess = require('child_process')
-var phantomjs = require('phantomjs')
-var phantomPath = phantomjs.path
 var stream = require('stream')
 var Readable = stream.Readable
 
@@ -32,7 +30,7 @@ app.post('/', function (req, res) {
     });
     stdout.pipe(res);
   });*/
-  var phant = childProcess.spawn(phantomPath, childArgs);
+  var phant = childProcess.spawn("phantomjs", childArgs);
   phant.stdin.write(JSON.stringify(json));
   phant.stdin.end();
   phant.stdout.on('data', function (data) {

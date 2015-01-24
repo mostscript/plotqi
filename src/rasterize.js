@@ -25,12 +25,12 @@ page.open('build/headless.html', function (argument) {
 
     var clip = setTimeout(function () {
       var clipRect = page.evaluate(function() {return document.querySelector('#chart-div').getBoundingClientRect();});
-      /*page.clipRect = {
-          top:    clipRect.top,
-          left:   clipRect.left,
-          width:  clipRect.width,
+      page.clipRect = {
+          top:    0,
+          left:   0,
+          width:  width,
           height: clipRect.height
-      };*/
+      };
 
       /*console.log(page.evaluate(function () {
         return JSON.stringify(window._data4);
