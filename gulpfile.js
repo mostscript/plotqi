@@ -16,6 +16,9 @@ var runSequence = require('run-sequence');
 var webpack = require('webpack');
 var browserSync = require('browser-sync');
 var argv = require('minimist')(process.argv.slice(2));
+var defaultTask = (
+    (Object.keys(argv).indexOf('serve') !== -1) ? 'serve' : 'build'
+    );
 
 // Settings
 var DEST = './build';                         // The build output folder
@@ -47,7 +50,7 @@ var pkgs = (function () {
 }());
 
 // The default task
-gulp.task('default', ['serve']);
+gulp.task('default', [defaultTask]);
 
 // Clean up
 gulp.task('clean', del.bind(null, [DEST]));
