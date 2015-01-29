@@ -15,8 +15,7 @@ module.exports = function (release) {
 
     cache: !release,
     debug: !release,
-    devtool: false,
-    //devtool: 'source-map',
+    devtool: (!release) ? 'source-map' : false,
     entry: {
       app: './src/App.js',
       headless: './src/headless.js'
@@ -52,11 +51,7 @@ module.exports = function (release) {
           test: '\\.js$',
           exclude: 'node_modules',
           loader: 'jshint'
-        },
-        {
-          test: /\.es6(\.js)?$/,
-          loader: 'esnext'
-        },
+        } //,
       ],
 
       loaders: [
@@ -78,7 +73,8 @@ module.exports = function (release) {
         },
         {
           test: /\.es6(\.js)?$/,
-          loader: 'es6-loader'
+          exclude: 'node_modules',
+          loader: '6to5-loader'
         }
       ]
     }
