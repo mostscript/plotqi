@@ -1,5 +1,6 @@
 /*jshint esnext:true, eqnull:true */
 /*globals require */
+
 export function shapePath(node, spec = shapes.square, size = 3) {
   var d = "";
   var normalizer = spec.normalizer || 1;
@@ -35,7 +36,7 @@ export function shapePath(node, spec = shapes.square, size = 3) {
   });
   node.attr('d', d)
       .classed('smooth-shape', spec.smooth ? true : false)
-      .classed('crisp-shape', spec.smooth ? false : true);;
+      .classed('crisp-shape', spec.smooth ? false : true);
 }
 
 export function legendMarkers (selection, size) {
@@ -45,7 +46,7 @@ export function legendMarkers (selection, size) {
     var shape_name = d.marker_style || 'square';
     if(shape_name === 'cross') shape_name = 'legend_cross';
     var shape = shapes[shape_name] || shapes.square;
-    sel.call(shapePath, shape, size)
+    sel.call(shapePath, shape, size);
   });
 }
 
@@ -115,4 +116,5 @@ export var shapes = {
     ],
     smooth: true
   }
-}
+};
+

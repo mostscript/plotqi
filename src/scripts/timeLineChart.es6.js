@@ -1,5 +1,6 @@
 /*jshint esnext:true, eqnull:true */
 /*globals require */
+
 var moment = require('moment');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
 import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
@@ -67,7 +68,7 @@ export function timeLineChart(mschart, node) { return function() {
        .xDomain(domain.map( x => x.valueOf() ))
        .yDomain(mschart.range);
   if(!tabular && mschart.x_label)
-    chart.xAxis.axisLabel(mschart.x_label)
+    chart.xAxis.axisLabel(mschart.x_label);
   if(mschart.y_label)
     chart.yAxis.axisLabel(mschart.y_label)
                .axisLabelDistance(48);
@@ -166,7 +167,7 @@ export function timeLineChart(mschart, node) { return function() {
                                    .attr('transform', `translate(${(xMax + margins.left)}, ${margins.top})`)
                                 .append('rect')
                                    .attr('class', 'nv-leg-bg');
-        var firstRun = !legWrapEnter.empty();
+        firstRun = !legWrapEnter.empty();
 
         var legend = legWrap.selectAll('g.nv-leg-entry').data(mschart.series);
         var legEnter = legend.enter().append('g')
@@ -221,7 +222,9 @@ export function timeLineChart(mschart, node) { return function() {
       var ycurr = 0;
       var intervalX = Math.floor(xscale(tickVals[1]) - xscale(tickVals[0]));
       legend.each(function (d, i) {
-        var el = d3.select(this);
+        var el = d3.select(this),
+            cells,
+            cellsEnter;
 
         if(i === 0) {
 
@@ -236,8 +239,8 @@ export function timeLineChart(mschart, node) { return function() {
                 x: moment(lbl, 'YYYY-MM-DD').valueOf()
               });
           }
-          var cells = el.selectAll('.nv-leg-cell').data(labels);
-          var cellsEnter = cells.enter().append('text')
+          cells = el.selectAll('.nv-leg-cell').data(labels);
+          cellsEnter = cells.enter().append('text')
                                         .attr('class', 'nv-leg-cell')
                                         .attr('y', '1em')
                                         .style('text-anchor', 'middle')
@@ -267,8 +270,8 @@ export function timeLineChart(mschart, node) { return function() {
             .style('fill', d.color);
           var $d;
           var data = d.data;
-          var cells = el.selectAll('.nv-leg-cell').data([d.title].concat(tickVals));
-          var cellsEnter = cells.enter().append('text')
+          cells = el.selectAll('.nv-leg-cell').data([d.title].concat(tickVals));
+          cellsEnter = cells.enter().append('text')
                                         .attr('class', 'nv-leg-cell')
                                         .attr('y', '1em')
                                         .style('text-anchor', (d, i) => i === 0 ? 'start' : 'middle')
@@ -285,14 +288,14 @@ export function timeLineChart(mschart, node) { return function() {
           if(!cellsEnter.empty()) {
             firstRun = true;
             el.selectAll('.nv-leg-cell').filter( (d,i) => i !== 0 )
-              .attr('y', `${((numberOfLines / 2) + .5)}em`)
+              .attr('y', `${((numberOfLines / 2) + 0.5)}em`);
           }
 
           cells.transition().duration(500)
                .attr('x', (d, i) => i === 0 ? legLeftPadding : margins.left - legLeftPadding + xscale(d) )
                .attr('textLength', (d,i) => i === 0 ? null : (d3.select(this).text().length <= 3 || intervalX > 35) ? null :
                (d3.select(this).text().length <= 4 && intervalX > 30) ? null : intervalX - (intervalX >= 20 ? 8 : 5));
-          el.attr('transform', `translate(0, ${ycurr})`)
+          el.attr('transform', `translate(0, ${ycurr})`);
           el.select('rect').transition().duration(500)
                            .attr('height', this.getBoundingClientRect().height)
                            .attr('width', xMax + (margins.left - legLeftPadding));
@@ -312,7 +315,7 @@ export function timeLineChart(mschart, node) { return function() {
         yRange = yMin - yMax;
       }
       legWrap.selectAll('.nv-leg-row').filter( (d, i) => i > 0 ).selectAll('text').filter( (d, i) => i > 0 )
-             .on('click', showLegendPopup)
+             .on('click', showLegendPopup);
 
       legWrap.transition().duration(500)
              .attr('transform', `translate(${legLeftPadding}, ${(yMin + margins.top + legPadding)})`);
@@ -355,16 +358,16 @@ export function timeLineChart(mschart, node) { return function() {
                               .attr('y', '1.25em')
                               .attr('x', 72.5)
                               .style('text-anchor', 'middle')
-                              .text(series.title)
-      , 140, 72.5, null, true)[0];
+                              .text(series.title),
+                            140, 72.5, null, true)[0];
   lineCt += 2;
   lineCt += d3textWrap(el.append('text')
                          .attr('y', `${lineCt}em`)
                          .attr('x', 72.5)
                          .style('text-anchor', 'middle')
-                         .text(pt.note)
-    , 140, 72.5, null, true)[0] * 1.2;
-  lineCt += .25;
+                         .text(pt.note),
+                       140, 72.5, null, true)[0] * 1.2;
+  lineCt += 0.25;
   el.append('text')
     .attr('y', `${lineCt}em`)
     .attr('x', 72.5)
@@ -440,7 +443,10 @@ export function timeLineChart(mschart, node) { return function() {
       var solid = series.incomplete === 'solid';
       series.values.forEach(function (pt, i) {
         if(!pt.missing) {
-          if(!poly_line) poly_line = [], prev_pt = pt;
+          if(!poly_line) {
+            poly_line = [];
+            prev_pt = pt;
+          }
           if(!prev_pt.missing) poly_line.push(pt);
 
           else {
@@ -485,4 +491,5 @@ export function timeLineChart(mschart, node) { return function() {
     });
     return data;
   }
-} }
+};
+}

@@ -39,7 +39,7 @@ page.open('build/headless.html', function (argument) {
       console.log(base64);
       phantom.exit();
     }, 3000);
-  }
+  };
 
   var loading = setInterval(function () {
     var stillLoading = page.evaluate(function () {

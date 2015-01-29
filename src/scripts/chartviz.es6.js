@@ -1,6 +1,8 @@
 /*jshint esnext:true, eqnull:true */
 /*globals require */
-'use strict';
+
+'use strict';  /*jshint -W097 */
+
 import {Klass} from './classviz.es6.js';
 var dataSym = Symbol();
 var d3 = require('d3');
@@ -112,8 +114,8 @@ export class MultiSeriesChart extends Klass {
       return [this.range_min, this.range_max];
     var ranges = this.series.map( serum => serum.range );
     return [
-      d3.min(ranges, function ([min, ]) { return min; } ),
-      d3.max(ranges, function ([, max]) { return max; } )
+      d3.min(ranges, function ([min, max]) { return min; } ),
+      d3.max(ranges, function ([min, max]) { return max; } )
     ];
   }
 
@@ -121,7 +123,7 @@ export class MultiSeriesChart extends Klass {
     var data = this.series.map( serum => serum.data )
     .map( datum => datum.values() );
     data = d3.merge(data);
-    return data.map( datum => datum.key )
+    return data.map( datum => datum.key );
   }
 }
 
@@ -148,8 +150,8 @@ export class TimeSeriesChart extends MultiSeriesChart {
     if(!domains) return [start || new Date(), end || new Date()];
     domains = domains.map( function([a,b]) { return [moment(a), moment(b)]; } );
     return [
-      start || moment.min(...domains.map( function ([min, ]) { return min; } ) ).toDate(),
-      end || moment.max(...domains.map( function ([, max]) { return max; } ) ).toDate()
+      start || moment.min(...domains.map( function ([min, max]) { return min; } ) ).toDate(),
+      end || moment.max(...domains.map( function ([min, max]) { return max; } ) ).toDate()
     ];
   }
 }

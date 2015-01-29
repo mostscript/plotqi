@@ -12,7 +12,7 @@ import {styleSheet} from './utils';
 import {timeLineChart} from './timeLineChart';
 import {timeBarChart} from './timeBarChart';
 import {Chart} from './chartviz';
-import {LargeChart} from './largeFormatChart'
+import {LargeChart} from './largeFormatChart';
 
 export function renderSVG(chart, width) {
   chart = getChartObj(chart);
@@ -29,7 +29,7 @@ export function renderSVG(chart, width) {
   var div = d3.select('#chart-div');
   window._data1 = chart.series[0].data;
   nv.addGraph(LargeChart(chart, div));
-};
+}
 
 function getChartObj(jsonData) {
     var objs = [];
@@ -41,11 +41,11 @@ function getChartObj(jsonData) {
 
     objs.forEach( function (obj) { 
       obj.series.forEach( function (serum) {
-        serum.data = serum.data.map( function ([, datum]) { return datum; } )
-        })
+        serum.data = serum.data.map( function ([, datum]) { return datum; } );
+        });
     });
     return objs[0];
-};
+}
 
 function aLargeChart(mschart, node, width) {
   var parentNode = node;

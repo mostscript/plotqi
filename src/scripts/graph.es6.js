@@ -1,12 +1,13 @@
 /*jshint esnext:true, eqnull:true */
 /*globals require */
+
 import {getObjects} from './utils';
 import {Chart} from './chartviz';
 import {SmallMultiplesChart} from './smallMultiplesChart';
 import {LargeChart} from './largeFormatChart';
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
 getObjects('report.json', function (charts) {
-  charts = charts.map( graph => Chart(graph) )
+  charts = charts.map( graph => Chart(graph) );
   window.charts = charts;
 
   var small_div = d3.select('#small-chart-div-test_numero_dos');

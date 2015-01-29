@@ -45,5 +45,5 @@ return Symbol;
 }(Object));
 window.Symbol = function() {
   return new SortaSymbol();
-}
+};
 }

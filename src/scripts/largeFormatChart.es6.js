@@ -43,7 +43,7 @@ export function LargeChart(mschart, node) {
       node.style('height', mschart.height + mschart.height_units);
   } else {
     if(!ratio) node.style('height', mschart.height + mschart.height_units);
-    else node.style('height', (ratio * mschart.width) + 'px')
+    else node.style('height', (ratio * mschart.width) + 'px');
   }
 
   node = node.append('svg')

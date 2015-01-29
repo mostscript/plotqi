@@ -1,6 +1,7 @@
 /*jshint esnext:true, eqnull:true */
-/*globals require */
-'use strict';
+/*globals require, window */
+
+'use strict';  /*jshint -W097 */
 require('./scripts/Symbol');
 require('es5-shim');
 var d3 = require('d3');

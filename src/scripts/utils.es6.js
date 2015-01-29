@@ -1,5 +1,6 @@
 /*jshint esnext:true, eqnull:true */
 /*globals require */
+
 var moment = require('moment');
 export function getObjects(jsonFile, callback) {
 	d3.json(jsonFile, function (jsonData) {
@@ -12,12 +13,12 @@ export function getObjects(jsonFile, callback) {
 
     objs.forEach( function (obj) { 
       obj.series.forEach( function (serum) {
-        serum.data = serum.data.map( function ([, datum]) { return datum; } )
-        })
+        serum.data = serum.data.map( function ([, datum]) { return datum; } );
+        });
       });
 		callback(objs);
 	});
-};
+}
 
 var styleEl = document.createElement('style');
 document.head.appendChild(styleEl);
@@ -39,7 +40,7 @@ export function debounce(func, wait, immediate) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
-};
+}
 
 /*
 Taken from an upcoming version of d3, heavily altered to suit needs of UPIQ
@@ -69,8 +70,7 @@ export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, igno
         y = +((null === y)?paddingTopBottom:y);
 
         var tspan = text.text(null).append("tspan").attr("x", paddingRightLeft).attr("dy", dy + "em");
-        //noinspection JSHint
-        while (word = words.pop()) {
+        while (!!(word = words.pop())) {
             line.push(word);
             tspan.text(line.join(" "));
             if (tspan.node().getComputedTextLength() > width && line.length > 1) {

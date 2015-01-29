@@ -1,5 +1,6 @@
 /*jshint esnext:true, eqnull:true */
 /*globals require */
+
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
@@ -8,7 +9,7 @@ import {shapePath, shapes, legendMarkers} from './shapes';
 export function SmallMultiplesChart(mschart, node, size) {
   node = node || d3.select('body').append('div').attr('id', 'small-chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
   node.classed('chart-div', true);
-  size = size || [160, 160]
+  size = size || [160, 160];
   var width = size[0] || 160;
   var height = size[1] || 160;
   node.style('width', width + 'px')
@@ -36,16 +37,16 @@ export function SmallMultiplesChart(mschart, node, size) {
                   .margin(margins)
                   .transitionDuration(500)
                   .tooltipContent(function(seriesName, x, y, graph) {
-                    return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>'
-                    + '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
-                  })
+                    return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>' +
+                    '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
+                  });
                   chart.lines.scatter.onlyCircles(false).useVoronoi(false);
 
     chart.xAxis
          .tickFormat( d => d3.time.format('%B')(new Date(d))[0] )
          .tickValues(tickVals)
          .showMaxMin(false)
-         .tickPadding(3)
+         .tickPadding(3);
     chart.yAxis
          .tickFormat(d3.format(','))
          .showMaxMin(false);
@@ -191,7 +192,7 @@ export function SmallMultiplesChart(mschart, node, size) {
 export function croppedDomain(mschart) { //crop data to last 12 (actually, 13) months of data
   var domain = mschart.domain;
   if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
-    domain[0] = d3.time.month.offset(domain[1], -12)
+    domain[0] = d3.time.month.offset(domain[1], -12);
   }
   return domain;
 }
@@ -202,7 +203,9 @@ function preprocessData(mschart) {
   domain[1] = d3.time.month.offset(domain[1], 2);
   var keys = d3.time.month.range(...domain);
   var chart_series = mschart.series;
-  if(chart_series.length > 2) chart_series = chart_series.slice(-2);
+  if (chart_series.length > 2) {
+    chart_series = chart_series.slice(-2);
+  }
   chart_series.forEach(function (series, index) {
     var obj = {
       key: series.title,
