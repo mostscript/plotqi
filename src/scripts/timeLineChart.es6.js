@@ -6,7 +6,6 @@ var nv = require('imports?d3=d3!exports?window.nv!nvd3');
 import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
 
 export function timeLineChart(mschart, node) { return function() {
-  window.mschart = mschart;
   var relative = (mschart.width_units == '%');
   var margins = mschart.margins;
 
