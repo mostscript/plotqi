@@ -5,20 +5,68 @@ var moment = require('moment');
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
 import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
 
+var INTERVALS = {
+  weekly:'week',
+  monthly: 'month',
+  yearly: 'year',
+  quarterly: 'month'
+};
+
+// Line chart selectors:
+var SEL_LINECHART = '.nv-wrap.nv-lineChart';
+var SEL_LINESWRAP = SEL_LINECHART + ' .nv-linesWrap';
+var LINESWRAP_CLASSNAME = 'nv-linesWrap';
+var SEL_SCATTERWRAP = '.nv-wrap.nv-line .nv-scatterWrap';
+var SEL_LINEGROUPS = SEL_SCATTERWRAP + ' .nv-wrap.nv-scatter .nv-groups';
+var SEL_LINEGROUP = SEL_LINEGROUPS + ' .nv-group';
+var SEL_MARKER = SEL_LINEGROUPS + ' path.nv-point';
+// Bar chart selectors:
+var SEL_BARCHART = '.nv-wrap.nv-multiBarWithLegend';
+var SEL_BARWRAP = SEL_BARCHART + ' .nv-barsWrap';
+var BARWRAP_CLASSNAME = 'nv-barsWrap';
+var SEL_BAR = SEL_BARWRAP + ' .nv-wrap.nv-multibar .nv-groups rect.nv-bar';
+
+
+function nvChartFactory(data) {
+  var m = nv.models,
+      type = data.chart_type || 'line',
+      factory = (type === 'line') ? m.lineChart : m.multiBarChart,
+      chart = factory();
+  chart
+    .id(data.uid)
+    .showLegend(false)
+    .tooltips(false)
+    .transitionDuration(500);
+  if (type === 'line') {
+    chart
+      .useInteractiveGuideline(false)
+      .interactive(false);
+    chart.lines.scatter.onlyCircles(false).useVoronoi(false);
+  }
+  if (type === 'bar') {
+    chart.showControls(false);
+  }
+  return chart;
+}
+
+
 export function timeLineChart(mschart, node) { return function() {
+  var _type = mschart.chart_type;
   var relative = (mschart.width_units == '%');
   var margins = mschart.margins;
+  // NVD3 wrapper group class:
+  var nvType = (_type === 'line') ? SEL_LINECHART : SEL_BARCHART;
+  var wrapType = (_type === 'line') ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
 
-  var interval = ({
-    'weekly': 'week', 'monthly': 'month', 'yearly': 'year', 'quarterly': 'month'
-  })[mschart.frequency] || 'month';
+  var interval = INTERVALS[mschart.frequency] || 'month';
   var timeStep = (mschart.frequency === 'quarterly') ? 3 : 1;
   var time = d3.time[interval];
   var timeOffset = (date, n) => time.offset(date, n * timeStep);
   var timeRange = (start, stop) => time.range(start, stop, timeStep);
 
   var domain = [ timeOffset(mschart.domain[0], -1), timeOffset(mschart.domain[1], +1) ];
-  var tickVals = timeRange(domain[0], timeOffset(domain[1], +1) ).map( date => date.valueOf() );
+  var tickVals = timeRange(domain[0], timeOffset(domain[1], +1)).map( date => date.valueOf() );
+  var xDomain = (_type === 'line') ? domain.map(x => x.valueOf()) : tickVals;
 
   var yTickVals = function (n) {
     var out = [];
@@ -32,7 +80,6 @@ export function timeLineChart(mschart, node) { return function() {
   var yformat = ( y => (typeof y === 'number') ? d3.format(',.1f')(y) : 'N/A' );
 
   var data = extractData(mschart);
-  window._data4 = data;
 
   var tabular = mschart.legend_placement === 'tabular';
   if(tabular) {
@@ -42,15 +89,9 @@ export function timeLineChart(mschart, node) { return function() {
     margins.right = mschart.series.length > 1 ? 120 : 10;
   }
 
-  var chart = nv.models.lineChart()
-                .id(mschart.uid)
-                .showLegend(false)
-                .useInteractiveGuideline(false)
-                .tooltips(false)
-                .interactive(false)
-                .margin(margins)
-                .transitionDuration(500);
-  chart.lines.scatter.onlyCircles(false).useVoronoi(false);
+  var chart = nvChartFactory(mschart);
+
+  chart.margin(margins);
 
   chart.xAxis
        .tickFormat( tabular ? () => '' : d => mschart.labels[moment(d).format('YYYY-MM-DD')] || '' )
@@ -64,7 +105,7 @@ export function timeLineChart(mschart, node) { return function() {
        .showMaxMin(false)
        .tickPadding(6);
   chart
-       .xDomain(domain.map( x => x.valueOf() ))
+       .xDomain(xDomain)
        .yDomain(mschart.range);
   if(!tabular && mschart.x_label)
     chart.xAxis.axisLabel(mschart.x_label);
@@ -72,21 +113,21 @@ export function timeLineChart(mschart, node) { return function() {
     chart.yAxis.axisLabel(mschart.y_label)
                .axisLabelDistance(48);
 
-  node.datum(data).call(chart);
+  node.datum(data).transition().duration(300).call(chart);
 
   var yscale = chart.yScale();
   var xscale = chart.xScale();
 
   //Manually insert the layer for the Goal Line before the graph layer in the DOM (Since SVG has no z-order)
-  node.select('.nv-wrap.nv-lineChart > g')
-      .insert('g', '.nv-linesWrap')
+  node.select(nvType + ' > g')
+      .insert('g', '.' + wrapType)
       .attr('class', 'nvd3 nv-distribution');
 
   //Dashed lines for all gaps in the data labeled as dashed. Also, apply line thickness
   node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group')
       .style('stroke-dasharray', d => d.dashed ? '5 5' : 'none' )
       .style('stroke-width', d => d.thickness );
-  node.selectAll('.nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatter .nv-groups g.nv-group')
+  node.selectAll(SEL_LINEGROUP)
       .style('stroke-width', d => d.markerThickness );
 
   //Add axis ticks for the y-axis
@@ -109,13 +150,12 @@ export function timeLineChart(mschart, node) { return function() {
   }
 
   //Click events
-  node.selectAll('.nv-wrap.nv-line .nv-scatterWrap .nv-wrap.nv-scatter .nv-groups path.nv-point')
+  node.selectAll(SEL_MARKER)
       .on('click', onPtClick)
       .on('mouseenter', onPtMouseOver)
       .on('mouseleave', onPtMouseOut);
 
   render();
-  console.log(chart);
   if(relative) nv.utils.windowResize(debounce(render, 250, false));
   return chart;
 
