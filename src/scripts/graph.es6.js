@@ -7,11 +7,21 @@ import {SmallMultiplesChart} from './smallMultiplesChart';
 import {LargeChart} from './largeFormatChart';
 var nv = require('imports?d3=d3!exports?window.nv!nvd3');
 getObjects('report.json', function (charts) {
-  charts = charts.map( graph => Chart(graph) );
+  var lineChart, barChart,
+      data = charts[0];
+
+  charts = charts.map( graph => new Chart(graph) );
+  lineChart = charts[0];
+  barChart = new Chart(data);
+   
   window.charts = charts;
 
-  var small_div = d3.select('#small-chart-div-test_numero_dos');
-  var lg_div = d3.select('#chart-div-test_numero_dos');
-  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-  nv.addGraph(LargeChart(charts[0], lg_div));
+  barChart.chart_type = 'bar';
+
+  var small_div = d3.select('#small-chart-div-test');
+  var largeLinePlotDiv = d3.select('#chart-div-test-1');
+  var largeBarPlotDiv = d3.select('#chart-div-test-2');
+  nv.addGraph(SmallMultiplesChart(lineChart, small_div));
+  nv.addGraph(LargeChart(lineChart, largeLinePlotDiv));
+  nv.addGraph(LargeChart(barChart, largeBarPlotDiv));
 });
