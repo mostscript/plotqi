@@ -1,9 +1,41 @@
 /*jshint esnext:true, eqnull:true, unused:true, undef: true */
 
-import {styleSheet} from './utils';
 import {timeLineChart} from './timeLineChart';
 import {timeBarChart} from './timeBarChart';
 
+
+// size plot div, first size width, get client width, then height accordingly:
+function sizePlotDiv(node, data) {
+  var width = +data.width || 100,
+      units = data.width_units || '%',
+      aspect = data.aspect_ratio,                               // [w,h]
+      hasRatio = (aspect && aspect.length === 2),
+      ratio = (hasRatio) ? (aspect[1] / aspect[0]) : undefined,   // h / w
+      relHeight = (!hasRatio && data.height_units === '%'),
+      widthSpec = '' + width + units,
+      clientWidth,
+      computedHeight;
+  node.style('width', widthSpec);
+  if (!data.series.length) {
+    // minimal height, placeholder text:
+    node.style('height', '15px');
+    node.html('<em>No series data yet provided for plot.</em>');
+    return;
+  }
+  clientWidth = node[0][0].clientWidth;
+  if ((!hasRatio) && (data.height_units === 'px')) {
+    // fixed pixel (absolute) height is specified:
+    computedHeight = data.height;
+  } else {
+    if (relHeight && data.height) {
+      // height relative to width, but no specified aspect ratio
+      ratio = (data.height / 100.0);  // pct to ratio
+    }
+    // use explicitly provided or just-computed aspect ratio:
+    computedHeight = Math.round(ratio * clientWidth);
+  }
+  node.style('height', '' + computedHeight + 'px');
+}
 
 export function LargeChart(mschart, node) {
   if(!node.attr('id')) node.attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
@@ -12,25 +44,8 @@ export function LargeChart(mschart, node) {
              .classed('chart-div', true)
              .style("width", mschart.width + mschart.width_units);
 
-  var relative = (mschart.width_units == '%');
-  var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : undefined;
-
-  if(relative) {
-    if(ratio)
-      styleSheet.insertRule (
-        `#${parentNode.attr('id')} .chart-div::after {` +
-          'content: "";' +
-          'display: block;' +
-          `margin-top: ${(ratio * 100)}%;` +
-        '}', styleSheet.cssRules.length
-      );
-    else
-      node.style('height', mschart.height + mschart.height_units);
-  } else {
-    if(!ratio) node.style('height', mschart.height + mschart.height_units);
-    else node.style('height', (ratio * mschart.width) + 'px');
-  }
-
+  sizePlotDiv(node, mschart);
+  
   node = node.append('svg')
              .attr('class', 'upiq-chart chart-svg');
 
