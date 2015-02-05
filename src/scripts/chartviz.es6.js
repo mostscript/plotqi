@@ -110,12 +110,18 @@ export class MultiSeriesChart extends Klass {
   }
 
   get range() {
-    if(this.range_min != null && this.range_max != null)
-      return [this.range_min, this.range_max];
+    var rMin = this.range_min,
+        rMax = this.range_max,
+        fMin = function([min, max]) { return min; },
+        fMax = function([min, max]) { return max; };
+    if (rMin != null && rMax != null) {
+      // both specified explicitly:
+      return [rMin, rMax];
+    }
     var ranges = this.series.map( serum => serum.range );
     return [
-      d3.min(ranges, function ([min, max]) { return min; } ),
-      d3.max(ranges, function ([min, max]) { return max; } )
+      (rMin != null) ? rMin : d3.min(ranges, fMin),
+      (rMax != null) ? rMax : d3.max(ranges, fMax)
     ];
   }
 
