@@ -1,13 +1,11 @@
-/*jshint esnext:true, eqnull:true */
-/*globals require */
-var moment = require('moment');
-var nv = require('imports?d3=d3!exports?window.nv!nvd3');
+/*jshint esnext:true, eqnull:true, unused:true, undef: true */
+
 import {styleSheet} from './utils';
 import {timeLineChart} from './timeLineChart';
 import {timeBarChart} from './timeBarChart';
 
+
 export function LargeChart(mschart, node) {
-  node = node || d3.select('body').append('div');
   if(!node.attr('id')) node.attr('id', 'chart-div-' + (mschart.uid || Math.floor(Math.random() * 1000)));
   var parentNode = node;
   node = parentNode.append('div')
@@ -16,19 +14,6 @@ export function LargeChart(mschart, node) {
 
   var relative = (mschart.width_units == '%');
   var ratio = mschart.aspect_ratio ? (mschart.aspect_ratio[1] / mschart.aspect_ratio[0]) : undefined;
-  var yMax, xMax;
-  if(relative) {
-    yMax = mschart.range_max - mschart.range_min;
-    xMax = ratio * (mschart.range_max - mschart.range_min);
-  } else {
-    if(!ratio) {
-      yMax = mschart.height;
-      xMax = mschart.width;
-    } else {
-      yMax = ratio * mschart.width;
-      xMax = mschart.width;
-    }
-  }
 
   if(relative) {
     if(ratio)
@@ -49,8 +34,7 @@ export function LargeChart(mschart, node) {
   node = node.append('svg')
              .attr('class', 'upiq-chart chart-svg');
 
-  var margins = mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
   node.outerNode = parentNode;
-  window._data2 = mschart.series[0].data;
+  mschart.margins = {top: 10, bottom: 75, left: 40, right: 10};
   return mschart.chart_type == 'line' ? timeLineChart(mschart, node) : timeBarChart(mschart, node);
 }
