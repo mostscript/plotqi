@@ -469,6 +469,7 @@ export function timeLineChart(mschart, node) { return function() {
         });
         else obj.values.push({
           x: new Date(key).valueOf(),
+          y: NaN,
           missing: true
         });
       });
