@@ -8,14 +8,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/app.css">
     <script src="app.js"></script>
+<!-- test-only styles -->
+<style>
+div.report {
+  background-color:#d0dfe9;
+  padding:0.5em;
+  clear:both;
+}
+div.chart {
+  margin:0.2em;
+  background-color:white;
+  padding:0.3em;
+  float:left;
+}
+div.chart-div {
+}
+
+</style>
   </head>
   <body>
     <!--[if lt IE 9]>
       <p class="alert-danger">You are using an <strong>unsupported</strong> version of Internet Explorer!</p>
     <![endif]-->
     <br/>
-    <div style="width:48%; float:left" id="chart-div-test-1"></div>
-    <div style="width:48%; float:left" id="chart-div-test-2"></div>
+  <div class="report">
+    <h3>Adapter-based unified time-series re-factoring:</h3>
+    <div id="chart-div-refactor-1"></div>
+    <div id="chart-div-refactor-2"></div>
+  </div>
+  <div class="report">
+    <h3>Original renderings:</h3>
+    <div id="chart-div-test-1"></div>
+    <div id="chart-div-test-2"></div>
+  </div>
+  <div class="report">
     <div id="small-chart-div-test"></div>
+  </div>
   </body>
 </html>

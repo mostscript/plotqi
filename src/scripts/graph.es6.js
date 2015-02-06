@@ -16,11 +16,15 @@ getObjects('report.json', function (charts) {
    
   window.charts = charts;
 
+  lineChart.width = 45;
+  barChart.width = 45;
   barChart.chart_type = 'bar';
 
   var small_div = d3.select('#small-chart-div-test');
   var largeLinePlotDiv = d3.select('#chart-div-test-1');
   var largeBarPlotDiv = d3.select('#chart-div-test-2');
+  var refactorLinePlotDiv = d3.select('#chart-div-refactor-1');
+  var refactorBarPlotDiv = d3.select('#chart-div-refactor-2');
   nv.addGraph(SmallMultiplesChart(lineChart, small_div));
   nv.addGraph(LargeChart(lineChart, largeLinePlotDiv));
   nv.addGraph(LargeChart(barChart, largeBarPlotDiv));
