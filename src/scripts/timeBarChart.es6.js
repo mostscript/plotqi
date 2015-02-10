@@ -143,7 +143,6 @@ export function timeBarChart(mschart, node) { return function() {
   }
 
   render();
-  console.log(chart);
   if(relative) nv.utils.windowResize(debounce(render, 250, false));
   return chart;
 
