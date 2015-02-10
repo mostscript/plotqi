@@ -54,7 +54,7 @@ body * {
   path {
     pointer-events: none;
     stroke: grey;
-    stroke-width: 2px;
+    stroke-width: 1%;
   }
 }
 
@@ -129,8 +129,9 @@ svg.upiq-chart {
   stroke: currentColor;
   fill: currentColor;
   line {
-    stroke-width: 1px;
+    stroke-width: 0.35%;
     shape-rendering: crispEdges;
+    stroke-dasharray: 16 8;
   }
   text {
     stroke-opacity: 0;
@@ -147,10 +148,13 @@ svg.upiq-chart {
 }
 
 .nv-y.nv-axis .nv-wrap.nv-axis {
-    .tick:nth-last-of-type(1) line, .tick:nth-of-type(1) line, path.domain {
-    //stroke-width: 2px;
-    stroke: dimgray;
-  }
+    line {
+        stroke: #a9a9a9;
+        stroke-width: 0.05%;
+    }
+    path.domain {
+        stroke:none;
+    }
 }
 
 svg {
