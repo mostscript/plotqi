@@ -17,10 +17,9 @@ module.exports = function (release) {
     debug: !release,
     devtool: (!release) ? 'source-map' : false,
     entry: {
-      app: './src/App.js',
+      app: './src/app.js',
       headless: './src/headless.js'
     },
-    //entry: './src/App.js',
 
     stats: {
       colors: true,
