@@ -58,5 +58,5 @@ export function loadChart(node, data) {
   svg.outerNode = node;
   data.margins = {top: 10, bottom: 75, left: 40, right: 10};
   plotter = new TimeSeriesPlotter(node, data);
-  plotter.update();
+  return plotter.update.bind(plotter);
 }
