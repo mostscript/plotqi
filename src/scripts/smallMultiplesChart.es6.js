@@ -3,7 +3,7 @@
 
 var moment = require('moment');
 var d3 = require('d3');
-var nv = require('imports?d3=d3!exports?window.nv!nvd3');
+var nv = require('./vendor/nvd3');
 import {shapePath, shapes, legendMarkers} from './shapes';
 
 export function SmallMultiplesChart(mschart, node, size) {
@@ -35,12 +35,10 @@ export function SmallMultiplesChart(mschart, node, size) {
                   .interactive(false)
                   .tooltips(false)
                   .margin(margins)
-                  .transitionDuration(500)
                   .tooltipContent(function(seriesName, x, y, graph) {
                     return '<h3>' + seriesName.slice(0, seriesName.lastIndexOf('::')) + '</h3>' + '<p>' + graph.point.note + '</p>' +
                     '<p class=\'footer\'>' + graph.point.title + ', ' + graph.series.format(y / 100) + '</p>';
                   });
-                  chart.lines.scatter.onlyCircles(false).useVoronoi(false);
 
     chart.xAxis
          .tickFormat( d => d3.time.format('%B')(new Date(d))[0] )

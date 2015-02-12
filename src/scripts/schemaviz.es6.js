@@ -135,7 +135,7 @@ export class DataSeriesSchema extends Schema {
                          'vocabulary of allowable choices.',
             type: 'string',
             constraint: function (value, obj) {
-              if(value === 'x') return 'cross';
+              //if(value === 'x') return 'cross';
               if(value === 'filledCircle') {
                 obj.filled = true;
                 return 'circle';
@@ -150,6 +150,7 @@ export class DataSeriesSchema extends Schema {
               }
             },
             vocabulary: [
+              'x',
               'diamond',
               'circle',
               'square',

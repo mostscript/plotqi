@@ -12,8 +12,7 @@
     "es5-shim": "^4.0.5",
     "express": "^4.10.6",
     "gm": "^1.17.0",
-    "moment": "^2.8.3",
-    "nvd3": "^1.1.15"
+    "moment": "^2.8.3"
   },
   "devDependencies": {
     "6to5-loader": "3.0.0",

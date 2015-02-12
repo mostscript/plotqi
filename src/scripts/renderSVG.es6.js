@@ -6,7 +6,7 @@ Function.prototype.bind = Function.prototype.bind || function (thisp) {
         return fn.apply(thisp, arguments);
     };
 };
-var nv = require('imports?d3=d3!exports?window.nv!nvd3');
+var nv = require('./vendor/nvd3');
 var moment = require('moment');
 import {styleSheet} from './utils';
 import {timeLineChart} from './timeLineChart';

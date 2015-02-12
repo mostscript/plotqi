@@ -2,7 +2,7 @@
 /*globals require */
 
 var moment = require('moment');
-var nv = require('imports?d3=d3!exports?window.nv!nvd3');
+var nv = require('./vendor/nvd3');
 import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
 
 // Map between uu.chart frequency and d3.time interval name, multiplier:
@@ -29,6 +29,16 @@ var BARWRAP_CLASSNAME = 'nv-barsWrap';
 var SEL_BAR = SEL_BARWRAP + ' .nv-wrap.nv-multibar .nv-groups rect.nv-bar';
 // Generic selectors:
 var SEL_CHARTSVG = '.chart-svg';
+
+
+// registration of custom marker symbols for NVD3 1.7.x+
+nv.utils.symbolMap.set('x', function(size) {
+    size = Math.sqrt(size) * 1.8;
+    return 'M' + (-size/2) + ',' + (-size/2) +
+            'l' + size + ',' + size +
+            'm0,' + -(size) +
+            'l' + (-size) + ',' + size;
+});
 
 
 export class TimeSeriesPlotter {
@@ -150,13 +160,11 @@ export class TimeSeriesPlotter {
     chart
       .id(this.data.uid)
       .showLegend(false)
-      .tooltips(false)
-      .transitionDuration(500);
+      .tooltips(false);
     if (type === 'line') {
       chart
         .useInteractiveGuideline(false)
         .interactive(false);
-      chart.lines.scatter.onlyCircles(false).useVoronoi(false);
     }
     if (type === 'bar') {
       chart.showControls(false);

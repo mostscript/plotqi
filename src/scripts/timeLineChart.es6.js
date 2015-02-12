@@ -2,7 +2,7 @@
 /*globals require */
 
 var moment = require('moment');
-var nv = require('imports?d3=d3!exports?window.nv!nvd3');
+var nv = require('./vendor/nvd3');
 import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
 
 var INTERVALS = {
@@ -35,13 +35,11 @@ function nvChartFactory(data) {
   chart
     .id(data.uid)
     .showLegend(false)
-    .tooltips(false)
-    .transitionDuration(500);
+    .tooltips(false);
   if (type === 'line') {
     chart
       .useInteractiveGuideline(false)
       .interactive(false);
-    chart.lines.scatter.onlyCircles(false).useVoronoi(false);
   }
   if (type === 'bar') {
     chart.showControls(false);

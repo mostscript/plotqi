@@ -7,7 +7,7 @@ import {SmallMultiplesChart} from './smallMultiplesChart';
 import {LargeChart} from './largeFormatChart';
 import {loadChart} from './loader';
 
-var nv = require('imports?d3=d3!exports?window.nv!nvd3');
+var nv = require('./vendor/nvd3');
 getObjects('report.json', function (charts) {
   var lineChart, barChart,
       data = charts[0];
