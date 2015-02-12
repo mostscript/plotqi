@@ -14,6 +14,9 @@ var INTERVALS = {
   quarterly: [3, 'month'],
 };
 
+// Class names:
+var SVG_CLASSNAME = 'upiq-chart chart-svg';
+
 // Line chart selectors:
 var SEL_LINECHART = '.nv-wrap.nv-lineChart';
 var SEL_LINESWRAP = ' .nv-linesWrap';
@@ -45,11 +48,13 @@ export class TimeSeriesPlotter {
   // multi-adapter of D3-wrapped dom element (chart div) context and plot data
 
   constructor (context, data) {
-    this.context = context;   // DOM (d3) node
-    this.svg = this.context.select(SEL_CHARTSVG);
+    this.context = context;   // DOM (d3) node (outer plot div)
     this.data = data;         // TimeSeriesChart object
     this._loadConfig();
-    this.chart = null;        // NVD3 chart obj to be created by this.update()
+    // State to be created or re-created later, by this.render():
+    this.chart = null;        // will be NVD3 chart obj
+    this.plotCore = null;     // will be plot core inner div
+    this.svg = null;          // will be svg inside the plot core div
   }
 
   _loadConfig() {
@@ -138,7 +143,7 @@ export class TimeSeriesPlotter {
   }
 
   _margins() {
-    var margins = this.data.margins,
+    var margins = {top: 10, bottom: 75, left: 40, right: 10},
         tabular = this.data.legend_placement === 'tabular';
     // space for tabular legend, as needed, will override above:
     if (tabular) {
@@ -175,11 +180,6 @@ export class TimeSeriesPlotter {
 
   yformat(y) {
     return ((typeof y === 'number') ? d3.format(',.1f')(y) : 'N/A');
-  }
-
-  render() {
-    console.log('TODO: render');
-    this.chart.update();
   }
 
   allSeries() {
@@ -359,8 +359,55 @@ export class TimeSeriesPlotter {
     this.svg.selectAll(SEL_LINEGROUP).style('stroke-width', thickness);
   }
 
-  update() {
+  sizePlot() {
+    var data = this.data,
+        width = +data.width || 100,
+        units = data.width_units || '%',
+        aspect = data.aspect_ratio,                                 // [w,h]
+        hasRatio = (aspect && aspect.length === 2),
+        ratio = (hasRatio) ? (aspect[1] / aspect[0]) : undefined,   // h / w
+        relHeight = (!hasRatio && data.height_units === '%'),
+        widthSpec = '' + width + units,
+        clientWidth,
+        computedHeight;
+    // plot core div is 100% width of outer:
+    this.plotCore.style('width', '100%');
+    // and outer is as wide as specified:
+    this.context.style('width', widthSpec);
+    if (!data.series.length) {
+      // minimal height, placeholder text:
+      this.plotCore.style('height', '15px');
+      this.plotCore.html('<em>No series data yet provided for plot.</em>');
+      return;
+    }
+    clientWidth = this.plotCore[0][0].clientWidth;
+    if ((!hasRatio) && (data.height_units === 'px')) {
+      // fixed pixel (absolute) height is specified:
+      computedHeight = data.height;
+    } else {
+      if (relHeight && data.height) {
+        // height relative to width, but no specified aspect ratio
+        ratio = (data.height / 100.0);  // pct to ratio
+      }
+      // use explicitly provided or just-computed aspect ratio:
+      computedHeight = Math.round(ratio * clientWidth);
+    }
+    this.plotCore.style('height', '' + computedHeight + 'px');
+  }
+
+  preRender() {
+    // prepare the chart div context for rendering:
+    this.context.html('');                          // clear existing content
+    this.plotCore = this.context.append('div').classed('chart-div', true);     // create inner div
+    this.sizePlot();
+    this.svg = this.plotCore.append('svg').attr('class', SVG_CLASSNAME);
+    this.svg.outerNode = this.context;
+  }
+
+  render() {
     var data = this.extractData();
+    //this.svg = this.context.select(SEL_CHARTSVG);
+    this.preRender();
     // create an NVD3 chart object:
     this.chart = this.nvChartFactory()
       .margin(this.margins);
@@ -369,8 +416,6 @@ export class TimeSeriesPlotter {
     this.yScale = this.chart.yScale();
     // now that we have chart, configure axes:
     this._configAxes();
-    // TODO: scales
-
     // Bind data to selection, call this.chart function in context
     // data-aware selection:
     this.svg.datum(data).call(this.chart);
@@ -379,13 +424,21 @@ export class TimeSeriesPlotter {
       this._updateLineDetail();
       this._updateMarkerDetail();
     }
-    // rendering stuff:
-    this.render();
-    if (this.relativeWidth) {
-      nv.utils.windowResize(debounce(this.render, 250, false));
-    }
     // goal-line, IFF goal exists:
     this._drawGoal();
     return this.chart;
+  }
+
+  refresh() {
+    this.svg.html('');
+    this.render();
+  }
+
+  update() {
+    // rendering stuff:
+    this.render();
+    if (this.relativeWidth) {
+      nv.utils.windowResize(debounce(this.refresh.bind(this), 250, false));
+    }
   }
 }

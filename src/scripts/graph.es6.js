@@ -5,7 +5,7 @@ import {getObjects} from './utils';
 import {Chart} from './chartviz';
 import {SmallMultiplesChart} from './smallMultiplesChart';
 import {LargeChart} from './largeFormatChart';
-import {loadChart} from './loader';
+import {chartLoader} from './loader';
 
 var nv = require('./vendor/nvd3');
 getObjects('report.json', function (charts) {
@@ -30,7 +30,7 @@ getObjects('report.json', function (charts) {
   nv.addGraph(SmallMultiplesChart(lineChart, small_div));
   nv.addGraph(LargeChart(lineChart, largeLinePlotDiv));
   nv.addGraph(LargeChart(barChart, largeBarPlotDiv));
-  //nv.addGraph(loadChart(refactorLinePlotDiv, lineChart));
-  nv.addGraph(loadChart(refactorLinePlotDiv, lineChart));
-  //nv.addGraph(loadChart(refactorBarPlotDiv, barChart));
+  //nv.addGraph(chartLoader(refactorLinePlotDiv, lineChart));
+  nv.addGraph(chartLoader(refactorLinePlotDiv, lineChart));
+  nv.addGraph(chartLoader(refactorBarPlotDiv, barChart));
 });
