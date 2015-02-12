@@ -430,7 +430,6 @@ export class TimeSeriesPlotter {
   }
 
   refresh() {
-    this.svg.html('');
     this.render();
   }
 
