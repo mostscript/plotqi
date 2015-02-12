@@ -140,12 +140,13 @@ export class TimeSeriesPlotter {
   _margins() {
     var margins = this.data.margins,
         tabular = this.data.legend_placement === 'tabular';
-    // space for right-hand-side legend, if more than one series:
-    margins.right = this.data.series.length > 1 ? 120 : 10;
     // space for tabular legend, as needed, will override above:
     if (tabular) {
       margins.left = 120;
       margins.bottom = 100;
+    } else {
+      // space for right-hand-side legend, if more than one series:
+      margins.right = this.data.series.length > 1 ? 120 : 10;
     }
     return margins;
   }
