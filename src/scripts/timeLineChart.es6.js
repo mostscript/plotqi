@@ -4,7 +4,8 @@
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('./vendor/nvd3');
-import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
+import {styleSheet, d3textWrap, colorIsDark} from './utils';
+import {debounce} from './vendor/debounce';
 
 var INTERVALS = {
   weekly:'week',
