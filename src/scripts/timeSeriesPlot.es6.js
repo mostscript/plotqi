@@ -49,8 +49,8 @@ nv.utils.symbolMap.set('x', function(size) {
 export class TimeSeriesPlotter {
   // multi-adapter of D3-wrapped dom element (chart div) context and plot data
 
-  constructor (context, data) {
-    this.context = context;   // DOM (d3) node (outer plot div)
+  constructor (plotDiv, data) {
+    this.plotDiv = plotDiv;   // DOM (d3) node (outer plot div)
     this.data = data;         // TimeSeriesChart object
     this._loadConfig();
     // State to be created or re-created later, by this.render():
@@ -375,7 +375,7 @@ export class TimeSeriesPlotter {
     // plot core div is 100% width of outer:
     this.plotCore.style('width', '100%');
     // and outer is as wide as specified:
-    this.context.style('width', widthSpec);
+    this.plotDiv.style('width', widthSpec);
     if (!data.series.length) {
       // minimal height, placeholder text:
       this.plotCore.style('height', '15px');
@@ -399,26 +399,26 @@ export class TimeSeriesPlotter {
 
   preRender() {
     // prepare the chart div context for rendering:
-    this.context.html('');                          // clear existing content
-    this.plotCore = this.context.append('div').classed('chart-div', true);     // create inner div
+    this.plotDiv.html('');                          // clear existing content
+    this.plotCore = this.plotDiv.append('div').classed('chart-div', true);     // create inner div
     this.sizePlot();
     this.svg = this.plotCore.append('svg').attr('class', SVG_CLASSNAME);
-    this.svg.outerNode = this.context;
+    this.svg.outerNode = this.plotDiv;
   }
 
   // legend methods:
 
 
   useTabularLegend() {
-    return this.context.legend_placement === 'tabular';
+    return this.plotDiv.legend_placement === 'tabular';
   }
 
   useBasicLegend() {
-    var multi = this.context.series && this.content.series.length > 1;
+    var multi = this.plotDiv.series && this.content.series.length > 1;
     if (!multi) {
       return false;
     }
-    return this.context.legend_location == null;
+    return this.plotDiv.legend_location == null;
   }
 
   tabularLegend () {
@@ -438,7 +438,7 @@ export class TimeSeriesPlotter {
 
   render() {
     var data = this.extractData();
-    //this.svg = this.context.select(SEL_CHARTSVG);
+    //this.svg = this.plotDiv.select(SEL_CHARTSVG);
     this.preRender();
     // create an NVD3 chart object:
     this.chart = this.nvChartFactory()
