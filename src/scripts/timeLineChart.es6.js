@@ -1,7 +1,8 @@
-/*jshint esnext:true, eqnull:true */
-/*globals require */
+/*jshint esnext:true, eqnull:true, undef:true */
+/*globals require, window */
 
 var moment = require('moment');
+var d3 = require('d3');
 var nv = require('./vendor/nvd3');
 import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
 
@@ -292,9 +293,9 @@ export function timeLineChart(mschart, node) { return function() {
 
           cells.transition().duration(500)
                .attr('transform', d => `translate(${(margins.left - legLeftPadding + xscale(d.x))}, 0)` )
-               .style('font-family', intervalX <= 25 ? 'silkscreennormal' : null)
-               .style('font-size', intervalX <= 25 ? '6pt' : intervalX <= 35 ? '11px' : null)
-               .attr('textLength', intervalX <= 50 ? intervalX : null)
+               .style('font-family', intervalX <= 25 ? 'Arial Narrow' : null)
+               .style('font-size', intervalX <= 25 ? '10px' : intervalX <= 35 ? '11px' : null)
+               .attr('textLength', intervalX <= 50 ? intervalX*1.2 : null)
             .selectAll('tspan')
                .attr('textLength', intervalX <= 30 ? intervalX : null);
           el.select('rect').transition().duration(500)
