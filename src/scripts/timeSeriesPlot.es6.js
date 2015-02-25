@@ -1,7 +1,8 @@
-/*jshint esnext:true, eqnull:true */
-/*globals require */
+/*jshint esnext:true, eqnull:true, undef:true */
+/*globals require, window */
 
 var moment = require('moment');
+var d3 = require('d3');
 var nv = require('./vendor/nvd3');
 import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
 
@@ -303,7 +304,7 @@ export class TimeSeriesPlotter {
     return output;
   }
 
-  _drawGoal() {
+  drawGoal() {
     var goalValue = this.data.goal,
         hasGoal = !!goalValue,
         goalColor = this.data.goal_color || '#ff0000',
@@ -404,6 +405,36 @@ export class TimeSeriesPlotter {
     this.svg.outerNode = this.context;
   }
 
+  // legend methods:
+
+
+  useTabularLegend() {
+    return this.context.legend_placement === 'tabular';
+  }
+
+  useBasicLegend() {
+    var multi = this.context.series && this.content.series.length > 1;
+    if (!multi) {
+      return false;
+    }
+    return this.context.legend_location == null;
+  }
+
+  tabularLegend () {
+  }
+
+  basicLegend() {
+  }
+
+  drawLegend() {
+    var useTabular = this.useTabularLegend(),
+        useBasic = (!useTabular && this.useBasicLegend());
+    if (!useTabular && !useBasic) {
+      return;  // no legend
+    }
+    return (useTabular) ? this.tabularLegend() : this.basicLegend();
+  }
+
   render() {
     var data = this.extractData();
     //this.svg = this.context.select(SEL_CHARTSVG);
@@ -425,7 +456,9 @@ export class TimeSeriesPlotter {
       this._updateMarkerDetail();
     }
     // goal-line, IFF goal exists:
-    this._drawGoal();
+    this.drawGoal();
+    // legend:
+    this.drawLegend();
     return this.chart;
   }
 
