@@ -1,5 +1,6 @@
-/*jshint esnext:true, eqnull:true */
+/*jshint esnext:true, eqnull:true, undef:true */
 /*globals require */
+
 import {Schema, schematize, ValidationError, ValidationTypeError} from './classviz.es6.js';
 var moment = require('moment');
 

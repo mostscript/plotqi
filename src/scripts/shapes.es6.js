@@ -1,5 +1,7 @@
-/*jshint esnext:true, eqnull:true */
+/*jshint esnext:true, eqnull:true, undef:true */
 /*globals require */
+
+var d3 = require('d3');
 
 export function shapePath(node, spec = shapes.square, size = 3) {
   var d = "";

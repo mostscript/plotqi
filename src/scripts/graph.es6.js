@@ -1,6 +1,7 @@
-/*jshint esnext:true, eqnull:true */
-/*globals require */
+/*jshint esnext:true, eqnull:true, undef:true */
+/*globals require, window */
 
+var d3 = require('d3');
 import {getObjects} from './utils';
 import {Chart} from './chartviz';
 import {SmallMultiplesChart} from './smallMultiplesChart';
@@ -18,7 +19,7 @@ getObjects('report.json', function (charts) {
    
   window.charts = charts;
 
-  lineChart.width = 45;
+  lineChart.width = 60;
   barChart.width = 45;
   barChart.chart_type = 'bar';
 

@@ -1,7 +1,15 @@
-/*jshint esnext:true, eqnull:true */
-/*globals require */
+/*jshint esnext:true, eqnull:true, undef:true */
+/*globals require, window */
 
 var moment = require('moment');
+var d3 = require('d3');
+var document = window.document;
+
+// singleton app style element:
+var styleEl = document.createElement('style');
+document.head.appendChild(styleEl);
+export var styleSheet = styleEl.sheet;
+
 export function getObjects(jsonFile, callback) {
 	d3.json(jsonFile, function (jsonData) {
 		var objs = [];
@@ -20,9 +28,6 @@ export function getObjects(jsonFile, callback) {
 	});
 }
 
-var styleEl = document.createElement('style');
-document.head.appendChild(styleEl);
-export var styleSheet = styleEl.sheet;
 
 //Taken from Underscore, licensed under the MIT license
 //Copyright (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -36,8 +41,8 @@ export function debounce(func, wait, immediate) {
       if (!immediate) func.apply(context, args);
     };
     var callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    window.clearTimeout(timeout);
+    timeout = window.setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
 }

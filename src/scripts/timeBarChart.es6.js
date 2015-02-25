@@ -1,7 +1,8 @@
-/*jshint esnext:true, eqnull:true */
-/*globals require */
+/*jshint esnext:true, eqnull:true, undef:true */
+/*globals require, window */
 
 var moment = require('moment');
+var d3 = require('d3');
 var nv = require('./vendor/nvd3');
 import {styleSheet, debounce, d3textWrap, colorIsDark} from './utils';
 

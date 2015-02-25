@@ -1,5 +1,5 @@
-/*jshint esnext:true, eqnull:true */
-/*globals require */
+/*jshint esnext:true, eqnull:true, undef:true */
+/*globals require, window */
 
 var moment = require('moment');
 var d3 = require('d3');

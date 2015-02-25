@@ -1,13 +1,17 @@
-/*jshint esnext:true, eqnull:true */
-/*globals require */
+/*jshint esnext:true, eqnull:true, undef:true */
+/*globals require, window */
+
 Function.prototype.bind = Function.prototype.bind || function (thisp) {
     var fn = this;
     return function () {
         return fn.apply(thisp, arguments);
     };
 };
+
+var d3 = require('d3');
 var nv = require('./vendor/nvd3');
 var moment = require('moment');
+
 import {styleSheet} from './utils';
 import {timeLineChart} from './timeLineChart';
 import {timeBarChart} from './timeBarChart';

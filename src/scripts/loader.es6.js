@@ -1,4 +1,4 @@
-/*jshint esnext:true, eqnull:true */
+/*jshint esnext:true, eqnull:true, undef:true */
 /*globals require */
 
 import {TimeSeriesPlotter} from './timeSeriesPlot';
