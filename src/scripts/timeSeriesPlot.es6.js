@@ -6,6 +6,7 @@ var d3 = require('d3');
 var nv = require('./vendor/nvd3');
 import {styleSheet, d3textWrap, colorIsDark} from './utils';
 import {debounce} from './vendor/debounce';
+import {TabularLegendRenderer} from './tabularLegendRenderer';
 
 // Map between uu.chart frequency and d3.time interval name, multiplier:
 var INTERVALS = {
@@ -410,18 +411,20 @@ export class TimeSeriesPlotter {
 
 
   useTabularLegend() {
-    return this.plotDiv.legend_placement === 'tabular';
+    return this.data.legend_placement === 'tabular';
   }
 
   useBasicLegend() {
-    var multi = this.plotDiv.series && this.content.series.length > 1;
+    var multi = this.data.series && this.data.series.length > 1;
     if (!multi) {
       return false;
     }
-    return this.plotDiv.legend_location == null;
+    return this.data.legend_location == null;
   }
 
   tabularLegend () {
+    var adapter = new TabularLegendRenderer(this);
+    adapter.update();
   }
 
   basicLegend() {
