@@ -121,7 +121,7 @@ export function timeLineChart(mschart, node) { return function() {
   //Manually insert the layer for the Goal Line before the graph layer in the DOM (Since SVG has no z-order)
   node.select(nvType + ' > g')
       .insert('g', '.' + wrapType)
-      .attr('class', 'nvd3 nv-distribution');
+      .attr('class', 'nv-distribution');
 
   //Dashed lines for all gaps in the data labeled as dashed. Also, apply line thickness
   node.selectAll('.nv-wrap.nv-line > g > g.nv-groups .nv-group')
@@ -200,17 +200,17 @@ export function timeLineChart(mschart, node) { return function() {
       if(mschart.series.length > 1) {
         var firstRun = false;
         var legPadding = 5, legWidth = margins.right - (2 * legPadding), markerWidth = 10;
-        var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
+        var legWrap = node.selectAll('g.upiq-legend').data([mschart.series]);
         var legWrapEnter = legWrap.enter().append('g')
-                                   .attr('class', 'nvd3 nv-legend')
+                                   .attr('class', 'upiq-legend')
                                    .attr('transform', `translate(${(xMax + margins.left)}, ${margins.top})`)
                                 .append('rect')
-                                   .attr('class', 'nv-leg-bg');
+                                   .attr('class', 'upiq-leg-bg');
         firstRun = !legWrapEnter.empty();
 
-        var legend = legWrap.selectAll('g.nv-leg-entry').data(mschart.series);
+        var legend = legWrap.selectAll('g.upiq-leg-entry').data(mschart.series);
         var legEnter = legend.enter().append('g')
-                                     .attr('class', 'nv-leg-entry');
+                                     .attr('class', 'upiq-leg-entry');
         var dy = legPadding * 2;
         legEnter.each(function (d, i) {
           var el = d3.select(this);
@@ -250,13 +250,13 @@ export function timeLineChart(mschart, node) { return function() {
       var firstRun = false;
       var legPadding = 10;
       var legLeftPadding = 5;
-      var legWrap = node.selectAll('g.nv-legend').data([mschart.series]);
+      var legWrap = node.selectAll('g.upiq-legend').data([mschart.series]);
       var legWrapEnter = legWrap.enter().append('g')
-                                 .attr('class', 'nvd3 nv-legend')
+                                 .attr('class', 'upiq-legend')
                                  .attr('transform', `translate(${legLeftPadding}, ${(yMin + margins.top + legPadding)})`);
-      var legend = legWrap.selectAll('g.nv-leg-row').data(['header'].concat(mschart.series));
+      var legend = legWrap.selectAll('g.upiq-leg-row').data(['header'].concat(mschart.series));
       legend.enter().append('g')
-                    .attr('class', 'nv-leg-row');
+                    .attr('class', 'upiq-leg-row');
 
       var ycurr = 0;
       var intervalX = Math.floor(xscale(tickVals[1]) - xscale(tickVals[0]));
@@ -269,7 +269,7 @@ export function timeLineChart(mschart, node) { return function() {
 
           el.selectAll('rect').data(['bg']).enter()
             .append('rect')
-            .attr('class', 'nv-leg-header-bg');
+            .attr('class', 'upiq-leg-header-bg');
           var labels = [];
           for(var lbl in mschart.labels) {
             if(mschart.labels.hasOwnProperty(lbl)) labels.push(
@@ -278,9 +278,9 @@ export function timeLineChart(mschart, node) { return function() {
                 x: moment(lbl, 'YYYY-MM-DD').valueOf()
               });
           }
-          cells = el.selectAll('.nv-leg-cell').data(labels);
+          cells = el.selectAll('.upiq-leg-cell').data(labels);
           cellsEnter = cells.enter().append('text')
-                                        .attr('class', 'nv-leg-cell')
+                                        .attr('class', 'upiq-leg-cell')
                                         .attr('y', '1em')
                                         .style('text-anchor', 'middle')
                                         .style('font-size', '12px')
@@ -309,9 +309,9 @@ export function timeLineChart(mschart, node) { return function() {
             .style('fill', d.color);
           var $d;
           var data = d.data;
-          cells = el.selectAll('.nv-leg-cell').data([d.title].concat(tickVals));
+          cells = el.selectAll('.upiq-leg-cell').data([d.title].concat(tickVals));
           cellsEnter = cells.enter().append('text')
-                                        .attr('class', 'nv-leg-cell')
+                                        .attr('class', 'upiq-leg-cell')
                                         .attr('y', '1em')
                                         .style('text-anchor', (d, i) => i === 0 ? 'start' : 'middle')
                                         .classed(colorIsDark(d.color) ? 'light-text' : 'dark-text', true)
@@ -326,7 +326,7 @@ export function timeLineChart(mschart, node) { return function() {
                     .each( () => numberOfLines++ );
           if(!cellsEnter.empty()) {
             firstRun = true;
-            el.selectAll('.nv-leg-cell').filter( (d,i) => i !== 0 )
+            el.selectAll('.upiq-leg-cell').filter( (d,i) => i !== 0 )
               .attr('y', `${((numberOfLines / 2) + 0.5)}em`);
           }
 
@@ -353,7 +353,7 @@ export function timeLineChart(mschart, node) { return function() {
         yMax = yscale(mschart.range[1]);
         yRange = yMin - yMax;
       }
-      legWrap.selectAll('.nv-leg-row').filter( (d, i) => i > 0 ).selectAll('text').filter( (d, i) => i > 0 )
+      legWrap.selectAll('.upiq-leg-row').filter( (d, i) => i > 0 ).selectAll('text').filter( (d, i) => i > 0 )
              .on('click', showLegendPopup);
 
       legWrap.transition().duration(500)
