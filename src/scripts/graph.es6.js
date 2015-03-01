@@ -31,7 +31,6 @@ getObjects('report.json', function (charts) {
   nv.addGraph(SmallMultiplesChart(lineChart, small_div));
   nv.addGraph(LargeChart(lineChart, largeLinePlotDiv));
   nv.addGraph(LargeChart(barChart, largeBarPlotDiv));
-  //nv.addGraph(chartLoader(refactorLinePlotDiv, lineChart));
   nv.addGraph(chartLoader(refactorLinePlotDiv, lineChart));
   nv.addGraph(chartLoader(refactorBarPlotDiv, barChart));
 });
