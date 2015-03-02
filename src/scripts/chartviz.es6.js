@@ -149,6 +149,55 @@ export class TimeSeriesChart extends MultiSeriesChart {
     this[dataSym] = s.map( serum => new TimeDataSeries(serum) );
   }
 
+  allDates() {
+    var result = [],
+        series = this.series,
+        sortfn = (a, b) => ( (a.toISOString() > b.toISOString()) ? 1 : -1 );
+    if (!this._uniqueDates) {
+      series.forEach(function (s) {
+          var points = s.data.values();
+          points.map(datapoint=>datapoint.key).forEach(function (key) {
+            if (!isNaN(key) && result.indexOf(key) === -1) { result.push(key); }
+          });
+        },
+        this
+      );
+      result.sort(sortfn);  // lexical sort by ISO8601===chronological
+      this._uniqueDates = result;
+    }
+    return this._uniqueDates;  // may be cached after 1st call
+  }
+
+  /**
+   * axisLabels(): returns array of key/value objects for date, label,
+   * prefering explicitly specified label for date if provided, otherwise
+   * falling back to generated date label.
+   */
+  axisLabels() {
+    var dataKeys = this.allDates(),
+        labels = [];
+    return dataKeys.map(this.axisLabel, this);
+  }
+
+  // Given date key, return object with key, associated axis Label
+  // should return empty string for any date not in data.
+  axisLabel(key) {
+    var dateKey = moment(key).toDate(),   // as Date
+        dateValue = dateKey.valueOf(),    // ms
+        stamp = (d => moment(d).toISOString().split('T')[0]),
+        generated = d => ({key: d, label: moment(d).format('M/D/YYYY')}),
+        configured = ((d, ds) => ({key: d, label: this.labels[ds]})),
+        dateStamp = stamp(dateKey),
+        considered = this.allDates().map(d => d.valueOf());
+    if (this.labels.hasOwnProperty(dateStamp)) {
+      return configured(dateKey, dateStamp);
+    }
+    if (considered.indexOf(dateValue) !== -1) {
+      return generated(dateKey);
+    }
+    return '';
+  }
+
   get domain() {
     var start, end;
     [start, end] = [this.start || undefined, this.end || undefined];

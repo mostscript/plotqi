@@ -103,7 +103,7 @@ export class TimeSeriesPlotter {
   _configAxes() {
     var range = this.data.range,
         chart = this.chart,
-        labels = this.data.labels || {},
+        labelFn = d => this.data.axisLabel(d).label,
         tabular = this.data.legend_placement === 'tabular',
         dFormat = d => moment(d).format('YYYY-MM-DD'),
         yTickVals = n => {
@@ -116,7 +116,7 @@ export class TimeSeriesPlotter {
           return out;
         };
     chart.xAxis
-      .tickFormat((tabular) ? () => '' : d => labels[dFormat(d)] || '')
+      .tickFormat(((tabular) ? (() => '') : labelFn.bind(this)) || '')
       .tickValues(this.tickVals)
       .showMaxMin(false)
       .tickPadding(6)
@@ -176,7 +176,8 @@ export class TimeSeriesPlotter {
         .interactive(false);
     }
     if (type === 'bar') {
-      chart.showControls(false);
+      chart.showControls(false)
+        .reduceXTicks(false);
     }
     return chart;
   }

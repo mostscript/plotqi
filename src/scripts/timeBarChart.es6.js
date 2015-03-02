@@ -94,7 +94,7 @@ export function timeBarChart(mschart, node) { return function() {
   chart.margin(margins);
 
   chart.xAxis
-       .tickFormat( tabular ? () => '' : d => mschart.labels[moment(d).format('YYYY-MM-DD')] || '' )
+       .tickFormat( tabular ? () => '' : d => mschart.axisLabel(d).label || '' )
        .tickValues(tickVals)
        .showMaxMin(false)
        .tickPadding(6)
@@ -258,19 +258,15 @@ export function timeBarChart(mschart, node) { return function() {
       legend.each(function (d, i) {
         var el = d3.select(this),
             cells,
-            cellsEnter;
+            cellsEnter,
+            labels;
 
         if(i === 0) {
 
           el.selectAll('rect').data(['bg']).enter()
             .append('rect')
             .attr('class', 'upiq-leg-header-bg');
-          var labels = [];
-          for(var lbl in mschart.labels) {
-            if(mschart.labels.hasOwnProperty(lbl)) {
-              labels.push({label: mschart.labels[lbl], x: moment(lbl, 'YYYY-MM-DD')});
-            }
-          }
+          labels = mschart.axisLabels();
           cells = el.selectAll('.upiq-leg-cell').data(labels);
           cellsEnter = cells.enter().append('text')
                                         .attr('class', 'upiq-leg-cell')
@@ -286,10 +282,10 @@ export function timeBarChart(mschart, node) { return function() {
                                         .attr('lengthAdjust', 'spacingAndGlyphs');
 
           cells.transition().duration(500)
-               .attr('transform', d => `translate(${(margins.left - legLeftPadding + xscale(d.x) + (xInterval / 2))}, 0)` )
-               .style('font-family', intervalX <= 25 ? 'silkscreennormal' : null)
-               .style('font-size', intervalX <= 25 ? '6pt' : intervalX <= 35 ? '11px' : null)
-               .attr('textLength', intervalX <= 50 ? intervalX : null)
+               .attr('transform', d => `translate(${(margins.left - legLeftPadding + xscale(d.key.valueOf()) + (xInterval / 2))}, 0)` )
+               .style('font-family', intervalX <= 25 ? 'Arial Narrow' : null)
+               .style('font-size', intervalX <= 25 ? '10px' : intervalX <= 35 ? '11px' : null)
+               .attr('textLength', intervalX <= 50 ? intervalX * 1.3 : null)
             .selectAll('tspan')
                .attr('textLength', intervalX <= 30 ? intervalX : null);
           el.select('rect').transition().duration(500)
