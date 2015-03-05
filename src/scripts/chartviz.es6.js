@@ -151,13 +151,18 @@ export class TimeSeriesChart extends MultiSeriesChart {
 
   allDates() {
     var result = [],
+        found = [],
         series = this.series,
         sortfn = (a, b) => ( (a.toISOString() > b.toISOString()) ? 1 : -1 );
     if (!this._uniqueDates) {
       series.forEach(function (s) {
           var points = s.data.values();
           points.map(datapoint=>datapoint.key).forEach(function (key) {
-            if (!isNaN(key) && result.indexOf(key) === -1) { result.push(key); }
+            var ms = key.valueOf();
+            if (!isNaN(key) && found.indexOf(ms) === -1) {
+              result.push(key);
+              found.push(ms);
+            }
           });
         },
         this
@@ -169,7 +174,7 @@ export class TimeSeriesChart extends MultiSeriesChart {
   }
 
   /**
-   * axisLabels(): returns array of key/value objects for date, label,
+   * axisLabels(): returns array of key/value objects for date, x-axis label,
    * prefering explicitly specified label for date if provided, otherwise
    * falling back to generated date label.
    */
@@ -179,7 +184,7 @@ export class TimeSeriesChart extends MultiSeriesChart {
     return dataKeys.map(this.axisLabel, this);
   }
 
-  // Given date key, return object with key, associated axis Label
+  // Given date key, return object with key, associated x-axis Label
   // should return empty string for any date not in data.
   axisLabel(key) {
     var dateKey = moment(key).toDate(),   // as Date
