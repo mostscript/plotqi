@@ -16,6 +16,7 @@ import {
 } from './schemaviz.es6.js';
 var moment = require('moment');
 
+
 export class DataPoint extends Klass {
   constructor(obj) {
     obj = obj || {key: '[none]'};
@@ -203,18 +204,44 @@ export class TimeSeriesChart extends MultiSeriesChart {
     return '';
   }
 
-  get domain() {
-    var start, end;
-    [start, end] = [this.start || undefined, this.end || undefined];
-    var domains = this.series.map( serum => this.auto_crop ? serum.croppedDomain : serum.domain );
-    if(!domains) return [start || new Date(), end || new Date()];
-    domains = domains.map( function([a,b]) { return [moment(a), moment(b)]; } );
-    return [
-      start || moment.min(...domains.map( function ([min, max]) { return min; } ) ).toDate(),
-      end || moment.max(...domains.map( function ([min, max]) { return max; } ) ).toDate()
-    ];
+  getStart() {
+    var seriesDomains,
+        domainGetter = s => this.auto_crop ? s.croppedDomain : s.domain,
+        normalize = function (d) {
+          // to beginning of day, always
+          return d3.time.day.floor(d);
+        };
+    if (this.start) {
+      return normalize(this.start);
+    }
+    seriesDomains = this.series.map(domainGetter);
+    return normalize(
+      moment.min(...seriesDomains.map( ([min, max]) => moment(min) )).toDate()
+    );
   }
+
+  getEnd() {
+    var seriesDomains,
+        domainGetter = s => this.auto_crop ? s.croppedDomain : s.domain,
+        normalize = function (d) {
+          // to end of day, always
+          return d3.time.day.ceil(d);
+        };
+    if (this.end) {
+      return normalize(this.end);
+    }
+    seriesDomains = this.series.map(domainGetter);
+    return normalize(
+      moment.max(...seriesDomains.map( ([min, max]) => moment(max))).toDate()
+    );
+  }
+
+  get domain() {
+    return [this.getStart(), this.getEnd()];
+  }
+
 }
+
 
 export function Chart(data) {
   return data.x_axis_type === 'date' ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
