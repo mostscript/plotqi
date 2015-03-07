@@ -204,40 +204,29 @@ export class TimeSeriesChart extends MultiSeriesChart {
     return '';
   }
 
-  getStart() {
-    var seriesDomains,
-        domainGetter = s => this.auto_crop ? s.croppedDomain : s.domain,
-        normalize = function (d) {
-          // to beginning of day, always
-          return d3.time.day.floor(d);
-        };
-    if (this.start) {
-      return normalize(this.start);
-    }
-    seriesDomains = this.series.map(domainGetter);
-    return normalize(
-      moment.min(...seriesDomains.map( ([min, max]) => moment(min) )).toDate()
-    );
-  }
-
-  getEnd() {
-    var seriesDomains,
-        domainGetter = s => this.auto_crop ? s.croppedDomain : s.domain,
-        normalize = function (d) {
-          // to end of day, always
-          return d3.time.day.ceil(d);
-        };
-    if (this.end) {
-      return normalize(this.end);
-    }
-    seriesDomains = this.series.map(domainGetter);
-    return normalize(
-      moment.max(...seriesDomains.map( ([min, max]) => moment(max))).toDate()
-    );
-  }
-
   get domain() {
-    return [this.getStart(), this.getEnd()];
+    var domainGetter = s => this.auto_crop ? s.croppedDomain : s.domain,
+        seriesDomains,
+        explicitStart = this.start,
+        explicitEnd = this.end;
+    if (explicitStart && explicitEnd) {
+      return [d3.time.day.floor(explicitStart), d3.time.day.ceil(explicitEnd)];
+    }
+    seriesDomains = this.series.map(domainGetter);
+    // normalizing (floor/ceil) getters: start, end; favor explicit to computed
+    function getStart() {
+      return d3.time.day.floor(
+        explicitStart || 
+        moment.min(...seriesDomains.map(([min, max]) => moment(min))).toDate()
+      );
+    }
+    function getEnd() {
+      return d3.time.day.ceil(
+        explicitEnd || 
+        moment.max(...seriesDomains.map(([min, max]) => moment(max))).toDate()
+      );
+    }
+    return [getStart(), getEnd()];
   }
 
 }
