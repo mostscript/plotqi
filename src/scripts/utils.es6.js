@@ -233,7 +233,7 @@ export class ColorTool {
         isGray = (v === 0 || s === 0),  // zero-v is black, zero-s is gray
         rescale = ColorTool.upScale8,
         hPrime = h / 60.0,  // determine
-        chroma = (!!useHSL) ? (1 - Math.abs(2 * l - 1)) : v * s,
+        chroma = (!!useHSL) ? (1 - Math.abs(2 * l - 1)) * s : v * s,
         r1, g1, b1, x, pos, m;
     if (!(hsv instanceof Array)) {
       throw new TypeError('Invalid HSV value, must be Array.');
