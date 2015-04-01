@@ -88,7 +88,10 @@ export class Klass {
         enumerable: true,
         configurable: true,
         get: function () {
-          return (value != null) ? value : field.defaultValue;
+          if (field.required && value == null) {
+            return field.defaultValue;  // stored value is null or undef
+          }
+          return value;
         },
         set: function (v) {
           value = field.validate(v, o);
