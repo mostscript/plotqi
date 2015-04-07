@@ -4,7 +4,7 @@
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('./vendor/nvd3');
-import {styleSheet, d3textWrap, colorIsDark} from './utils';
+import {styleSheet, d3textWrap, ColorTool} from './utils';
 import {debounce} from './vendor/debounce';
 
 var INTERVALS = {
@@ -51,6 +51,12 @@ function nvChartFactory(data) {
 
 
 export function timeLineChart(mschart, node) { return function() {
+
+  function _timeOffset(interval, date, n) {
+    /** n can be +/- integer for direction, number of intervals to offset */
+    return moment.utc(date).add(n, interval).toDate();
+  }
+
   var _type = mschart.chart_type;
   var relative = (mschart.width_units == '%');
   var margins = mschart.margins;
@@ -60,8 +66,10 @@ export function timeLineChart(mschart, node) { return function() {
 
   var interval = INTERVALS[mschart.frequency] || 'month';
   var timeStep = (mschart.frequency === 'quarterly') ? 3 : 1;
-  var time = d3.time[interval];
-  var timeOffset = (date, n) => time.offset(date, n * timeStep);
+  var time = d3.time[interval].utc;
+  //var timeOffset = (date, n) => time.offset(date, n * timeStep);
+  var timeOffset = (date, n) => _timeOffset(interval, date, n);
+
   var timeRange = (start, stop) => time.range(start, stop, timeStep);
 
   var domain = [ timeOffset(mschart.domain[0], -1), timeOffset(mschart.domain[1], +1) ];
@@ -308,7 +316,7 @@ export function timeLineChart(mschart, node) { return function() {
                                         .attr('class', 'upiq-leg-cell')
                                         .attr('y', '1em')
                                         .style('text-anchor', (d, i) => i === 0 ? 'start' : 'middle')
-                                        .classed(colorIsDark(d.color) ? 'light-text' : 'dark-text', true)
+                                        .classed(ColorTool.isDark(d.color) ? 'light-text' : 'dark-text', true)
                                         .attr('lengthAdjust', (d,i) => i === 0 ? null : 'spacingAndGlyphs')
                                         .text( (d, i) => i === 0 ? d :
                                           i === 1 || i === tickVals.length ? null :
@@ -448,11 +456,11 @@ export function timeLineChart(mschart, node) { return function() {
         thickness: series.line_width,
         markerThickness: series.marker_width
       };
-
       keys.forEach(function (key) {
-        var datapoint = series.data.get(key);
-        if(series.data.has(key)) obj.values.push({
-          x: moment(datapoint.key).valueOf(),
+        var normalizedKey = key.valueOf().toString(10),   // string ms key
+            datapoint = series.data.get(normalizedKey);
+        if(series.data.has(normalizedKey)) obj.values.push({
+          x: moment.utc(datapoint.key).valueOf(),
           y: datapoint.value,
           size: series.marker_size,
           shape: series.marker_style,

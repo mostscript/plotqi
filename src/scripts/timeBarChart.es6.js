@@ -4,8 +4,9 @@
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('./vendor/nvd3');
-import {styleSheet, d3textWrap, colorIsDark} from './utils';
+import {styleSheet, d3textWrap, ColorTool} from './utils';
 import {debounce} from './vendor/debounce';
+
 
 var INTERVALS = {
   weekly:'week',
@@ -303,7 +304,7 @@ export function timeBarChart(mschart, node) { return function() {
           cellsEnter = cells.enter().append('text')
                                         .attr('class', 'upiq-leg-cell')
                                         .style('text-anchor', (d, i) => i === 0 ? 'start' : 'middle')
-                                        .classed(colorIsDark(d.color) ? 'light-text' : 'dark-text', true)
+                                        .classed(ColorTool.isDark(d.color) ? 'light-text' : 'dark-text', true)
                                         .attr('lengthAdjust', (d,i) => i === 0 ? null : 'spacingAndGlyphs')
                                         .text( (d, i) => i === 0 ? d :
                                           i === 1 || i === tickVals.length ? null :
@@ -449,7 +450,7 @@ export function timeBarChart(mschart, node) { return function() {
         var datapoint = series.data.get(key);
         if(series.data.has(key))
           obj.values.push({
-            x: moment(datapoint.key).valueOf(),
+            x: moment.utc(datapoint.key).valueOf(),
             y: datapoint.value,
             note: datapoint.note,
             title: datapoint.title,

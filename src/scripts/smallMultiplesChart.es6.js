@@ -189,7 +189,7 @@ export function SmallMultiplesChart(mschart, node, size) {
 
 export function croppedDomain(mschart) { //crop data to last 12 (actually, 13) months of data
   var domain = mschart.domain;
-  if( moment(domain[1]).diff(moment(domain[0]), 'months') > 12) {
+  if( moment.utc(domain[1]).diff(moment.utc(domain[0]), 'months') > 12) {
     domain[0] = d3.time.month.offset(domain[1], -12);
   }
   return domain;
@@ -217,7 +217,7 @@ function preprocessData(mschart) {
       var datapoint = series.data.get(key);
       if(series.data.has(key))
         obj.values.push({
-          x: moment(datapoint.key).valueOf(),
+          x: moment.utc(datapoint.key).valueOf(),
           y: datapoint.value,
           size: series.marker_size,
           shape: series.marker_style,
@@ -226,7 +226,7 @@ function preprocessData(mschart) {
           });
       else
         obj.values.push({
-          x: moment(new Date(key)).valueOf(),
+          x: moment.utc(new Date(key)).valueOf(),
           missing: true
         });
     });

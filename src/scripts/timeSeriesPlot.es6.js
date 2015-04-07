@@ -4,11 +4,11 @@
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('./vendor/nvd3');
-import {styleSheet, d3textWrap, colorIsDark} from './utils';
+import {styleSheet, d3textWrap} from './utils';
 import {debounce} from './vendor/debounce';
 import {TabularLegendRenderer} from './tabularLegendRenderer';
 
-// Map between uu.chart frequency and d3.time interval name, multiplier:
+// Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
 var INTERVALS = {
   daily: [1, 'day'],
   weekly: [1, 'week'],
@@ -65,21 +65,22 @@ export class TimeSeriesPlotter {
         domain = this.data.domain,
         dValue = x => x.valueOf(),
         type = this.data.chart_type || 'line',
-        isLine = (type === 'line');
+        isLine = (type === 'line'),
+        rightSidePadding = 0;
     // chart type:
     this.type = type;
+    // whether plot is relative (not fixed-px) width:
+    this.relativeWidth = (this.data.width_units == '%');
     // margins:
     this.margins = this._margins();
     // intverval bits:
     this.timeStep = interval[0];
     this.interval = interval[1];
-    this.d3Interval = d3.time[this.interval];
-    // whether plot is relative (not fixed-px) width:
-    this.relativeWidth = (this.data.width_units == '%');
-    // pad left/right with one period of space:
+    this.d3Interval = d3.time[this.interval].utc;
+    // pad left/right with 0-1 periods of space:
     domain = [
       this.timeOffset(domain[0], -1),
-      this.timeOffset(domain[1], +1)
+      this.timeOffset(domain[1], rightSidePadding)
     ];
     this.domain = domain;
     // time range function:
@@ -105,7 +106,7 @@ export class TimeSeriesPlotter {
         chart = this.chart,
         labelFn = d => this.data.axisLabel(d).label,
         tabular = this.data.legend_placement === 'tabular',
-        dFormat = d => moment(d).format('YYYY-MM-DD'),
+        dFormat = d => moment.utc(d).format('YYYY-MM-DD'),
         yTickVals = n => {
           var out = [],
               interval = (range[1] - range[0]) / n,
@@ -142,7 +143,8 @@ export class TimeSeriesPlotter {
   }
 
   timeOffset(date, n) {
-    return this.d3Interval.offset(date, n * this.timeStep);
+    /** n can be +/- integer for direction, number of intervals to offset */
+    return moment.utc(date).add(n, this.interval).toDate();
   }
 
   _margins() {
@@ -165,7 +167,8 @@ export class TimeSeriesPlotter {
     var m = nv.models,
         type = this.data.chart_type || 'line',
         factory = (type === 'line') ? m.lineChart : m.multiBarChart,
-        chart = factory();
+        chart = factory(),
+        markerSize = d => (d.size || 8) * Math.pow(this.plotWidth / 320, 2);
     chart
       .id(this.data.uid)
       .showLegend(false)
@@ -173,6 +176,7 @@ export class TimeSeriesPlotter {
     if (type === 'line') {
       chart
         .useInteractiveGuideline(false)
+        .pointSize(markerSize)
         .interactive(false);
     }
     if (type === 'bar') {
@@ -206,7 +210,7 @@ export class TimeSeriesPlotter {
               obj.thickness =  series.line_width || 2.0;
               obj.markerThickness = series.marker_width || 2.0;
             }
-            keys.forEach(function (key) {
+            keys.map(k => k.valueOf()).forEach(function (key) {
               var datapoint = series.data.get(key),
                   value,
                   info;
@@ -214,19 +218,20 @@ export class TimeSeriesPlotter {
                 value = datapoint.value;
                 value = (isNaN(value)) ? null : value;
                 info = {
-                  x: moment(datapoint.key).valueOf(),
+                  x: moment.utc(datapoint.key).valueOf(),
                   y: value,
                   note: datapoint.note,
                   title: datapoint.title,
                   uri: datapoint.uri,
-                  seriesIndex: index
+                  seriesIndex: index,
+                  missing: (value === null)
                 };
                 if (plotType === 'line') {
                   info.size = series.marker_size;
                   info.shape = series.marker_style;
                 }
                 obj.values.push(info);
-              } else {
+              } else if (plotType === 'line') {
                 obj.values.push({
                   x: new Date(key).valueOf(),
                   missing: true
@@ -352,15 +357,23 @@ export class TimeSeriesPlotter {
   _updateLineDetail() {
     var lineGroups = this.svg.selectAll(
           '.nv-wrap.nv-line > g > g.nv-groups .nv-group'
-        );
+        ),
+        relStrokeWidthFactor = 0.25 + (this.gridWidth() / 600);
     lineGroups
       .style('stroke-dasharray', d => d.dashed ? '5 5' : 'none')
-      .style('stroke-width', d => d.thickness || 2);
+      .style('stroke-width', d => (d.thickness || 2) * relStrokeWidthFactor);
   }
 
   _updateMarkerDetail() {
-    var thickness = d => d.markerThickness;
-    this.svg.selectAll(SEL_LINEGROUP).style('stroke-width', thickness);
+    /** resize markers: d3 pointSize will draw paths of appropriate size,
+      *      but will not scale stroke accordingly, we do this after
+      *      initial rendering.
+      */
+    var relStrokeWidthFactor = 1 + this.plotWidth / 640,
+        thickness = d => (d.markerThickness || 2) * relStrokeWidthFactor;
+    this.svg.selectAll('.nv-point').style({
+      'stroke-width': d => '' + thickness(d) + 'px'
+    });
   }
 
   sizePlot() {
@@ -373,6 +386,7 @@ export class TimeSeriesPlotter {
         relHeight = (!hasRatio && data.height_units === '%'),
         widthSpec = '' + width + units,
         clientWidth,
+        minHeight = 160,
         computedHeight;
     // plot core div is 100% width of outer:
     this.plotCore.style('width', '100%');
@@ -396,20 +410,49 @@ export class TimeSeriesPlotter {
       // use explicitly provided or just-computed aspect ratio:
       computedHeight = Math.round(ratio * clientWidth);
     }
+    // check computed vs. min:
+    computedHeight = Math.max(minHeight, computedHeight);
     this.plotCore.style('height', '' + computedHeight + 'px');
+    // If rel-width & tabular legend: dynamic size for left margin, min 100px
+    if (this.useTabularLegend() && this.relativeWidth) {
+      this.margins.left = Math.max(80, Math.floor(clientWidth * 0.2));
+    }
+    // save width, height of plotCore for reference by rendering:
+    this.plotWidth = clientWidth;
+    this.plotHeight = computedHeight;
   }
 
   preRender() {
     // prepare the chart div context for rendering:
-    this.plotDiv.html('');                          // clear existing content
-    this.plotCore = this.plotDiv.append('div').classed('chart-div', true);     // create inner div
+    // (1) Clear existing content:
+    this.plotDiv.html('');
+    // (2) Create inner (core) div:
+    this.plotCore = this.plotDiv.append('div').classed('chart-div', true);
+    // (3) Size div elements according to specifications:
     this.sizePlot();
+    // (4) Add empty svg
     this.svg = this.plotCore.append('svg').attr('class', SVG_CLASSNAME);
     this.svg.outerNode = this.plotDiv;
   }
 
-  // legend methods:
+  _grid () {
+    var barSel = '.nv-multiBarWithLegend .nv-x',
+        lineSel = '.nv-lineChart g rect',
+        sGrid = (this.type === 'bar') ? barSel : lineSel;
+    return this.svg.select(sGrid).node();
+  }
 
+  gridWidth() {
+    var grid = this._grid();
+    return (!!grid) ? grid.getBoundingClientRect().width : 0;
+  }
+
+  gridHeight() {
+    var grid = this._grid();
+    return (!!grid) ? grid.getBoundingClientRect().height : 0;
+  }
+
+  // legend methods:
 
   useTabularLegend() {
     return this.data.legend_placement === 'tabular';
@@ -475,7 +518,7 @@ export class TimeSeriesPlotter {
     // rendering stuff:
     this.render();
     if (this.relativeWidth) {
-      nv.utils.windowResize(debounce(this.refresh.bind(this), 250, false));
+      window.addEventListener('resize', debounce(this.refresh.bind(this), 500, false));
     }
   }
 }
