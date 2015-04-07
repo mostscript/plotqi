@@ -11,6 +11,15 @@ document.head.appendChild(styleEl);
 export var styleSheet = styleEl.sheet;
 
 
+// uuid function via http://stackoverflow.com/a/2117523/835961
+var uuid4_tmpl = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+export var uuid4 = function () {
+  return uuid4_tmpl.replace(/[xy]/g, function(c) {
+    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    return v.toString(16);
+  });
+};
+
 export function parseDate(spec, useMoment) {
   /** parse date specification/stamp, strictly ISO 8601 if string, and assume
    *  any naive timestamp should be treated as UTC.  Returns Date if
