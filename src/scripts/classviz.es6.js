@@ -99,11 +99,19 @@ export class Klass {
       };
     }
     Object.keys(schema).forEach(function (field) {
-      Object.defineProperty(this, schema[field].name, descriptor(schema[field], this));
-    }, this);
+      var fieldname = schema[field].name;
+      if ((this.localprops || []).indexOf(fieldname) !== -1) {
+        return;  // do not use schema property descriptor for this field
+      }
+      Object.defineProperty(this, fieldname, descriptor(schema[field], this));
+      },
+      this
+    );
 
     Object.keys(schema).forEach(function (k) {
       this[k] = obj[k];
-    }, this);
+      },
+      this
+    );
   }
 }
