@@ -2,10 +2,10 @@
 /*globals require */
 
 import {Schema, schematize, ValidationError, ValidationTypeError} from './classviz.es6.js';
-var moment = require('moment');
+import {parseDate} from './utils.es6.js';
 
 function dateTypeConstraint(value) {
-  var m = moment(value);
+  var m = parseDate(value, true);
   if(!m.isValid()) return null;
   return m.toDate();
 }
@@ -577,7 +577,7 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
               // validate the object key/value pairs:
               Object.keys(value).forEach(function (k) {
                 var v = value[k];
-                if (!moment(k).isValid())
+                if (!parseDate(k, true).isValid())
                   throw new ValidationError(this, value, 'Key is not a valid Datestamp: ' + k);
                 if (typeof v !== 'string')
                   throw new ValidationTypeError(this, typeof v, 'Labels must be strings');
