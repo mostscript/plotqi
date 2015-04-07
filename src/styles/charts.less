@@ -17,6 +17,17 @@ body * {
   stroke:none;
 }
 
+.upiq-chart .nv-y.nv-axis g.tick line {
+  stroke-width:0.35%;
+  shape-rendering:auto;
+}
+
+/* tabular legend style */
+.upiq-legend-cell-text.noValue, .upiq-legend-cell-text.nullValue {
+  fill: #999;
+  fill-opacity: 0.3;
+}
+
 svg.upiq-chart .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point,
 svg.upiq-small-chart .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
   fill-opacity: 1;
