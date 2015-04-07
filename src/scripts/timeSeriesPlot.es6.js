@@ -67,6 +67,8 @@ export class TimeSeriesPlotter {
         type = this.data.chart_type || 'line',
         isLine = (type === 'line'),
         rightSidePadding = 0;
+    // initial values:
+    this.baseFontSize = 14;   // px
     // chart type:
     this.type = type;
     // whether plot is relative (not fixed-px) width:
@@ -387,6 +389,7 @@ export class TimeSeriesPlotter {
         widthSpec = '' + width + units,
         clientWidth,
         minHeight = 160,
+        minFontSize = 9,  // px
         computedHeight;
     // plot core div is 100% width of outer:
     this.plotCore.style('width', '100%');
@@ -420,6 +423,11 @@ export class TimeSeriesPlotter {
     // save width, height of plotCore for reference by rendering:
     this.plotWidth = clientWidth;
     this.plotHeight = computedHeight;
+    // set base font size on svg element:
+    this.baseFontSize = Math.max(
+      minFontSize,
+      Math.floor(clientWidth/45 * 2) / 2.0    // rounded to 0.5px
+    );
   }
 
   preRender() {
@@ -433,6 +441,10 @@ export class TimeSeriesPlotter {
     // (4) Add empty svg
     this.svg = this.plotCore.append('svg').attr('class', SVG_CLASSNAME);
     this.svg.outerNode = this.plotDiv;
+    // (5) set initial base styles on svg element that will be inherited:
+    this.svg.style({
+      'font-size': '' + this.baseFontSize + 'px'
+    });
   }
 
   _grid () {
