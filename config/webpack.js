@@ -17,7 +17,7 @@ module.exports = function (release) {
     debug: !release,
     devtool: (!release) ? 'source-map' : false,
     entry: {
-      app: './src/app.js',
+      plotqi: './src/plotqi-entry.js',
       headless: './src/headless.js'
     },
 
@@ -32,17 +32,19 @@ module.exports = function (release) {
       new webpack.optimize.UglifyJsPlugin(),
       new webpack.optimize.OccurenceOrderPlugin(),
       new webpack.optimize.AggressiveMergingPlugin(),
-      new webpack.dependencies.LabeledModulesPlugin()
+      new webpack.dependencies.LabeledModulesPlugin(),
+      new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
     ] : [
+      new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]),
       new webpack.dependencies.LabeledModulesPlugin()
     ],
 
     resolve: {
       extensions: ['', '.webpack.js', '.web.js', '.js', '.es6.js'],
       modulesDirectories: ['node_modules'],
-      alias: {
-        moment$: 'moment/min/moment.min.js'
-      }
+      //alias: {
+      //  moment$: 'moment/min/moment.min.js'
+      //}
     },
 
     module: {
