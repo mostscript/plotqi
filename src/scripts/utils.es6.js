@@ -10,6 +10,18 @@ var styleEl = document.createElement('style');
 document.head.appendChild(styleEl);
 export var styleSheet = styleEl.sheet;
 
+export var DEFAULT_COLORS = [
+  '#393960',
+  '#8AA9C9',
+  '#5F9EA0',
+  '#9370DB',
+  '#4682B4',
+  '#2E8B57',
+  '#FF7F50',
+  '#FFD700',
+  '#DA70D6',
+  '#008080'
+];
 
 // uuid function via http://stackoverflow.com/a/2117523/835961
 var uuid4_tmpl = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';

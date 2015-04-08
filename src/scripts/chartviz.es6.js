@@ -4,6 +4,7 @@
 'use strict';  /*jshint -W097 */
 
 import {Klass} from './classviz.es6.js';
+import {DEFAULT_COLORS} from './utils.es6.js';
 var dataSym = Symbol();
 var d3 = require('d3');
 import {
@@ -47,9 +48,12 @@ export class TimeDataPoint extends DataPoint {
 export class DataSeries extends Klass {
   constructor(obj) {
     obj = obj || {};
+    this.localprops = ['color'];
     obj.schema = obj.schema || dataSeriesSchema;
     super(obj);
     this.data = obj.data || [];
+    this._color = obj.color || null;
+    this.position = 0;  // default, may be overwritten by chart managing this
   }
 
   get data() {
@@ -64,6 +68,17 @@ export class DataSeries extends Klass {
     .forEach( datum => data.set(datum.key, datum) );
     this[dataSym] = data;
   }
+ 
+  get color() {
+    var explicitColor = this._color,
+        pos = (!explicitColor) ? this.position : null,
+        color = (explicitColor !== 'auto') ? explicitColor : DEFAULT_COLORS[pos];
+    return color;
+  }
+
+  set color(v) {
+    this._color = v;
+  }
 
   get range() {
     return d3.extent(this.data.values(), d => d.value) || [-Infinity, Infinity];
@@ -76,6 +91,17 @@ export class TimeDataSeries extends DataSeries {
     obj.schema = obj.schema || timeDataSeriesSchema;
     super(obj);
     this.data = obj.data || [];
+  }
+
+  get color() {
+    var explicitColor = this._color,
+        pos = (!explicitColor) ? this.position : null,
+        color = (explicitColor) ? explicitColor : DEFAULT_COLORS[pos];
+    return color;
+  }
+
+  set color(v) {
+    this._color = v;
   }
 
   get data() {
@@ -158,7 +184,12 @@ export class TimeSeriesChart extends MultiSeriesChart {
   }
 
   set series(s) {
-    this[dataSym] = s.map( serum => new TimeDataSeries(serum) );
+    this[dataSym] = s.map( serum => new TimeDataSeries(serum, this) );
+    this[dataSym].map(function (series, index) {
+        series.position = index;
+      },
+      this
+    );
   }
 
   allDates() {
