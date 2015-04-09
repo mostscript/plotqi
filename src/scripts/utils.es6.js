@@ -329,7 +329,7 @@ export class ColorTool {
 
 /** simple linear regression as slope-intercept for trendline: */
 
-export function trendlineSlopeIntercept(points) {
+function trendlineSlopeIntercept(points) {
   /**
     * Given an array of data point pairs (each an array of x,y values)
     * returns two item array of slope and y-intercept [m, b] for y = mx + b
@@ -342,16 +342,19 @@ export function trendlineSlopeIntercept(points) {
     */ 
   var square = a => a*a,
       sum = sequence => sequence.reduce(((a, b) => a + b), 0),
+      pairProduct = pair => pair[0] * pair[1],
+      n = points.length,
       xValues = points.map(point => point[0]),
       yValues = points.map(point => point[1]),
-      Sx = sum(xValues),
-      Sy = sum(yValues),
-      Sxx = sum(xValues.map(square)),
-      Sxy = sum(points.map(pair => (pair[0] * pair[1]))),
-      Syy = sum(yValues.map(square)),
-      n = points.length,
-      slope = ((n * Sxy) - (Sx * Sy)) / ((n * Sxx) - square(Sx)),
-      intercept = (Sy - (slope * Sx)) / n;
+      sumX = sum(xValues),                        // ∑ x
+      sumY = sum(yValues),                        // ∑ y
+      sumXY = sum(points.map(pairProduct)),       // ∑ xy
+      sumX2 = sum(xValues.map(square)),           // ∑ x²
+      variance = sumX2 - (square(sumX) / n),      // Sxx = ∑x² - (∑x)² / n
+      covariance = sumXY - (sumX * sumY / n),     // Sxy = ∑xy - (∑x * ∑y) / n
+      slope = covariance/variance,                // m = Sxy / Sxx
+      // y-intercept is average y-value over slope minus average x-value
+      intercept = (sumY / n) - (slope * sumX / n);  // b = (∑y / n) - m(∑x / n)
   return [slope, intercept];
 }
 
