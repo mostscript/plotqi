@@ -327,3 +327,31 @@ export class ColorTool {
 
 }
 
+/** simple linear regression as slope-intercept for trendline: */
+
+export function trendlineSlopeIntercept(points) {
+  /**
+    * Given an array of data point pairs (each an array of x,y values)
+    * returns two item array of slope and y-intercept [m, b] for y = mx + b
+    * that can be used by callers in constructing a trendline.
+    * Uses least-squares method:
+    *   http://en.wikipedia.org/wiki/Simple_linear_regression
+    * Caveats:
+    *  * Does not return or calculate R-squared value.
+    *  * Favors functional code readability at cost of repeated iteration.
+    */ 
+  var square = a => a*a,
+      sum = sequence => sequence.reduce(((a, b) => a + b), 0),
+      xValues = points.map(point => point[0]),
+      yValues = points.map(point => point[1]),
+      Sx = sum(xValues),
+      Sy = sum(yValues),
+      Sxx = sum(xValues.map(square)),
+      Sxy = sum(points.map(pair => (pair[0] * pair[1]))),
+      Syy = sum(yValues.map(square)),
+      n = points.length,
+      slope = ((n * Sxy) - (Sx * Sy)) / ((n * Sxx) - square(Sx)),
+      intercept = (Sy - (slope * Sx)) / n;
+  return [slope, intercept];
+}
+
