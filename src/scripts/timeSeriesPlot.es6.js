@@ -445,6 +445,8 @@ export class TimeSeriesPlotter {
     this.svg.style({
       'font-size': '' + this.baseFontSize + 'px'
     });
+    // (6) Add singleton 'defs' to svg:
+    this.svg.append('defs');
   }
 
   _grid () {
@@ -495,6 +497,86 @@ export class TimeSeriesPlotter {
     return (useTabular) ? this.tabularLegend() : this.basicLegend();
   }
 
+  scaleTrendLine(line) {
+    /** given line coodinates in unscaled x1,y1,x2,y2 (object), return
+      * object with scaled respective coordinate values.
+      */
+    return {
+      x1: this.xScale(line.x1),
+      y1: this.yScale(line.y1),
+      x2: this.xScale(line.x2),
+      y2: this.yScale(line.y2),
+      trend_color: line.trend_color,
+      trend_width: line.trend_width * Math.floor(this.plotWidth / 160) / 2
+    };
+  }
+
+  drawTrendLines() {
+    var considered = this.data.series.filter(s => (!!s.show_trend)),
+        lines = considered.map(s => this.data.fittedTrendline(s), this),
+        scaledLines = lines.map(this.scaleTrendLine, this),
+        gridOffsetX = this.margins.left,
+        lineFn = d3.svg.line().x(d => d.x).y(d => d.y).interpolate('linear'),
+        group;
+    if (!considered) {
+      return;  // no trendlines!
+    }
+    this.svg.select('defs')
+      .append('marker')
+      .attr({
+        id: 'trendmarker',
+        viewBox: '0 0 10 10',
+        markerWidth: Math.floor(this.plotWidth / 160),
+        markerHeight: Math.floor(this.plotWidth / 160),
+        orient: 0,
+        refX: 0,
+        refY: 5
+      })
+      .append('path')
+        .attr({
+          d: 'M 0 0 L 10 5 L 0 10 z',
+          fill: '#444',
+          opacity: 0.5
+        });
+
+    group = this.svg.append('g')
+      .classed('upiq-trendlines', true)
+      .attr({
+        transform: `translate(${gridOffsetX}, 10)`,
+        opacity: '0.5'
+      });
+
+    scaledLines.forEach(function (line) {
+        var markerCount = Math.floor((line.point_count || 12) / 2),
+            data = [],
+            x1 = line.x1,
+            y1 = line.y1,
+            x2 = line.x2,
+            y2 = line.y2,
+            rise = (y2 - y1),
+            run = (x2 - x1);
+        data.push({x: x1, y: y1});
+        d3.range(1, markerCount + 1).forEach(function (i) {
+          data.push({
+            x: x2 - (run * i/markerCount),
+            y: y2 - (rise * i/markerCount)
+          });
+        });
+        data.push({x: x2, y: y2});
+        group.append('path')
+          .attr({
+            d: lineFn(data),
+            stroke: line.trend_color,
+            'stroke-width': line.trend_width,
+            'marker-mid': 'url(#trendmarker)',
+            fill: 'none'
+          });
+      },
+      this
+    );
+
+  }
+
   render() {
     var data = this.extractData();
     //this.svg = this.plotDiv.select(SEL_CHARTSVG);
@@ -515,6 +597,8 @@ export class TimeSeriesPlotter {
       this._updateLineDetail();
       this._updateMarkerDetail();
     }
+    // Trend-lines, if applicable:
+    this.drawTrendLines();
     // goal-line, IFF goal exists:
     this.drawGoal();
     // legend:

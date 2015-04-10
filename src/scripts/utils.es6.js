@@ -329,7 +329,7 @@ export class ColorTool {
 
 /** simple linear regression as slope-intercept for trendline: */
 
-function trendlineSlopeIntercept(points) {
+export function trendlineSlopeIntercept(points) {
   /**
     * Given an array of data point pairs (each an array of x,y values)
     * returns two item array of slope and y-intercept [m, b] for y = mx + b
@@ -356,5 +356,25 @@ function trendlineSlopeIntercept(points) {
       // y-intercept is average y-value over slope minus average x-value
       intercept = (sumY / n) - (slope * sumX / n);  // b = (∑y / n) - m(∑x / n)
   return [slope, intercept];
+}
+
+export function fittedTrendline(points, domain, range) {
+  /** Given points, domain, and range, returns coordinates for a line in
+    * object form (keys of x1, y1, x2, y2) for line to be drawn left-to-right
+    */
+  var [slope, intercept] = trendlineSlopeIntercept(points),
+      solveForY = x => slope * x + intercept,     // y = mx + b
+      solveForX = y => (y - intercept) / slope,   // x = (y - b) / m
+      [minY, maxY] = range,
+      [minX, maxX] = domain,
+      decline = slope < 0,
+      r = {};
+  r.x1 = solveForX((decline) ? maxY : minY);      // left-most x...
+  r.x1 = (r.x1 < minX) ? minX : r.x1;             // ...that is in bound box
+  r.y1 = solveForY(r.x1);
+  r.x2 = solveForX((decline) ? minY : maxY);      // right-most x...
+  r.x2 = (r.x2 > maxX) ? maxX : r.x2;             // ...that is in bound box
+  r.y2 = solveForY(r.x2);
+  return r;
 }
 

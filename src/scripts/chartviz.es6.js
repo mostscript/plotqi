@@ -15,7 +15,7 @@ import {
   multiSeriesChartSchema,
   timeSeriesChartSchema
 } from './schemaviz.es6.js';
-import {parseDate} from './utils.es6.js';
+import {parseDate, fittedTrendline} from './utils.es6.js';
 
 var moment = require('moment');
 
@@ -35,6 +35,7 @@ export class DataPoint extends Klass {
     obj.schema = obj.schema || dataPointSchema;
     super(obj);
   }
+
 }
 
 export class TimeDataPoint extends DataPoint {
@@ -129,6 +130,7 @@ export class TimeDataSeries extends DataSeries {
     var max = moment.max(...data.map( d => parseDate(d.key, true) )).toDate();
     return [min, max];
   }
+
 }
 
 export class MultiSeriesChart extends Klass {
@@ -169,6 +171,18 @@ export class MultiSeriesChart extends Klass {
     data = d3.merge(data);
     return data.map( datum => datum.key );
   }
+
+  fittedTrendline(series) {
+    /** fitted trendline for series in context of this chart's domain/range */
+    var data = series.data.values().map(d => [d.key.valueOf(), d.value]),
+        domain = this.domain.map(d => d.valueOf()),
+        line = fittedTrendline(data, domain, this.range);
+    line.trend_width = series.trend_width || 2;
+    line.trend_color = series.trend_color || series.color || '#999';
+    line.point_count = series.data.size();
+    return line;
+  }
+
 }
 
 export class TimeSeriesChart extends MultiSeriesChart {

@@ -11,7 +11,6 @@
           "marker_style": "filledSquare", 
           "marker_color": "#554e4e", 
           "title": "Jupiter Pediatrics", 
-          "color": "#554e4e", 
           "marker_size": 9.0, 
           "marker_width": 4, 
           "point_labels": "defer", 
@@ -110,7 +109,7 @@
               }
             ]
           ], 
-          "show_trend": false
+          "show_trend": true
         }, 
         {
           "line_width": 2, 
@@ -193,7 +192,7 @@
         "2014-05-01": "May 2014", 
         "2014-04-01": "Baseline"
       }, 
-      "point_labels": "omit", 
+      "point_labels": "show", 
       "height": 100, 
       "frequency": "monthly", 
       "chart_type": "line", 
