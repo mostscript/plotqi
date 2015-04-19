@@ -5,18 +5,35 @@ var d3 = require('d3');
 var moment = require('moment');
 
 import {ColorTool, uuid4} from './utils';
+import {BaseRenderingPlugin} from './plugin';
 
 
-export class PointLabelsRenderer {
-
+export class PointLabelsRenderer extends BaseRenderingPlugin {
 
   constructor(plotter) {
-    this.plotter = plotter;
-    this.data = plotter.data;
-    this.svg = plotter.svg;
-    this.margins = plotter.margins;
-    this.xScale = plotter.xScale;
-    this.yScale = plotter.yScale;
+    super(plotter);
+  }
+
+  preRender() {
+    super.preRender();
+    /** after div is sized, we need to possibly adjust for label headroom */
+    if (this._needsLabelHeadroom()) {
+      this.margins.top = 5 + Math.floor(this.plotter.plotHeight / 15);
+    }
+  }
+
+  _needsLabelHeadroom() {
+    var data = this.data,
+        considered = data.series.filter(data.showLabels, data),
+        highValued = function (series) {
+          var values = [];
+          series.data.forEach(function (k, point) {
+            values.push(point.value || 0);
+          });
+          return (Math.max.apply(null, values) > 90);
+        };
+      considered = considered.filter(highValued);
+      return (!!considered.length);  // high-val labeled series gets room
   }
 
   scalePoint(point) {
@@ -103,10 +120,6 @@ export class PointLabelsRenderer {
       },
       this
     );
-  }
-
-  update() {
-    this.render();
   }
 
 }

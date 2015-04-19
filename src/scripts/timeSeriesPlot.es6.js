@@ -9,6 +9,12 @@ import {debounce} from './vendor/debounce';
 import {TabularLegendRenderer} from './tabularLegendRenderer';
 import {PointLabelsRenderer} from './pointLabelsRenderer';
 
+// Set up plugin namespace:
+window.plotqi = window.plotqi || {};
+window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
+  PointLabelsRenderer
+];
+
 // Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
 var INTERVALS = {
   daily: [1, 'day'],
@@ -102,6 +108,15 @@ export class TimeSeriesPlotter {
     // NVD3 selectors contingent on plot type:
     this.nvType = (isLine) ? SEL_LINECHART : SEL_BARCHART;
     this.wrapType = (isLine) ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
+    // init plugins for later use by respective hookable methods
+    this.plugins = [];
+    window.plotqi.RENDERING_PLUGINS.forEach(function (klass) {
+        var adapter = new klass(this);  // plugin adapts this plotter core
+        this.plugins.push(adapter);
+      },
+      this
+    );
+
   }
 
   _configAxes() {
@@ -148,20 +163,6 @@ export class TimeSeriesPlotter {
   timeOffset(date, n) {
     /** n can be +/- integer for direction, number of intervals to offset */
     return moment.utc(date).add(n, this.interval).toDate();
-  }
-
-  _needsLabelHeadroom() {
-    var data = this.data,
-        considered = data.series.filter(data.showLabels, data),
-        highValued = function (series) {
-          var values = [];
-          series.data.forEach(function (k, point) {
-            values.push(point.value || 0);
-          });
-          return (Math.max.apply(null, values) > 90);
-        };
-      considered = considered.filter(highValued);
-      return (!!considered.length);  // high-val labeled series gets room
   }
 
   _margins() {
@@ -443,13 +444,10 @@ export class TimeSeriesPlotter {
       minFontSize,
       Math.floor(clientWidth/45 * 2) / 2.0    // rounded to 0.5px
     );
-    // adjust top margin if it has headroom for point labels:
-    if (this._needsLabelHeadroom()) {
-      this.margins.top = 5 + Math.floor(computedHeight / 15);
-    }
   }
 
   preRender() {
+    var chart;
     // prepare the chart div context for rendering:
     // (1) Clear existing content:
     this.plotDiv.html('');
@@ -466,6 +464,22 @@ export class TimeSeriesPlotter {
     });
     // (6) Add singleton 'defs' to svg:
     this.svg.append('defs');
+    // (7) create an NVD3 chart object that will be returned:
+    chart = this.nvChartFactory();
+    // (8) get scales from chart, set for use by plotter, plugins:
+    this.xScale = chart.xScale();
+    this.yScale = chart.yScale();
+    // (9) Bind plugin svg, scales for plugins, call any plugins pre-render
+    this.plugins.forEach(function (plugin) {
+        if (typeof plugin.preRender === 'function') {
+          plugin.preRender();
+        }
+      },
+      this
+    );
+    // (10) Set chart margins, after the plugins' respective preRender called:
+    chart.margin(this.margins);
+    return chart;
   }
 
   _grid () {
@@ -602,16 +616,28 @@ export class TimeSeriesPlotter {
     adapter.update();
   }
 
+  updateRenderingPlugins() {
+    /** update rendering plugins, in order */
+    this.plugins.forEach(function (plugin) {
+        plugin.update();
+      },
+      this
+    );
+  }
+
   render() {
     var data = this.extractData();
     //this.svg = this.plotDiv.select(SEL_CHARTSVG);
-    this.preRender();
+    this.chart = this.preRender();
+
+/*
     // create an NVD3 chart object:
     this.chart = this.nvChartFactory()
       .margin(this.margins);
     // set scales:
     this.xScale = this.chart.xScale();
     this.yScale = this.chart.yScale();
+*/
     // now that we have chart, configure axes:
     this._configAxes();
     // Bind data to selection, call this.chart function in context
@@ -625,11 +651,13 @@ export class TimeSeriesPlotter {
     // Trend-lines, if applicable:
     this.drawTrendLines();
     // Draw point labels, if/as applicable:
-    this.drawPointLabels();
+    //this.drawPointLabels();
     // goal-line, IFF goal exists:
     this.drawGoal();
     // legend:
     this.drawLegend();
+    // Rendering plugins, in order:
+    this.updateRenderingPlugins();
     return this.chart;
   }
 
