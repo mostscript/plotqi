@@ -17,7 +17,6 @@ export class PointLabelsRenderer {
     this.margins = plotter.margins;
     this.xScale = plotter.xScale;
     this.yScale = plotter.yScale;
-    this.showDefault = (this.data.point_labels === 'show') ? 'show' : 'omit';
   }
 
   scalePoint(point) {
