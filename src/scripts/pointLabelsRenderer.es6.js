@@ -6,9 +6,6 @@ var moment = require('moment');
 
 import {ColorTool, uuid4} from './utils';
 
-var LEGEND_CLASS = 'upiq-legend';
-var SEL_LEGEND = 'g.' + LEGEND_CLASS;
-
 
 export class PointLabelsRenderer {
 
