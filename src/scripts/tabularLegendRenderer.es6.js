@@ -435,7 +435,7 @@ export class TabularLegendRenderer {
         rows = this.svg.selectAll('upiq-legend-table-row'),
         tableHeight = table[0][0].getBoundingClientRect().height,
         gridHeight = this.plotter.gridHeight(),
-        intermediarySpacing = 20,
+        intermediarySpacing = (this.margins.top || 10) + 10,
         tableOrigin = gridHeight + intermediarySpacing,
         plotHeight = tableHeight + gridHeight + intermediarySpacing,
         plotBottomMargin = 15;

@@ -7,6 +7,7 @@ var nv = require('./vendor/nvd3');
 import {styleSheet, d3textWrap} from './utils';
 import {debounce} from './vendor/debounce';
 import {TabularLegendRenderer} from './tabularLegendRenderer';
+import {PointLabelsRenderer} from './pointLabelsRenderer';
 
 // Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
 var INTERVALS = {
@@ -147,6 +148,20 @@ export class TimeSeriesPlotter {
   timeOffset(date, n) {
     /** n can be +/- integer for direction, number of intervals to offset */
     return moment.utc(date).add(n, this.interval).toDate();
+  }
+
+  _needsLabelHeadroom() {
+    var data = this.data,
+        considered = data.series.filter(data.showLabels, data),
+        highValued = function (series) {
+          var values = [];
+          series.data.forEach(function (k, point) {
+            values.push(point.value || 0);
+          });
+          return (Math.max.apply(null, values) > 90);
+        };
+      considered = considered.filter(highValued);
+      return (!!considered.length);  // high-val labeled series gets room
   }
 
   _margins() {
@@ -428,6 +443,10 @@ export class TimeSeriesPlotter {
       minFontSize,
       Math.floor(clientWidth/45 * 2) / 2.0    // rounded to 0.5px
     );
+    // adjust top margin if it has headroom for point labels:
+    if (this._needsLabelHeadroom()) {
+      this.margins.top = 5 + Math.floor(computedHeight / 15);
+    }
   }
 
   preRender() {
@@ -516,6 +535,7 @@ export class TimeSeriesPlotter {
         lines = considered.map(s => this.data.fittedTrendline(s), this),
         scaledLines = lines.map(this.scaleTrendLine, this),
         gridOffsetX = this.margins.left,
+        gridOffsetY = this.margins.top,
         lineFn = d3.svg.line().x(d => d.x).y(d => d.y).interpolate('linear'),
         group;
     if (!considered) {
@@ -542,7 +562,7 @@ export class TimeSeriesPlotter {
     group = this.svg.append('g')
       .classed('upiq-trendlines', true)
       .attr({
-        transform: `translate(${gridOffsetX}, 10)`,
+        transform: `translate(${gridOffsetX}, ${gridOffsetY})`,
         opacity: '0.5'
       });
 
@@ -577,6 +597,11 @@ export class TimeSeriesPlotter {
 
   }
 
+  drawPointLabels() {
+    var adapter = new PointLabelsRenderer(this);
+    adapter.update();
+  }
+
   render() {
     var data = this.extractData();
     //this.svg = this.plotDiv.select(SEL_CHARTSVG);
@@ -599,6 +624,8 @@ export class TimeSeriesPlotter {
     }
     // Trend-lines, if applicable:
     this.drawTrendLines();
+    // Draw point labels, if/as applicable:
+    this.drawPointLabels();
     // goal-line, IFF goal exists:
     this.drawGoal();
     // legend:

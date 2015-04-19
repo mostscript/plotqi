@@ -13,7 +13,7 @@
           "title": "Jupiter Pediatrics", 
           "marker_size": 9.0, 
           "marker_width": 4, 
-          "point_labels": "defer", 
+          "point_labels": "show", 
           "trend_width": 2, 
           "display_format": "%.1f", 
           "data": [
@@ -192,7 +192,7 @@
         "2014-05-01": "May 2014", 
         "2014-04-01": "Baseline"
       }, 
-      "point_labels": "show", 
+      "point_labels": "omit", 
       "height": 100, 
       "frequency": "monthly", 
       "chart_type": "line", 

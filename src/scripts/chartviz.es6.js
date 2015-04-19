@@ -183,6 +183,14 @@ export class MultiSeriesChart extends Klass {
     return line;
   }
 
+  showLabels(series) {
+    var showDefault = (this.point_labels === 'show') ? 'show' : 'omit',
+        behavior = series.point_labels || 'defer',
+        visible = (behavior === 'defer') ? showDefault : behavior;
+    console.log(series, visible === 'show');
+    return (visible === 'show');
+  }
+
 }
 
 export class TimeSeriesChart extends MultiSeriesChart {
