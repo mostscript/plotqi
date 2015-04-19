@@ -187,7 +187,6 @@ export class MultiSeriesChart extends Klass {
     var showDefault = (this.point_labels === 'show') ? 'show' : 'omit',
         behavior = series.point_labels || 'defer',
         visible = (behavior === 'defer') ? showDefault : behavior;
-    console.log(series, visible === 'show');
     return (visible === 'show');
   }
 
