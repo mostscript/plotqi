@@ -46,12 +46,58 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
     return scaled;
   }
 
+  lineSlope(pointA, pointB) {
+    /** slope between pointA and pointB, where points have attrs x, y */
+    var rise, run;
+    if (pointA === null || pointB === null) {
+      // constant slope: in effect means horizontal tangent line for any
+      // point that has no previous, next points in series.
+      return 0;
+    }
+    rise = pointB.y - pointA.y;
+    run = pointB.x - pointA.x;
+    return rise / run;
+  }
+
+  tangentLineSlope(point, prev, next) {
+    var slope = this.lineSlope,
+        slopeA = (prev === null) ? slope(point, next) : slope(prev, point),
+        slopeB = (next === null) ? slope(prev, point) : slope(point, next),
+        avgSlope = (slopeA + slopeB) / 2.0;
+    return avgSlope;
+  }
+
   scaledPoints(series) {
-    var points = [];
+    var points = [],
+        scaledPoints = [];
     series.data.forEach(function (k, point) {
       points.push(point);
     }); // map to Array of points
-    return points.map(this.scalePoint, this);
+    scaledPoints = points.map(this.scalePoint, this);
+    scaledPoints.forEach(function (point, idx, arr) {
+        /** Trigonometric fit x₂,y₂, c distance on perpendicular to tangent
+          * line to point, which should look better than simply displaying
+          * above a point marker (insofar as chances of text overlapping
+          * line-drawing for same series are minimized).
+          */
+        var prev = (idx === 0) ? null : arr[idx - 1],
+            next = (idx === arr.length - 1) ? null : arr[idx + 1],
+            tanLnSlope = this.tangentLineSlope(point, prev, next),
+            perpendicularSlope = -1 / tanLnSlope,
+            positioningAngle = Math.atan(perpendicularSlope),
+            // ideal hypotenuse distance:
+            c = -1 * Math.floor(this.plotter.plotWidth / 30),
+            // opposite leg, delta for Y
+            a = c * Math.sin(positioningAngle),
+            // adjacent leg, delta for X
+            b = c * Math.cos(positioningAngle);
+        point.x2 = point.x + b;
+        point.y2 = point.y + a;
+      },
+      this
+    );
+
+    return scaledPoints;
   }
 
   mkGroup() {
@@ -78,18 +124,15 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
     }
     // adjust color lighter or darker to contrast with line:
     color = (ct.isDark(color)) ? ct.lighten(color, 0.5) : ct.darken(color, 0.5);
-    // draw point above marker... note: it may be better at some future date
-    // to draw text perpendicular to the tangent line through the point with
-    // respect to adjacent points to right/left on graph, and in some cases
-    // on opposite poles (based on degree of inflection), but this kind of
-    // algorithm is YAGNI for now (still worth noting).
     seriesGroup
       .append('text')
       .classed('upiq-point-label point-label-' + seriesIdx, true)
       .attr({
         'text-anchor': 'middle',
-        x: point.x,
-        y: point.y - yOffset
+        x: point.x2,
+        y: point.y2
+        //x: point.x,
+        //y: point.y - yOffset
       })
       .style({
         fill: color,
