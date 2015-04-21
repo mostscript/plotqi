@@ -5,32 +5,17 @@ var d3 = require('d3');
 var moment = require('moment');
 
 import {d3textWrap, range, ColorTool, uuid4} from './utils';
+import {BaseRenderingPlugin} from './plugin';
 
 var LEGEND_CLASS = 'upiq-legend';
 var SEL_LEGEND = 'g.' + LEGEND_CLASS;
 
 
-export class TabularLegendRenderer {
+export class TabularLegendRenderer extends BaseRenderingPlugin {
 
   constructor (plotter) {
-    var tickVals = plotter.tickVals,
-        xScale = plotter.xScale,
-        // force a continuous scale, in case plot is ordinal/discrete (bar):
-        timeScale = d3.time.scale()
-          .domain(xScale.domain())
-          .range(xScale.range());
-    this.plotter = plotter;
-    this.data = plotter.data;
-    this.plotDiv = plotter.plotDiv;
-    this.plotCore = plotter.plotCore;
-    this.svg = plotter.svg;
-    this.margins = plotter.margins;
+    super(plotter);
     this.legendGroup = null;  // will be set by this.makeLegendGroup
-    this.xScale = timeScale;
-    this.xMax = this.xScale(plotter.domain[1].valueOf());
-    // column width interval based on sample of first data column, scaled:
-    this.columnInterval = xScale(tickVals[1]) - xScale(tickVals[0]);
-    this.yMin = plotter.yScale(this.data.range[0]);
     this.leftPad = 5;
     this.legPad = 10;
     // cell padding (within cells === margin of text), all unitx px
@@ -49,7 +34,33 @@ export class TabularLegendRenderer {
     };
   }
 
-  clearLegend() {
+  preRender() {
+    super.preRender();
+    // If rel-width & tabular legend: dynamic size for left margin, min 100px
+    if (this.useTabularLegend() && this.plotter.relativeWidth) {
+      this.margins.left = Math.max(80, Math.floor(this.plotter.plotWidth * 0.2));
+    }
+  }
+
+  prepare() {
+    /** prepare must be called after nvd3 render because we create a 
+      * time scale from scale domain/range, which are not set initially
+      * during preRender.
+      */
+    var xScale = this.plotter.xScale,
+        timeScale = d3.time.scale()
+          .domain(xScale.domain())
+          .range(xScale.range()),
+        tickVals = this.plotter.tickVals;
+    // force continuous scale in case of oridinal scale via bar chart:
+    this.xScale = timeScale;
+    this.xMax = this.xScale(this.plotter.domain[1].valueOf());
+    // column width interval based on sample of first data column, scaled:
+    this.columnInterval = this.xScale(tickVals[1]) - this.xScale(tickVals[0]);
+    this.yMin = this.plotter.yScale(this.data.range[0]);
+  }
+
+  clear() {
     // since we cannot use selection.html('') in SVG DOM (no innerHTML), we
     // cannot empty, and must remove the legend group, which will be re-added
     // in this.render().
@@ -452,6 +463,7 @@ export class TabularLegendRenderer {
   }
 
   render() {
+    this.prepare();
     this.makeLegendGroup();
     this.renderLegendRows();
     // post-render adjustments (e.g. position fully rendered table)
@@ -460,8 +472,15 @@ export class TabularLegendRenderer {
     this.makeLegendInteractive();
   }
 
+  useTabularLegend() {
+    return this.data.legend_placement === 'tabular';
+  }
+
   update() {
-    this.clearLegend();
+    if (!this.useTabularLegend()) {
+      return;  // plugin not applicable to plot
+    }
+    this.clear();
     this.render();
   }
 

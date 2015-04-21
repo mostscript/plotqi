@@ -20,17 +20,24 @@ export class BaseRenderingPlugin {
     /** hook to be called after plotter.preRender, for things like plot
       * plot size or margin adjustment
       */
+    this.plotCore = this.plotter.plotCore;
     this.svg = this.plotter.svg;
     this.xScale = this.plotter.xScale;
     this.yScale = this.plotter.yScale;
   }
 
   clear() {
+  }
 
+  prepare() {
+    /** optionally called by render() of a plugin, for late-initialized
+      * stuff that needs to be done before core rendering, but after the
+      * core NVD3 chart is rendered (things that cannot be done in preRender).
+      */
   }
 
   render() {
-
+    this.prepare();
   }
 
   update() {
@@ -39,10 +46,3 @@ export class BaseRenderingPlugin {
   }
 }
 
-// things to add as plugins: tabular legend, point labels, trendline, goal line
-// then once all these things are adapters, the way to make this actually a plugin
-// architecture is to make a list of plugins on the renderer... there ought to be
-// a way to override by setting a global in an addressable namespace (such that
-// registration of additional items in sequence is possible).
-//
-// Need to call these phase 2 plugins (or after draw?)

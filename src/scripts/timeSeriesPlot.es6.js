@@ -13,6 +13,7 @@ import {TrendLineRenderer} from './trendLineRenderer';
 // Set up plugin namespace:
 window.plotqi = window.plotqi || {};
 window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
+  TabularLegendRenderer,
   TrendLineRenderer,
   PointLabelsRenderer
 ];
@@ -434,10 +435,6 @@ export class TimeSeriesPlotter {
     // check computed vs. min:
     computedHeight = Math.max(minHeight, computedHeight);
     this.plotCore.style('height', '' + computedHeight + 'px');
-    // If rel-width & tabular legend: dynamic size for left margin, min 100px
-    if (this.useTabularLegend() && this.relativeWidth) {
-      this.margins.left = Math.max(80, Math.floor(clientWidth * 0.2));
-    }
     // save width, height of plotCore for reference by rendering:
     this.plotWidth = clientWidth;
     this.plotHeight = computedHeight;
@@ -501,37 +498,6 @@ export class TimeSeriesPlotter {
     return (!!grid) ? grid.getBoundingClientRect().height : 0;
   }
 
-  // legend methods:
-
-  useTabularLegend() {
-    return this.data.legend_placement === 'tabular';
-  }
-
-  useBasicLegend() {
-    var multi = this.data.series && this.data.series.length > 1;
-    if (!multi) {
-      return false;
-    }
-    return this.data.legend_location == null;
-  }
-
-  tabularLegend () {
-    var adapter = new TabularLegendRenderer(this);
-    adapter.update();
-  }
-
-  basicLegend() {
-  }
-
-  drawLegend() {
-    var useTabular = this.useTabularLegend(),
-        useBasic = (!useTabular && this.useBasicLegend());
-    if (!useTabular && !useBasic) {
-      return;  // no legend
-    }
-    return (useTabular) ? this.tabularLegend() : this.basicLegend();
-  }
-
   updateRenderingPlugins() {
     /** update rendering plugins, in order */
     this.plugins.forEach(function (plugin) {
@@ -557,8 +523,6 @@ export class TimeSeriesPlotter {
     }
     // goal-line, IFF goal exists:
     this.drawGoal();
-    // legend:
-    this.drawLegend();
     // Rendering plugins, in order:
     this.updateRenderingPlugins();
     return this.chart;
