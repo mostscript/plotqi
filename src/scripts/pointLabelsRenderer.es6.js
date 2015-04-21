@@ -54,7 +54,7 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
       // point that has no previous, next points in series.
       return 0;
     }
-    rise = pointB.y - pointA.y;
+    rise = (pointB.y - pointA.y) * -1;  // *-1 compensates for svg origin@top
     run = pointB.x - pointA.x;
     return rise / run;
   }
@@ -71,8 +71,10 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
     var points = [],
         scaledPoints = [];
     series.data.forEach(function (k, point) {
-      points.push(point);
-    }); // map to Array of points
+      if (point.value !== null) {
+        points.push(point);
+      }
+    }); // map to Array of points, filtering out null-valued
     scaledPoints = points.map(this.scalePoint, this);
     scaledPoints.forEach(function (point, idx, arr) {
         /** Trigonometric fit x₂,y₂, c distance on perpendicular to tangent
@@ -85,13 +87,23 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
             tanLnSlope = this.tangentLineSlope(point, prev, next),
             perpendicularSlope = -1 / tanLnSlope,
             positioningAngle = Math.atan(perpendicularSlope),
+            // text is wider than tall, so perceived hypotenuse difference
+            // from marker to text should be shorter when tanLnSlope is
+            // less than 1 (45°):
+            distanceDenominator = (Math.abs(tanLnSlope) > 1) ? 37 : 42,
             // ideal hypotenuse distance:
-            c = -1 * Math.floor(this.plotter.plotWidth / 30),
+            c = Math.floor(this.plotter.plotWidth / distanceDenominator),
             // opposite leg, delta for Y
             a = c * Math.sin(positioningAngle),
             // adjacent leg, delta for X
             b = c * Math.cos(positioningAngle);
-        point.x2 = point.x + b;
+        // if tangent line has negative slope (going down left-to-right)
+        // then we want to multiply a,b each by -1
+        if (tanLnSlope < 0) {
+          b *= -1;
+          a *= -1;
+        }
+        point.x2 = point.x - b;
         point.y2 = point.y + a;
       },
       this
