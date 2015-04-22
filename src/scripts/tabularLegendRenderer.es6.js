@@ -216,6 +216,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
           .style({
             'text-anchor': 'middle',
             'font-family': 'Arial Narrow',
+            'font-weight': 'bold',
             'font-size': function (d) {
               var subtle = (d.text === 'N/A' || d.text === '--'),
                   size = (subtle) ? defaultTextSize * 0.8 : defaultTextSize;
