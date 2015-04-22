@@ -375,6 +375,7 @@ export function fittedTrendline(points, domain, range) {
   r.x2 = solveForX((decline) ? minY : maxY);      // right-most x...
   r.x2 = (r.x2 > maxX) ? maxX : r.x2;             // ...that is in bound box
   r.y2 = solveForY(r.x2);
+  r.slope = slope;
   return r;
 }
 

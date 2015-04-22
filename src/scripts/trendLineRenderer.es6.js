@@ -36,6 +36,8 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
     var considered = this.data.series.filter(s => (!!s.show_trend)),
         lines = considered.map(s => this.data.fittedTrendline(s), this),
         scaledLines = lines.map(this.scaleTrendLine, this),
+        slope = (lines.length) ? lines[0].slope : 0,
+        markerRotation = -1 * Math.atan(slope) * (180/Math.PI),
         gridOffsetX = this.margins.left,
         gridOffsetY = this.margins.top,
         lineFn = d3.svg.line().x(d => d.x).y(d => d.y).interpolate('linear'),
@@ -50,7 +52,7 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
         viewBox: '0 0 10 10',
         markerWidth: Math.floor(this.plotWidth / 160),
         markerHeight: Math.floor(this.plotWidth / 160),
-        orient: 0,
+        orient: markerRotation,
         refX: 0,
         refY: 5
       })
