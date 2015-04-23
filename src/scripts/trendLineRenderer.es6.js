@@ -50,8 +50,8 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
       .attr({
         id: 'trendmarker',
         viewBox: '0 0 10 10',
-        markerWidth: Math.floor(this.plotWidth / 160),
-        markerHeight: Math.floor(this.plotWidth / 160),
+        markerWidth: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
+        markerHeight: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
         orient: markerRotation,
         refX: 0,
         refY: 5
