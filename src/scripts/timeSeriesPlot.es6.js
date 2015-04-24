@@ -9,10 +9,12 @@ import {debounce} from './vendor/debounce';
 import {TabularLegendRenderer} from './tabularLegendRenderer';
 import {PointLabelsRenderer} from './pointLabelsRenderer';
 import {TrendLineRenderer} from './trendLineRenderer';
+import {GoalLineRenderer} from './goalLineRenderer';
 
 // Set up plugin namespace:
 window.plotqi = window.plotqi || {};
 window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
+  GoalLineRenderer,
   TabularLegendRenderer,
   TrendLineRenderer,
   PointLabelsRenderer
@@ -333,48 +335,6 @@ export class TimeSeriesPlotter {
     return output;
   }
 
-  drawGoal() {
-    var goalValue = this.data.goal,
-        hasGoal = !!goalValue,
-        goalColor = this.data.goal_color || '#ff0000',
-        xMax = this.xScale(this.domain[1].valueOf()),
-        yPos = Math.floor(this.yScale(goalValue)),
-        baseGroup = this.svg.select(this.nvType + ' > g'),
-        goalGroup = baseGroup.select('g.nvd3.nv-distribution'),
-        goal,
-        text,
-        line;
-    if (!hasGoal) return;
-    if (goalGroup.empty()) {
-      // insert g.nvd3.nv-distribution before g.linesWrap in baseGroup:
-      goalGroup = baseGroup.insert('g', '.' + this.wrapType)
-        .attr('class', 'nvd3 nv-distribution');
-    }
-    // JOIN goal group (contains line, text) selection to singular null-data
-    goal = goalGroup.selectAll('g.nv-dist.nv-goal').data([null]);
-    // enter JOIN, set group to use goal color, add line, config coords:
-    line = goal.enter()
-      .append('g')
-      .attr('class', 'nv-dist nv-goal')
-      .style('color', this.data.goal_color)
-      .append('line')
-      .attr('class', 'nv-goal-line')
-      .attr({
-        x1: 0,
-        y1: yPos,
-        x2: xMax,
-        y2: yPos
-      });
-    // add text with explicit coordinates
-    text = goal
-      .append('text')
-      .attr('class', 'nv-goal-lbl')
-      .text(`Goal: ${goalValue}`)
-      .attr('text-anchor', 'start')
-      .attr('x', 3)
-      .attr('y', yPos - 3);
-  }
-
   _updateLineDetail() {
     var lineGroups = this.svg.selectAll(
           '.nv-wrap.nv-line > g > g.nv-groups .nv-group'
@@ -521,8 +481,6 @@ export class TimeSeriesPlotter {
       this._updateLineDetail();
       this._updateMarkerDetail();
     }
-    // goal-line, IFF goal exists:
-    this.drawGoal();
     // Rendering plugins, in order:
     this.updateRenderingPlugins();
     return this.chart;
