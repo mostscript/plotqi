@@ -10,10 +10,12 @@ import {TabularLegendRenderer} from './tabularLegendRenderer';
 import {PointLabelsRenderer} from './pointLabelsRenderer';
 import {TrendLineRenderer} from './trendLineRenderer';
 import {GoalLineRenderer} from './goalLineRenderer';
+import {ContinuityLinesPlugin} from './breakLines';
 
 // Set up plugin namespace:
 window.plotqi = window.plotqi || {};
 window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
+  ContinuityLinesPlugin,
   GoalLineRenderer,
   TabularLegendRenderer,
   TrendLineRenderer,
@@ -244,15 +246,13 @@ export class TimeSeriesPlotter {
                   info;
               if (series.data.has(key)) {
                 value = datapoint.value;
-                value = (isNaN(value)) ? null : value;
                 info = {
                   x: moment.utc(datapoint.key).valueOf(),
-                  y: value,
+                  y: (!!value || value === 0) ? value : NaN,
                   note: datapoint.note,
                   title: datapoint.title,
                   uri: datapoint.uri,
                   seriesIndex: index,
-                  missing: (value === null)
                 };
                 if (plotType === 'line') {
                   info.size = series.marker_size;
@@ -261,83 +261,13 @@ export class TimeSeriesPlotter {
                 obj.values.push(info);
               } else if (plotType === 'line') {
                 obj.values.push({
-                  x: new Date(key).valueOf(),
-                  missing: true
+                  x: moment.utc(key).valueOf()
                 });
               }
             });
             return obj;
         };
     return input.series.map(_transform, this);
-  }
-
-  extractData() {
-    var output = [],
-        series = this.allSeries(),
-        output_poly_sets;
-    // if series is for bar chart, we can return data:
-    if (this.type === 'bar') {
-      return series;
-    }
-    // for line plot, we have more work to do to support dotted-lines
-    // between incongruous data-points on the time-series:
-    if (this.type === 'line') {
-      output_poly_sets = function (series, i) {
-        var poly_set = [];
-        var poly_line, prev_pt = {missing: true};
-        var hidden = series.incomplete === 'hidden';
-        var solid = series.incomplete === 'solid';
-        series.values.forEach(function (pt, i) {
-          if(!pt.missing) {
-            if(!poly_line) {
-              poly_line = [];
-              prev_pt = pt;
-            }
-            if(!prev_pt.missing) poly_line.push(pt);
-
-            else {
-              poly_line.push(pt);
-              if(!solid) {
-                poly_set.push(poly_line);
-                poly_line = [ pt ];
-              }
-            }
-            if(i === (series.values.length)) poly_set.push(poly_line);
-          } else {
-            if( !(prev_pt.missing || solid) ) {
-              poly_set.push(poly_line);
-              poly_line = [ prev_pt ];
-            }
-          }
-          prev_pt = pt;
-        });
-
-        if(solid) poly_set = [ poly_line ];
-
-        output = output.concat( poly_set.map( function (poly_line, i) {
-          if(!hidden) return {
-            key: `${series.key}::${i}`,
-            color: series.color,
-            values: poly_line,
-            format: series.format,
-            thickness: series.thickness,
-            markerThickness: series.markerThickness,
-            dashed: i % 2 === 1
-          }; else if(i % 2 === 0) return {
-            key: `${series.key}::${i}`,
-            color: series.color,
-            values: poly_line,
-            format: series.format,
-            thickness: series.thickness,
-            markerThickness: series.markerThickness,
-            dashed: false
-          };
-
-        }) );
-      };
-      series.forEach(output_poly_sets);
-    }
-    return output;
   }
 
   _updateLineDetail() {
@@ -473,7 +403,7 @@ export class TimeSeriesPlotter {
   }
 
   render() {
-    var data = this.extractData();
+    var data = this.allSeries();
     //this.svg = this.plotDiv.select(SEL_CHARTSVG);
     this.chart = this.preRender();
     // now that we have chart, configure axes:

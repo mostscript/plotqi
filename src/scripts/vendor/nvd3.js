@@ -9577,7 +9577,9 @@ nv.models.scatter = function() {
 
             // create the points
             var points = groups.selectAll('path.nv-point')
-                .data(function(d) { return d.values });
+                .data(function(d) { 
+                  return d.values.filter(function (v) { return !isNaN(v.y); });
+                });
             points.enter().append('path')
                 .style('fill', function (d,i) { return d.color })
                 .style('stroke', function (d,i) { return d.color })
