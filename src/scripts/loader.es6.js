@@ -3,9 +3,14 @@
 
 import {TimeSeriesPlotter} from './timeSeriesPlot';
 
-export function chartLoader(node, data) {
+var INTERACT = true;   // default
+
+export function chartLoader(node, data, interactive) {
   // Factory function for chart loader, creates plotter adapter and 
   // returns its bound update() method as callback for async/queued load
-  var plotter = new TimeSeriesPlotter(node, data);    // construct adapter
-  return plotter.update.bind(plotter);                // bound callback
+  var useInteractive = (interactive === undefined) ? INTERACT : interactive,
+      // construct adapter
+      plotter = new TimeSeriesPlotter(node, data, useInteractive);
+  // return bound callback
+  return plotter.update.bind(plotter);
 }

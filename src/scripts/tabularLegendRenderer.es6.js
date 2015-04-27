@@ -64,6 +64,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     // since we cannot use selection.html('') in SVG DOM (no innerHTML), we
     // cannot empty, and must remove the legend group, which will be re-added
     // in this.render().
+    this.unloadInteractiveFeatures();
     this.svg.selectAll(SEL_LEGEND).remove();
   }
 
@@ -437,8 +438,15 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     );
   }
 
-  makeLegendInteractive() {
+  unloadInteractiveFeatures() {
+    /** called by this.clear(), should clear event handling before re-render */
+    //console.log('TODO: unload previous interactive features');
+  }
+
+  loadInteractiveFeatures() {
+    /** called by plotter after render */
     // TODO: implement click/hover for cell/column/row behaviors...
+    //console.log('TODO: tabular legend interactive features');
   }
 
   postRender() {
@@ -469,8 +477,6 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     this.renderLegendRows();
     // post-render adjustments (e.g. position fully rendered table)
     this.postRender();
-    // interactivity:
-    this.makeLegendInteractive();
   }
 
   useTabularLegend() {

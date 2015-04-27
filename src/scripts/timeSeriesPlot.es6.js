@@ -62,7 +62,7 @@ nv.utils.symbolMap.set('x', function(size) {
 export class TimeSeriesPlotter {
   // multi-adapter of D3-wrapped dom element (chart div) context and plot data
 
-  constructor (plotDiv, data) {
+  constructor (plotDiv, data, interactive) {
     this.plotDiv = plotDiv;   // DOM (d3) node (outer plot div)
     this.data = data;         // TimeSeriesChart object
     this._loadConfig();
@@ -70,6 +70,9 @@ export class TimeSeriesPlotter {
     this.chart = null;        // will be NVD3 chart obj
     this.plotCore = null;     // will be plot core inner div
     this.svg = null;          // will be svg inside the plot core div
+    // Interactive mode?
+    this.useInteractive = (interactive === undefined) ? true : interactive;
+    this._initPlugins();
   }
 
   _loadConfig() {
@@ -113,6 +116,9 @@ export class TimeSeriesPlotter {
     // NVD3 selectors contingent on plot type:
     this.nvType = (isLine) ? SEL_LINECHART : SEL_BARCHART;
     this.wrapType = (isLine) ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
+  }
+
+  _initPlugins() {
     // init plugins for later use by respective hookable methods
     this.plugins = [];
     window.plotqi.RENDERING_PLUGINS.forEach(function (klass) {
@@ -121,7 +127,6 @@ export class TimeSeriesPlotter {
       },
       this
     );
-
   }
 
   _configAxes() {
@@ -486,15 +491,29 @@ export class TimeSeriesPlotter {
     return this.chart;
   }
 
+  loadInteractiveFeatures() {
+    /** load interactive features from plugins, as applicable, if this
+      * is enabled (this.useInteractive === true).
+      */
+    if (!this.useInteractive) return;
+    this.plugins.forEach(function (plugin) {
+        plugin.loadInteractiveFeatures();
+      },
+      this
+    );
+  }
+
   refresh() {
     this.render();
+    this.loadInteractiveFeatures();
   }
 
   update() {
     // rendering stuff:
-    this.render();
+    this.refresh();
     if (this.relativeWidth) {
       window.addEventListener('resize', debounce(this.refresh.bind(this), 500, false));
     }
   }
 }
+

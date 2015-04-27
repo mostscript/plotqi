@@ -40,6 +40,14 @@ export class BaseRenderingPlugin {
     this.prepare();
   }
 
+  loadInteractiveFeatures() {
+    /** to be called only when relevant, called after rendering is complete;
+      * plugins must unwind any event handling in their clear() method if
+      * they create interactive features.  This will not be called when 
+      * core plotter is not in an interactive mode.
+      */
+  }
+
   update() {
     this.clear();
     this.render();
