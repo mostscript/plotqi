@@ -54,7 +54,7 @@ export class GoalLineRenderer extends BaseRenderingPlugin {
     line = goal.enter()
       .append('g')
         .attr('class', 'nv-dist nv-goal')
-        .style('color', goalColor)
+        .style('stroke', goalColor)
         .append('line')
           .classed('nv-goal-line', true)
           .attr({
@@ -68,6 +68,9 @@ export class GoalLineRenderer extends BaseRenderingPlugin {
       .append('text')
         .classed('nv-goal-lbl', true)
         .text(`Goal: ${goalValue}`)
+        .style({
+          fill: goalColor,
+        })
         .attr({
           'text-anchor': 'start',
           'fill-opacity': 0,      // can be overridden in CSS
