@@ -179,14 +179,21 @@ export class TimeSeriesPlotter {
 
   _margins() {
     var margins = {top: 10, bottom: 75, left: 40, right: 10},
+        legendLoc = this.data.legend_location,
+        topLegend = legendLoc === 'n',
+        multiSeries = this.data.series.length > 1,
         tabular = this.data.legend_placement === 'tabular';
     // space for tabular legend, as needed, will override above:
     if (tabular) {
       margins.left = 120;
       margins.bottom = 100;
-    } else {
-      // space for right-hand-side legend, if more than one series:
-      margins.right = this.data.series.length > 1 ? 120 : 10;
+    } else if (multiSeries && legendLoc) {
+      // more than one series, and legend enabled (top or right):
+      if (topLegend) {
+        margins.top += 15;
+      } else {
+        margins.right = 120;
+      }
     }
     return margins;
   }
@@ -201,7 +208,7 @@ export class TimeSeriesPlotter {
         markerSize = d => (d.size || 8) * Math.pow(this.plotWidth / 320, 2);
     chart
       .id(this.data.uid)
-      .showLegend(false)
+      .showLegend(false)    // do not use nvd3 for legends
       .tooltips(false);
     if (type === 'line') {
       chart
