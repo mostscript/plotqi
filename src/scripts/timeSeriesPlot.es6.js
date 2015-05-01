@@ -441,7 +441,6 @@ export class TimeSeriesPlotter {
   render() {
     var data = this.allSeries(),
         sDomain, sRange;
-    console.log(data);
     //this.svg = this.plotDiv.select(SEL_CHARTSVG);
     this.chart = this.preRender();
     // now that we have chart, configure axes:
