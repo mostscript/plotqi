@@ -48,13 +48,15 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
       * during preRender.
       */
     var xScale = this.plotter.xScale,
+        /*
         timeScale = d3.time.scale()
           .domain(xScale.domain())
           .range(xScale.range()),
+        */
         tickVals = this.plotter.tickVals;
     // force continuous scale in case of oridinal scale via bar chart:
-    this.xScale = timeScale;
-    this.xMax = this.xScale(this.plotter.domain[1].valueOf());
+    this.xScale = this.plotter.timeScale;
+    this.xMax = this.xScale(this.xScale.domain()[1].valueOf());
     // column width interval based on sample of first data column, scaled:
     this.columnInterval = this.xScale(tickVals[1]) - this.xScale(tickVals[0]);
     this.yMin = this.plotter.yScale(this.data.range[0]);
@@ -318,7 +320,11 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         timeStep = this.plotter.timeStep,
         timeScale = this.xScale,
         firstWidth = null,  // set once in first run of closure below
-        xOffset = this.margins.left,
+        scaleDomain = timeScale.domain(),
+        additionalPad = (this.plotter.type === 'line') ? 0 : (timeScale(
+          this.plotter.timeOffset(scaleDomain[0], +1).valueOf() 
+          ) - timeScale(scaleDomain[0])) / 2.0,
+        xOffset = this.margins.left + additionalPad,
         dataStart = this.data.domain[0],
         cellInfo = timePeriods.map(
           function (d) {
@@ -333,7 +339,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
             firstWidth = firstWidth || rectWidth;
             groupLeft = Math.round(groupLeft - (firstWidth / 2.0));
             return {
-              width: rectWidth - 1,
+              width: rectWidth - 2,
               x: xOffset + groupLeft,
               y: 0,
               stamp: d.toISOString(),

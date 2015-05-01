@@ -20,7 +20,7 @@ getObjects('report.json', function (charts) {
   window.charts = charts;
 
   lineChart.width = 100;
-  barChart.width = 65;
+  barChart.width = 100;
   barChart.chart_type = 'bar';
 
   var small_div = d3.select('#small-chart-div-test');

@@ -83,7 +83,11 @@ export class TimeSeriesPlotter {
         dValue = x => x.valueOf(),
         type = this.data.chart_type || 'line',
         isLine = (type === 'line'),
-        rightSidePadding = 0;
+        // right-side padding typically zero because last datapoint is
+        // beginning of period, and domain bounds are to end of period;
+        // in such case zero padded intervals is still effectively one.
+        rightSidePadding = 0,
+        leftSidePadding = (isLine) ? -1 : 0;
     // initial values:
     this.baseFontSize = 14;   // px
     // chart type:
@@ -98,7 +102,7 @@ export class TimeSeriesPlotter {
     this.d3Interval = d3.time[this.interval].utc;
     // pad left/right with 0-1 periods of space:
     domain = [
-      this.timeOffset(domain[0], -1),
+      this.timeOffset(domain[0], leftSidePadding),
       this.timeOffset(domain[1], rightSidePadding)
     ];
     this.domain = domain;
@@ -368,7 +372,9 @@ export class TimeSeriesPlotter {
     // (7) create an NVD3 chart object that will be returned:
     chart = this.nvChartFactory();
     // (8) get scales from chart, set for use by plotter, plugins:
+    // -- xScale may be oridinal or linear:
     this.xScale = chart.xScale();
+    // -- yScale:
     this.yScale = chart.yScale();
     // (9) Bind plugin svg, scales for plugins, call any plugins pre-render
     this.plugins.forEach(function (plugin) {
@@ -409,8 +415,33 @@ export class TimeSeriesPlotter {
     );
   }
 
+  setTimeScale() {
+    // if xScale is ordinal, we need a (continuous) time-scale equivalent for
+    // use by plugins:
+    var [sDomain, sRange] = [this.xScale.domain(), this.xScale.range()];
+    sRange = [sRange[0], sRange.slice(-1)[0]];
+    sDomain = [sDomain[0], sDomain.slice(-1)[0]];
+    // get an initial scale for proportions
+    this.timeScale = d3.time.scale()
+      .domain(sDomain)
+      .range(sRange);
+    // if plot type is bar, we need to extend the scale domain/range so that
+    // we accommodate about 1 total period of left/right padding used by nvd3:
+    if (this.type === 'bar') {
+      sDomain[1] = this.timeOffset(sDomain[1], +1);
+      sRange[1] = this.timeScale(sDomain[1]);
+    }
+    // use adjusted domain, range
+    this.timeScale
+      .domain(sDomain)
+      .range(sRange);
+    window.plotter = this;  // TODO
+  }
+
   render() {
-    var data = this.allSeries();
+    var data = this.allSeries(),
+        sDomain, sRange;
+    console.log(data);
     //this.svg = this.plotDiv.select(SEL_CHARTSVG);
     this.chart = this.preRender();
     // now that we have chart, configure axes:
@@ -418,6 +449,9 @@ export class TimeSeriesPlotter {
     // Bind data to selection, call this.chart function in context
     // data-aware selection:
     this.svg.datum(data).call(this.chart);
+    // after this binding, we have x scales with concrete domain/range, but
+    // for bar charts, we may need carefully constructed time-scale:
+    this.setTimeScale();
     if (this.type === 'line') {
       // update line detail (e.g. dashes, thickness):
       this._updateLineDetail();
