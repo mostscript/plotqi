@@ -222,6 +222,7 @@ export class TimeSeriesPlotter {
     }
     if (type === 'bar') {
       chart.showControls(false)
+        .groupSpacing(0.3)
         .reduceXTicks(false);
     }
     return chart;
