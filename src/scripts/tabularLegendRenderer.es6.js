@@ -139,7 +139,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         cellID = d => 'cell-' + uuid4(),
         minTextSize = 9,
         avgCellWidth = this.xMax / cellData.length,
-        computedTextSize = Math.floor((avgCellWidth / 2.4) * 2) / 2.0,
+        computedTextSize = Math.floor((avgCellWidth / 2.5) * 2) / 2.0,
         defaultTextSize = Math.max(computedTextSize, minTextSize);  // px
 
     row.selectAll(selectCellGroup).data(cellData).enter()
