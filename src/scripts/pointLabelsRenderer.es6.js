@@ -43,6 +43,10 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
         y = point.value;
     scaled.x = this.xScale(x);
     scaled.y = this.yScale(y);
+    // default x2, y2 as label coordinate (default is used by bar chart, and
+    // is above the marker data x,y):
+    scaled.x2 = scaled.x + 5;
+    scaled.y2 = scaled.y - Math.floor(this.plotter.plotWidth / 90);
     return scaled;
   }
 
@@ -76,39 +80,40 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
       }
     }); // map to Array of points, filtering out null-valued
     scaledPoints = points.map(this.scalePoint, this);
-    scaledPoints.forEach(function (point, idx, arr) {
-        /** Trigonometric fit x₂,y₂, c distance on perpendicular to tangent
-          * line to point, which should look better than simply displaying
-          * above a point marker (insofar as chances of text overlapping
-          * line-drawing for same series are minimized).
-          */
-        var prev = (idx === 0) ? null : arr[idx - 1],
-            next = (idx === arr.length - 1) ? null : arr[idx + 1],
-            tanLnSlope = this.tangentLineSlope(point, prev, next),
-            perpendicularSlope = -1 / tanLnSlope,
-            positioningAngle = Math.atan(perpendicularSlope),
-            // text is wider than tall, so perceived hypotenuse difference
-            // from marker to text should be shorter when tanLnSlope is
-            // less than 1 (45°):
-            distanceDenominator = (Math.abs(tanLnSlope) > 1) ? 37 : 42,
-            // ideal hypotenuse distance:
-            c = Math.floor(this.plotter.plotWidth / distanceDenominator),
-            // opposite leg, delta for Y
-            a = c * Math.sin(positioningAngle),
-            // adjacent leg, delta for X
-            b = c * Math.cos(positioningAngle);
-        // if tangent line has negative slope (going down left-to-right)
-        // then we want to multiply a,b each by -1
-        if (tanLnSlope < 0) {
-          b *= -1;
-          a *= -1;
-        }
-        point.x2 = point.x - b;
-        point.y2 = point.y + a;
-      },
-      this
-    );
-
+    if (this.plotter.type === 'line') {
+      scaledPoints.forEach(function (point, idx, arr) {
+          /** Trigonometric fit x₂,y₂, c distance on perpendicular to tangent
+            * line to point, which should look better than simply displaying
+            * above a point marker (insofar as chances of text overlapping
+            * line-drawing for same series are minimized).
+            */
+          var prev = (idx === 0) ? null : arr[idx - 1],
+              next = (idx === arr.length - 1) ? null : arr[idx + 1],
+              tanLnSlope = this.tangentLineSlope(point, prev, next),
+              perpendicularSlope = -1 / tanLnSlope,
+              positioningAngle = Math.atan(perpendicularSlope),
+              // text is wider than tall, so perceived hypotenuse difference
+              // from marker to text should be shorter when tanLnSlope is
+              // less than 1 (45°):
+              distanceDenominator = (Math.abs(tanLnSlope) > 1) ? 37 : 42,
+              // ideal hypotenuse distance:
+              c = Math.floor(this.plotter.plotWidth / distanceDenominator),
+              // opposite leg, delta for Y
+              a = c * Math.sin(positioningAngle),
+              // adjacent leg, delta for X
+              b = c * Math.cos(positioningAngle);
+          // if tangent line has negative slope (going down left-to-right)
+          // then we want to multiply a,b each by -1
+          if (tanLnSlope < 0) {
+            b *= -1;
+            a *= -1;
+          }
+          point.x2 = point.x - b;
+          point.y2 = point.y + a;
+        },
+        this
+      );
+    }
     return scaledPoints;
   }
 
@@ -143,8 +148,6 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
         'text-anchor': 'middle',
         x: point.x2,
         y: point.y2
-        //x: point.x,
-        //y: point.y - yOffset
       })
       .style({
         fill: color,
