@@ -321,10 +321,14 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         timeScale = this.xScale,
         firstWidth = null,  // set once in first run of closure below
         scaleDomain = timeScale.domain(),
+        barChart = (this.plotter.type === 'bar'),
+        leftPadBar = Math.floor(timeScale.range().slice(-1)[0] / 200.0),
+        groupSpacing = (barChart) ? this.plotter.chart.groupSpacing() : 0.0,
+        padDenominator = 2 + (groupSpacing * 0.2),
         additionalPad = (this.plotter.type === 'line') ? 0 : (timeScale(
           this.plotter.timeOffset(scaleDomain[0], +1).valueOf() 
-          ) - timeScale(scaleDomain[0])) / 2.0,
-        xOffset = this.margins.left + additionalPad,
+          ) - timeScale(scaleDomain[0])) / padDenominator,
+        xOffset = Math.round(this.margins.left + additionalPad),
         dataStart = this.data.domain[0],
         cellInfo = timePeriods.map(
           function (d) {
@@ -338,6 +342,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
                 groupLeft = Math.round(timeScale(d.valueOf()) - 5);
             firstWidth = firstWidth || rectWidth;
             groupLeft = Math.round(groupLeft - (firstWidth / 2.0));
+            groupLeft -= (barChart) ? leftPadBar : 0;
             return {
               width: rectWidth - 2,
               x: xOffset + groupLeft,
