@@ -174,7 +174,10 @@ export class MultiSeriesChart extends Klass {
 
   fittedTrendline(series) {
     /** fitted trendline for series in context of this chart's domain/range */
-    var data = series.data.values().map(d => [d.key.valueOf(), d.value]),
+    var allData = series.data.values(),
+        data = allData
+          .filter(d => d.value !== null)
+          .map(d => [d.key.valueOf(), d.value]),
         domain = this.domain.map(d => d.valueOf()),
         line = fittedTrendline(data, domain, this.range);
     line.trend_width = series.trend_width || 2;
