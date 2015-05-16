@@ -22,21 +22,27 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
     /** given line coodinates in unscaled x1,y1,x2,y2 (object), return
       * object with scaled respective coordinate values.
       */
-    return {
-      x1: this.xScale(line.x1),
-      y1: this.yScale(line.y1),
-      x2: this.xScale(line.x2),
-      y2: this.yScale(line.y2),
-      trend_color: line.trend_color,
-      trend_width: line.trend_width * Math.floor(this.plotWidth / 160) / 2
-    };
+    var r = {
+          x1: this.xScale(line.x1),
+          y1: this.yScale(line.y1),
+          x2: this.xScale(line.x2),
+          y2: this.yScale(line.y2),
+          trend_color: line.trend_color,
+          trend_width: line.trend_width * Math.floor(this.plotWidth / 160) / 2
+        },
+        decline = (r.y1 > r.y2);
+    // slope on normal axis, not top-down SVG coordinate system:
+    r.slope = -1 * (r.y2 - r.y1) / (r.x2 - r.x1);
+    r.slope = (decline) ? -1 * r.slope : r.slope;
+    return r;
   }
 
   render() {
     var considered = this.data.series.filter(s => (!!s.show_trend)),
         lines = considered.map(s => this.data.fittedTrendline(s), this),
         scaledLines = lines.map(this.scaleTrendLine, this),
-        slope = (lines.length) ? lines[0].slope : 0,
+        firstLine = (scaledLines.length) ? scaledLines[0] : null,
+        slope = (firstLine) ? firstLine.slope : 0,
         markerRotation = -1 * Math.atan(slope) * (180/Math.PI),
         gridOffsetX = this.margins.left,
         gridOffsetY = this.margins.top,
