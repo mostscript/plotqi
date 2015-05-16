@@ -137,7 +137,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         cellHeight,
         cellPadding = this.cellPadding,
         cellID = d => 'cell-' + uuid4(),
-        minTextSize = 9,
+        minTextSize = 6,
         avgCellWidth = this.xMax / cellData.length,
         computedTextSize = Math.floor((avgCellWidth / 2.5) * 2) / 2.0,
         defaultTextSize = Math.max(computedTextSize, minTextSize);  // px
@@ -255,10 +255,10 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     // dynamically size text length to fit cells, IFF too wide:
     row.selectAll('text, tspan')[0].forEach(function (element) {
         var selected = d3.select(element),
-            desiredWidth = selected.datum().width,
+            desiredWidth = selected.datum().width * 1.05,
             bRect = element.getBoundingClientRect(),
             textWidth = bRect.width;
-        if (textWidth > desiredWidth) {
+        if (textWidth > desiredWidth * 1.075) {
           selected.attr({
             textLength: desiredWidth,
           });
