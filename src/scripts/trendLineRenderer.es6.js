@@ -23,9 +23,9 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
       * object with scaled respective coordinate values.
       */
     var r = {
-          x1: this.xScale(line.x1),
+          x1: this.plotter.timeScale(line.x1),
           y1: this.yScale(line.y1),
-          x2: this.xScale(line.x2),
+          x2: this.plotter.timeScale(line.x2),
           y2: this.yScale(line.y2),
           trend_color: line.trend_color,
           trend_width: line.trend_width * Math.floor(this.plotWidth / 160) / 2
