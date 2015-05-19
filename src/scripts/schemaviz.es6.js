@@ -516,7 +516,7 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
                          'an exemplar date value for the month, e.g. ' +
                          '2014-06-01 may be represented as "Jun 2014". ',
             type: 'string',
-            vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly'],
+            vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly', 'daily'],
             defaultValue: 'monthly',
             required: false
           },
