@@ -255,7 +255,7 @@ export class TimeSeriesChart extends MultiSeriesChart {
     var interval = INTERVALS[this.frequency][1],
         defaultFn = d => parseDate(d, true).format('M/D/YYYY'),
         fn = (interval === 'month') ? d3.time.format.utc('%b %Y') : defaultFn;
-    return fn(key);
+    return fn(parseDate(key));
   }
 
   // Given date key, return object with key, associated x-axis Label
@@ -264,7 +264,7 @@ export class TimeSeriesChart extends MultiSeriesChart {
     var dateKey = parseDate(key),         // as Date
         dateValue = dateKey.valueOf(),    // ms
         stamp = (d => parseDate(d).toISOString().split('T')[0]),
-        generated = d => ({key: d, label: this.dateFormat(key)}),
+        generated = d => ({key: d, label: this.dateFormat(dateKey)}),
         configured = ((d, ds) => ({key: d, label: this.labels[ds]})),
         dateStamp = stamp(dateKey),
         considered = this.allDates().map(d => d.valueOf());
