@@ -168,9 +168,6 @@ export class TimeSeriesPlotter {
     if (!tabular && this.data.x_label) {
       chart.xAxis.axisLabel(this.data.x_label);
     }
-    if (!tabular && this.data.x_label) {
-      chart.xAxis.axisLabel(this.data.x_label);
-    }
     if (this.data.y_label) {
       chart.yAxis.axisLabel(this.data.y_label).axisLabelDistance(48);
     }
