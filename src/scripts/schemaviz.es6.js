@@ -508,25 +508,13 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
     super();
     schematize({
           frequency: {
-            title: 'Frequency (YAGNI??)',
+            title: 'Frequency',
             description: 'Frequncy between periods of reporting that ' +
                          'the plot visualizes.  May be used as cue for ' +
                          'handling the default date-label choices, ' +
                          'where month names are often stand-ins for ' +
                          'an exemplar date value for the month, e.g. ' +
-                         '2014-06-01 may be represented as "Jun 2014". ' +
-                         'THIS MAY BE YAGNI if we do not need to draw ' +
-                         'vertical lines at X-axis tick labels, or just ' +
-                         'rely on scales and explicit data-labels in ' +
-                         'the labels field below (the JSON will provide ' +
-                         'them, and if it does not, then just using ' +
-                         'default US-appropriate short-date of ' +
-                         'MM/DD/YYYY may be good enough to justify ' +
-                         'ignoring this?  I cannot remember why jqPlot ' +
-                         'wants this interval-frequency on the domain, ' +
-                         'but it may be unnecessarily constraining to ' +
-                         'fix this to a controlled set of choices or ' +
-                         'just plain unnecessary?',
+                         '2014-06-01 may be represented as "Jun 2014". ',
             type: 'string',
             vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly'],
             defaultValue: 'monthly',
