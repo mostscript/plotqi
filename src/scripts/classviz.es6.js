@@ -24,40 +24,80 @@ export function schematize(fields, schema) {
 }
 
 export class Field {
+
   constructor(name, descriptor) {
-    if(name == null) throw new Error('Field must be named');
+    if (name == null) throw new Error('Field must be named');
     descriptor = descriptor || {};
-    this.name = name; //field name, REQUIRED
-    this.title = descriptor.title; //label for the field
+    // field name, REQUIRED:
+    this.name = name;
+    // label for the field:
+    this.title = descriptor.title;
+    // field description / doc (may be used in form-hints):
     this.description = descriptor.description;
-    this.type = descriptor.type; //constrain to specific type, either pass in a class or a typeof. undefined means ignored
-    this.vocabulary = descriptor.vocabulary; //constrain field to specific set of values.
-    this.constraint = descriptor.constraint; //a callback function which can throw a ValidationError or return a normalized value. the field is passed in as 'this'
-    this.required = descriptor.required || false; //ValidationError thrown if this field is not set
-    this.defaultValue = descriptor.defaultValue; //when there is no value stored, the getter will return this value
+    // constrain to specific type, either a class or type (string):
+    this.type = descriptor.type;
+    // constrain field to specific set of values:
+    this.vocabulary = descriptor.vocabulary; 
+    // constraint is callback function which validates, normalizes; the field
+    // is bound such that 'this' inside the constraint callback is the field:
+    this.constraint = descriptor.constraint;
+    // is field required? true/false:
+    this.required = descriptor.required || false;
+    // default value for getter:
+    this.defaultValue = descriptor.defaultValue;
   }
 
   validate(value, obj) {
-    var normalized = value;
+    var normalized = value,
+        constraint = this.constraint;
     obj = obj || {};
-    if(value != null) normalized = this.constraint ? (this.constraint.call(this, value, obj) || value) : value;
 
-    if(this.type && (normalized != null)) {
-      if(typeof this.type === 'string') {
-        if(typeof normalized !== this.type) throw new ValidationTypeError(this, (typeof normalized), 'Expected type: [' + this.type + ']');
-      } else if (typeof this.type === 'function') {
-        if(! (normalized instanceof this.type)) throw new ValidationTypeError(this, (typeof normalized), 'Expected type: [' + this.type + ']');
+    if (value != null) {
+      normalized = value;
+      if (constraint) {
+        normalized = constraint.call(this, value, obj) || value;
       }
     }
 
-    if(this.required && (normalized == null)) {
-      if(this.defaultValue != null) normalized = this.defaultValue;
-      else throw new ValidationError(this, normalized, 'Required fields cannot be null');
+    if (this.type && (normalized != null)) {
+      if (typeof this.type === 'string') {
+        if (typeof normalized !== this.type) {
+          throw new ValidationTypeError(
+            this,
+            (typeof normalized),
+            'Expected type: [' + this.type + ']'
+          );
+        }
+      } else if (typeof this.type === 'function') {
+        if (! (normalized instanceof this.type)) {
+          throw new ValidationTypeError(
+            this,
+            (typeof normalized),
+            'Expected type: [' + this.type + ']'
+          );
+        }
+      }
     }
 
-    if(this.vocabulary && this.vocabulary.indexOf(normalized) === -1) {
+    if (this.required && (normalized == null)) {
+      if (this.defaultValue != null) {
+        normalized = this.defaultValue;
+      } else {
+        throw new ValidationError(
+          this,
+          normalized,
+          'Required fields cannot be null'
+        );
+      }
+    }
+
+    if (this.vocabulary && this.vocabulary.indexOf(normalized) === -1) {
       if (this.required || normalized !== null) {
-        throw new ValidationError(this, normalized, 'Allowed values: ' + this.vocabulary);
+        throw new ValidationError(
+          this,
+          normalized,
+          'Allowed values: ' + this.vocabulary
+        );
       }
     }
 
@@ -68,7 +108,11 @@ export class Field {
 export class ValidationError extends Error {
   constructor(field, value, msg) {
     super();
-    this.message = 'Invalid value: ' + value + ' on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+    this.message = 'Invalid value: ' +
+      value +
+      ' on field: ' +
+      field.name +
+      (msg ? '! (' + msg + ')' : '!');
     this.name = 'ValidationError';
   }
 }
@@ -76,12 +120,17 @@ export class ValidationError extends Error {
 export class ValidationTypeError extends TypeError {
   constructor(field, type, msg) {
     super();
-    this.message = 'Invalid type: [' + type + '] on field: ' + field.name + (msg ? '! (' + msg + ')' : '!');
+    this.message = 'Invalid type: [' +
+      type +
+      '] on field: ' +
+      field.name +
+      (msg ? '! (' + msg + ')' : '!');
     this.name = 'ValidationTypeError';
   }
 }
 
 export class Klass {
+
   constructor(obj) {
     obj = obj || {};
     var schema = obj.schema || schematize(obj, {});
