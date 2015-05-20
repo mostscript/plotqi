@@ -55,7 +55,11 @@ export class Field {
       else throw new ValidationError(this, normalized, 'Required fields cannot be null');
     }
 
-    if(this.vocabulary && this.vocabulary.indexOf(normalized) === -1) throw new ValidationError(this, normalized, 'Allowed values: ' + this.vocabulary);
+    if(this.vocabulary && this.vocabulary.indexOf(normalized) === -1) {
+      if (this.required || normalized !== null) {
+        throw new ValidationError(this, normalized, 'Allowed values: ' + this.vocabulary);
+      }
+    }
 
     return normalized;
   }
