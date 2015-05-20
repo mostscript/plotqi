@@ -11,12 +11,14 @@ import {PointLabelsRenderer} from './pointLabelsRenderer';
 import {TrendLineRenderer} from './trendLineRenderer';
 import {GoalLineRenderer} from './goalLineRenderer';
 import {ContinuityLinesPlugin} from './breakLines';
+import {AxisTitleRenderer} from './axisTitles';
 
 // Set up plugin namespace:
 window.plotqi = window.plotqi || {};
 window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
   ContinuityLinesPlugin,
   GoalLineRenderer,
+  AxisTitleRenderer,
   TabularLegendRenderer,
   TrendLineRenderer,
   PointLabelsRenderer
@@ -164,13 +166,6 @@ export class TimeSeriesPlotter {
     chart
       .xDomain(this.xDomain)
       .yDomain(this.data.range);
-    // optional axis labels:
-    if (!tabular && this.data.x_label) {
-      chart.xAxis.axisLabel(this.data.x_label);
-    }
-    if (this.data.y_label) {
-      chart.yAxis.axisLabel(this.data.y_label).axisLabelDistance(48);
-    }
   }
 
   timeOffset(date, n) {
@@ -181,6 +176,7 @@ export class TimeSeriesPlotter {
   _margins() {
     var margins = {top: 10, bottom: 75, left: 40, right: 10},
         legendLoc = this.data.legend_location,
+        hasLegend = !!this.data.legend_placement,
         topLegend = legendLoc === 'n',
         multiSeries = this.data.series.length > 1,
         tabular = this.data.legend_placement === 'tabular';
@@ -192,7 +188,7 @@ export class TimeSeriesPlotter {
       // more than one series, and legend enabled (top or right):
       if (topLegend) {
         margins.top += 15;
-      } else {
+      } else if (hasLegend) {
         margins.right = 120;
       }
     }
