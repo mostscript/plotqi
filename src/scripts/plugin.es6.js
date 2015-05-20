@@ -48,6 +48,10 @@ export class BaseRenderingPlugin {
       */
   }
 
+  postRender() {
+    /** post-render hook for after-rendering adjustments */
+  }
+
   update() {
     this.clear();
     this.render();

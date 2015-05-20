@@ -471,9 +471,19 @@ export class TimeSeriesPlotter {
     );
   }
 
+  postRender() {
+    // per-plugin adjustments
+    this.plugins.forEach(function (plugin) {
+        plugin.postRender();
+      },
+      this
+    );
+  }
+
   refresh() {
     this.render();
     this.loadInteractiveFeatures();
+    this.postRender();
   }
 
   update() {

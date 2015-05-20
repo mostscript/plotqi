@@ -137,10 +137,14 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         cellHeight,
         cellPadding = this.cellPadding,
         cellID = d => 'cell-' + uuid4(),
-        minTextSize = 6,
+        minTextSize = 4,
         avgCellWidth = this.xMax / cellData.length,
-        computedTextSize = Math.floor((avgCellWidth / 2.5) * 2) / 2.0,
-        defaultTextSize = Math.max(computedTextSize, minTextSize);  // px
+        computedTextSize = Math.floor((avgCellWidth / 2.5) * 2) / 2.2,
+        defaultTextSize = Math.max(computedTextSize, minTextSize),  // px
+        textWeight = (defaultTextSize > 8) ? 'bold' : 'normal';
+
+    // adjust text size for bold/non-bold:
+    defaultTextSize *= (textWeight === 'bold') ? 1.0 : 1.1;
 
     row.selectAll(selectCellGroup).data(cellData).enter()
       .append('g')
@@ -218,8 +222,8 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
           })
           .style({
             'text-anchor': 'middle',
-            'font-family': 'Arial Narrow',
-            'font-weight': 'bold',
+            'font-family': 'Arial',
+            'font-weight': textWeight,
             'font-size': function (d) {
               var subtle = (d.text === 'N/A' || d.text === '--'),
                   size = (subtle) ? defaultTextSize * 0.8 : defaultTextSize;
@@ -257,8 +261,9 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         var selected = d3.select(element),
             desiredWidth = selected.datum().width * 1.05,
             bRect = element.getBoundingClientRect(),
+            widthForgiveness = (desiredWidth < 16) ? 1.6 : 1.25,
             textWidth = bRect.width;
-        if (textWidth > desiredWidth * 1.075) {
+        if (textWidth > desiredWidth * widthForgiveness) {
           selected.attr({
             textLength: desiredWidth,
           });
@@ -460,7 +465,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     //console.log('TODO: tabular legend interactive features');
   }
 
-  postRender() {
+  _postRender() {
     // adjustments as needed after rendering other bits
     var table = this.svg.select(SEL_LEGEND),
         rows = this.svg.selectAll('upiq-legend-table-row'),
@@ -486,8 +491,13 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     this.prepare();
     this.makeLegendGroup();
     this.renderLegendRows();
-    // post-render adjustments (e.g. position fully rendered table)
-    this.postRender();
+  }
+
+  postRender() {
+    if (this.useTabularLegend()) {
+      // post-render adjustments (e.g. position fully rendered table)
+      this._postRender();
+    }
   }
 
   useTabularLegend() {
