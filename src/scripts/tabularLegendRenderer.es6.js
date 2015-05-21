@@ -229,7 +229,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
                   size = (subtle) ? defaultTextSize * 0.8 : defaultTextSize;
               return '' + size + 'px';
             },
-            'fill': cellStyle.textColor || '#000'
+            'fill': d => d.color || cellStyle.textColor || '#000'
           })
           .selectAll('tspan')
             .attr({
@@ -367,8 +367,16 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
      *      scaled layout/position data for column headings (axis labels).
      */
     var data = this.data,
+        axisTitle = this.data.x_label,
+        legendLabelCell = {
+          x: 5,
+          y: 0,
+          width: this.plotter.margins.left - 10,
+          color: '#aaa',
+          text: (axisTitle) ? axisTitle + ' →' : ''
+        },
         textGetter = d => data.axisLabel(d).label || '';
-    return this.rowCellData(textGetter);
+    return [legendLabelCell].concat(this.rowCellData(textGetter));
   }
 
   seriesRowData(series) {
