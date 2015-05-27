@@ -220,6 +220,9 @@ export class TimeSeriesChart extends MultiSeriesChart {
     var result = [],
         found = [],
         series = this.series,
+        autoCrop = this.auto_crop,
+        domain = this.domain,
+        rightSide = domain[1].valueOf(),
         sortfn = (a, b) => ( (a.toISOString() > b.toISOString()) ? 1 : -1 );
     if (!this._uniqueDates) {
       series.forEach(function (s) {
@@ -227,8 +230,10 @@ export class TimeSeriesChart extends MultiSeriesChart {
           points.map(datapoint=>datapoint.key).forEach(function (key) {
             var ms = key.valueOf();
             if (!isNaN(key) && found.indexOf(ms) === -1) {
-              result.push(key);
-              found.push(ms);
+              if (autoCrop && key.valueOf() <= rightSide) {
+                result.push(key);
+                found.push(ms);
+              }
             }
           });
         },
