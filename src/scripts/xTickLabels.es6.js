@@ -12,6 +12,7 @@ export class XTickLabelsRenderer extends BaseRenderingPlugin {
     this.type = this.plotter.type;
     this.angle = (this.type === 'bar') ? 90 : 45;
     this.angleRadians = (Math.PI / 180) * this.angle;
+    this.relSize = (this.type === 'bar') ? 0.8 : 0.9;
   }
 
   preRender() {
@@ -24,14 +25,16 @@ export class XTickLabelsRenderer extends BaseRenderingPlugin {
 
   mkGroup() {
     var group = this.svg.selectAll('g.upiq-x-tick-labels').data([null]),
+        isBar = this.type === 'bar',
         tickVals = this.plotter.tickVals,
         columnWidth = this.scale(tickVals[1]) - this.scale(tickVals[0]),
-        padLeft = (this.type === 'bar') ? Math.floor(columnWidth/2) + 2 : 5,
-        groupTop = this.plotter.plotHeight * 1.02 - this.margins.bottom;
+        padLeft = (this.type === 'bar') ? Math.floor(columnWidth/2) + 1 : 5,
+        height = this.margins.bottom * ((isBar) ? 1.05 : 1.0),
+        groupTop = this.plotter.plotHeight * 1.02 - height;
     group.enter().append('g')
       .classed('upiq-x-tick-labels', true)
       .style({
-        'font-size': '90%'
+        'font-size': (this.type === 'bar') ? '80%' : '90%'
       })
       .attr({
         transform: `translate(${padLeft}, ${groupTop})`
@@ -42,7 +45,7 @@ export class XTickLabelsRenderer extends BaseRenderingPlugin {
   labelHeight() {
     /* y-height of largest-length label */
     var maxLabel = Math.max.apply(null, this.labels.map(v => v.label.length)),
-        fontSize = this.plotter.baseFontSize,
+        fontSize = this.plotter.baseFontSize * this.relSize,
         multiplier = 0.5875,
         estimatedPx = fontSize * (maxLabel + 2) * multiplier,
         heightNeeded = Math.floor(estimatedPx * Math.sin(this.angleRadians));
