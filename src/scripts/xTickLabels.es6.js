@@ -8,17 +8,16 @@ export class XTickLabelsRenderer extends BaseRenderingPlugin {
 
   constructor(plotter) {
     super(plotter);
-    // constants/config:
     this.type = this.plotter.type;
-    this.angle = (this.type === 'bar') ? 90 : 45;
-    this.angleRadians = (Math.PI / 180) * this.angle;
-    this.relSize = (this.type === 'bar') ? 0.8 : 0.9;
   }
 
   preRender() {
     super.preRender();
     this.enabled = (this.data.legend_placement !== 'tabular');
     if (!this.enabled) return;
+    this.angle = (this.type === 'bar' || this.plotter.plotWidth < 360) ? 90 : 45;
+    this.angleRadians = (Math.PI / 180) * this.angle;
+    this.relSize = (this.type === 'bar') ? 0.8 : 0.9;
     this.labels = this.data.axisLabels();
     this.margins.bottom += this.labelHeight();
   }
