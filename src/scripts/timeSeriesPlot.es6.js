@@ -12,12 +12,14 @@ import {TrendLineRenderer} from './trendLineRenderer';
 import {GoalLineRenderer} from './goalLineRenderer';
 import {ContinuityLinesPlugin} from './breakLines';
 import {AxisTitleRenderer} from './axisTitles';
+import {XTickLabelsRenderer} from './xTickLabels';
 
 // Set up plugin namespace:
 window.plotqi = window.plotqi || {};
 window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
   ContinuityLinesPlugin,
   GoalLineRenderer,
+  XTickLabelsRenderer,
   AxisTitleRenderer,
   TabularLegendRenderer,
   TrendLineRenderer,
@@ -152,12 +154,12 @@ export class TimeSeriesPlotter {
           }
           return out;
         };
-    chart.xAxis
-      .tickFormat(((tabular) ? (() => '') : labelFn.bind(this)) || '')
-      .tickValues(this.tickVals)
-      .showMaxMin(false)
-      .tickPadding(6)
-      .rotateLabels(-45);
+    // hide X axis (tick labels):
+    if (this.type === 'bar') {
+      chart.xAxis.tickFormat(() => '');
+    } else {
+      chart.showXAxis(false);
+    }
     chart.yAxis
       .tickFormat(d3.format(','))
       .tickValues(yTickVals(5))
@@ -174,7 +176,7 @@ export class TimeSeriesPlotter {
   }
 
   _margins() {
-    var margins = {top: 10, bottom: 75, left: 40, right: 10},
+    var margins = {top: 10, bottom: 5, left: 40, right: 10},
         legendLoc = this.data.legend_location,
         hasLegend = !!this.data.legend_placement,
         topLegend = legendLoc === 'n',
