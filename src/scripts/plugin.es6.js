@@ -8,7 +8,6 @@ export class BaseRenderingPlugin {
     this.data = plotter.data;
     this.plotDiv = plotter.plotDiv;
     this.plotCore = plotter.plotCore;
-    this.margins = plotter.margins;
     // Note: plotter.svg, scales may be undefined on the plotter at the
     //        time of plugin construction; preRender() should re-bind always
     this.svg = plotter.svg;
@@ -24,6 +23,7 @@ export class BaseRenderingPlugin {
     this.svg = this.plotter.svg;
     this.xScale = this.plotter.xScale;
     this.yScale = this.plotter.yScale;
+    this.margins = this.plotter.margins;
   }
 
   clear() {

@@ -98,8 +98,6 @@ export class TimeSeriesPlotter {
     this.type = type;
     // whether plot is relative (not fixed-px) width:
     this.relativeWidth = (this.data.width_units == '%');
-    // margins:
-    this.margins = this._margins();
     // intverval bits:
     this.timeStep = interval[0];
     this.interval = interval[1];
@@ -349,6 +347,8 @@ export class TimeSeriesPlotter {
 
   preRender() {
     var chart;
+    // margins:
+    this.margins = this._margins();
     // prepare the chart div context for rendering:
     // (1) Clear existing content:
     this.plotDiv.html('');
