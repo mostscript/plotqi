@@ -7,7 +7,7 @@ import {BaseRenderingPlugin} from './plugin';
 export class AxisTitleRenderer extends BaseRenderingPlugin {
 
   preRender() {
-    var minMargin = Math.floor(this.plotter.baseFontSize * 3);
+    var minMargin = Math.floor(this.plotter.baseFontSize * 4);
     super.preRender();
     this.titleX = this.data.x_label || '';
     this.titleY = this.data.y_label || '';
