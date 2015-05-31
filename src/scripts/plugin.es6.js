@@ -21,6 +21,8 @@ export class BaseRenderingPlugin {
       */
     this.plotCore = this.plotter.plotCore;
     this.svg = this.plotter.svg;
+    this.plotGroup = this.plotter.plotGroup;
+    this.abovePlotGroup = this.plotter.abovePlotGroup;
     this.xScale = this.plotter.xScale;
     this.yScale = this.plotter.yScale;
     this.margins = this.plotter.margins;

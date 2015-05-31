@@ -23,7 +23,7 @@ export class XTickLabelsRenderer extends BaseRenderingPlugin {
   }
 
   mkGroup() {
-    var group = this.svg.selectAll('g.upiq-x-tick-labels').data([null]),
+    var group = this.plotGroup.selectAll('g.upiq-x-tick-labels').data([null]),
         isBar = this.type === 'bar',
         tickVals = this.plotter.tickVals,
         columnWidth = this.scale(tickVals[1]) - this.scale(tickVals[0]),

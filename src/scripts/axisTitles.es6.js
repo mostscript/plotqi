@@ -22,7 +22,7 @@ export class AxisTitleRenderer extends BaseRenderingPlugin {
   }
 
   mkGroup() {
-    var group = this.svg.selectAll('g.upiq-axis-titles').data([null]);
+    var group = this.plotGroup.selectAll('g.upiq-axis-titles').data([null]);
     group.enter().append('g')
       .classed('upiq-axis-titles', true);
     this.group = group;

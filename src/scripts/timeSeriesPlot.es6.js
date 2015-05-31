@@ -360,6 +360,9 @@ export class TimeSeriesPlotter {
     // (4) Add empty svg
     this.svg = this.plotCore.append('svg').attr('class', SVG_CLASSNAME);
     this.svg.outerNode = this.plotDiv;
+    // (4.b.) set core groups in this.svg:
+    this.abovePlotGroup = this.svg.append('g').classed('upiq-above-plot', true);
+    this.plotGroup = this.svg.append('g').classed('upiq-plot', true);
     // (5) set initial base styles on svg element that will be inherited:
     this.svg.style({
       'font-size': '' + this.baseFontSize + 'px'
@@ -439,13 +442,12 @@ export class TimeSeriesPlotter {
   render() {
     var data = this.allSeries(),
         sDomain, sRange;
-    //this.svg = this.plotDiv.select(SEL_CHARTSVG);
     this.chart = this.preRender();
     // now that we have chart, configure axes:
     this._configAxes();
     // Bind data to selection, call this.chart function in context
     // data-aware selection:
-    this.svg.datum(data).call(this.chart);
+    this.plotGroup.datum(data).call(this.chart);
     // after this binding, we have x scales with concrete domain/range, but
     // for bar charts, we may need carefully constructed time-scale:
     this.setTimeScale();

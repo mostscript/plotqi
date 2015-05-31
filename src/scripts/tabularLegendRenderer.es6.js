@@ -67,16 +67,16 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     // cannot empty, and must remove the legend group, which will be re-added
     // in this.render().
     this.unloadInteractiveFeatures();
-    this.svg.selectAll(SEL_LEGEND).remove();
+    this.plotGroup.selectAll(SEL_LEGEND).remove();
   }
 
   makeLegendGroup() {
-    var legendGroup = this.svg.selectAll(SEL_LEGEND).data([this.data.series]),
+    var legendGroup = this.plotGroup.selectAll(SEL_LEGEND).data([this.data.series]),
         legendEnterSelection = legendGroup
           .enter()
           .append('g')
           .classed(LEGEND_CLASS, true);
-    this.legendGroup = this.svg.select(SEL_LEGEND);
+    this.legendGroup = this.plotGroup.select(SEL_LEGEND);
   }
 
   setLegendMargins() {
@@ -475,8 +475,8 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
 
   _postRender() {
     // adjustments as needed after rendering other bits
-    var table = this.svg.select(SEL_LEGEND),
-        rows = this.svg.selectAll('upiq-legend-table-row'),
+    var table = this.plotGroup.select(SEL_LEGEND),
+        rows = this.plotGroup.selectAll('upiq-legend-table-row'),
         tableHeight = table[0][0].getBoundingClientRect().height,
         gridHeight = this.plotter.gridHeight(),
         intermediarySpacing = (this.margins.top || 10) + 10,

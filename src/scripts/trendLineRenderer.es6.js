@@ -51,7 +51,7 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
     if (!considered) {
       return;  // no trendlines!
     }
-    this.svg.select('defs')
+    this.plotGroup.select('defs')
       .append('marker')
       .attr({
         id: 'trendmarker',
@@ -69,7 +69,7 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
           opacity: 0.5
         });
 
-    group = this.svg.append('g')
+    group = this.plotGroup.append('g')
       .classed('upiq-trendlines', true)
       .attr({
         transform: `translate(${gridOffsetX}, ${gridOffsetY})`,

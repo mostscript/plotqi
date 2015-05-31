@@ -118,7 +118,7 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
   }
 
   mkGroup() {
-    var group = this.svg.selectAll('g.upiq-point-labels').data([null]),
+    var group = this.plotGroup.selectAll('g.upiq-point-labels').data([null]),
         gridOffsetX = this.margins.left,
         gridOffsetY = this.margins.top;
     group.enter().append('g')
