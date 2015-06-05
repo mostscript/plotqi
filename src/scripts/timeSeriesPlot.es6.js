@@ -182,10 +182,7 @@ export class TimeSeriesPlotter {
         multiSeries = this.data.series.length > 1,
         tabular = this.data.legend_placement === 'tabular';
     // space for tabular legend, as needed, will override above:
-    if (tabular) {
-      margins.left = 120;
-      margins.bottom = 100;
-    } else if (multiSeries && legendLoc) {
+    if (!tabular && multiSeries && legendLoc) {
       // more than one series, and legend enabled (top or right):
       if (topLegend) {
         margins.top += 15;
