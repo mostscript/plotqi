@@ -175,22 +175,8 @@ export class TimeSeriesPlotter {
   }
 
   _margins() {
-    var margins = {top: 10, bottom: 5, left: 40, right: 10},
-        legendLoc = this.data.legend_location,
-        hasLegend = !!this.data.legend_placement,
-        topLegend = legendLoc === 'n',
-        multiSeries = this.data.series.length > 1,
-        tabular = this.data.legend_placement === 'tabular';
-    // space for tabular legend, as needed, will override above:
-    if (!tabular && multiSeries && legendLoc) {
-      // more than one series, and legend enabled (top or right):
-      if (topLegend) {
-        margins.top += 15;
-      } else if (hasLegend) {
-        margins.right = 120;
-      }
-    }
-    return margins;
+    /** make default margins for plot */
+    return {top: 10, bottom: 5, left: 40, right: 10};
   }
 
   nvChartFactory() {
