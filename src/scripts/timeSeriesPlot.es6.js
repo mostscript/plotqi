@@ -330,36 +330,36 @@ export class TimeSeriesPlotter {
   }
 
   preRender() {
+    /** prepare the chart div context for rendering */
     var chart;
-    // margins:
+    // - Set margins:
     this.margins = this._margins();
-    // prepare the chart div context for rendering:
-    // (1) Clear existing content:
+    // - Clear existing content:
     this.plotDiv.html('');
-    // (2) Create inner (core) div:
+    // - Create inner (core) div:
     this.plotCore = this.plotDiv.append('div').classed('chart-div', true);
-    // (3) Size div elements according to specifications:
+    // - Size div elements according to specifications:
     this.sizePlot();
-    // (4) Add empty svg
+    // - Add empty svg
     this.svg = this.plotCore.append('svg').attr('class', SVG_CLASSNAME);
     this.svg.outerNode = this.plotDiv;
-    // (4.b.) set core groups in this.svg:
+    // - set core groups in this.svg:
     this.abovePlotGroup = this.svg.append('g').classed('upiq-above-plot', true);
     this.plotGroup = this.svg.append('g').classed('upiq-plot', true);
-    // (5) set initial base styles on svg element that will be inherited:
+    // - set initial base styles on svg element that will be inherited:
     this.svg.style({
       'font-size': '' + this.baseFontSize + 'px'
     });
-    // (6) Add singleton 'defs' to svg:
+    // - Add singleton 'defs' to svg:
     this.svg.append('defs');
-    // (7) create an NVD3 chart object that will be returned:
+    // - create an NVD3 chart object that will be returned:
     chart = this.nvChartFactory();
-    // (8) get scales from chart, set for use by plotter, plugins:
+    // - get scales from chart, set for use by plotter, plugins:
     // -- xScale may be oridinal or linear:
     this.xScale = chart.xScale();
     // -- yScale:
     this.yScale = chart.yScale();
-    // (9) Bind plugin svg, scales for plugins, call any plugins pre-render
+    // - Bind plugin svg, scales for plugins, call any plugins pre-render
     this.plugins.forEach(function (plugin) {
         if (typeof plugin.preRender === 'function') {
           plugin.preRender();
@@ -367,7 +367,7 @@ export class TimeSeriesPlotter {
       },
       this
     );
-    // (10) Set chart positioning: width, height, margins:
+    // - Set chart positioning: width, height, margins:
     chart.width(this.plotWidth);    // width before margins
     chart.height(this.plotHeight);  // height before margins
     chart.margin(this.margins);     // margins around exterior of grid
