@@ -467,13 +467,11 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
 
   unloadInteractiveFeatures() {
     /** called by this.clear(), should clear event handling before re-render */
-    //console.log('TODO: unload previous interactive features');
   }
 
   loadInteractiveFeatures() {
     /** called by plotter after render */
     // TODO: implement click/hover for cell/column/row behaviors...
-    //console.log('TODO: tabular legend interactive features');
   }
 
   _postRender() {
