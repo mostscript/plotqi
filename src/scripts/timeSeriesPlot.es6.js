@@ -367,8 +367,10 @@ export class TimeSeriesPlotter {
       },
       this
     );
-    // (10) Set chart margins, after the plugins' respective preRender called:
-    chart.margin(this.margins);
+    // (10) Set chart positioning: width, height, margins:
+    chart.width(this.plotWidth);    // width before margins
+    chart.height(this.plotHeight);  // height before margins
+    chart.margin(this.margins);     // margins around exterior of grid
     return chart;
   }
 

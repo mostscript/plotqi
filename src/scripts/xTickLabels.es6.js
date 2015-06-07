@@ -19,7 +19,8 @@ export class XTickLabelsRenderer extends BaseRenderingPlugin {
     this.angleRadians = (Math.PI / 180) * this.angle;
     this.relSize = (this.type === 'bar') ? 0.8 : 0.9;
     this.labels = this.data.axisLabels();
-    this.margins.bottom += this.labelHeight();
+    this.height = this.labelHeight();
+    this.margins.bottom += this.height;
   }
 
   mkGroup() {
@@ -28,8 +29,7 @@ export class XTickLabelsRenderer extends BaseRenderingPlugin {
         tickVals = this.plotter.tickVals,
         columnWidth = this.scale(tickVals[1]) - this.scale(tickVals[0]),
         padLeft = (this.type === 'bar') ? Math.floor(columnWidth/2) + 1 : 5,
-        height = this.margins.bottom * ((isBar) ? 1.05 : 1.0),
-        groupTop = this.plotter.plotHeight * 1.02 - height;
+        groupTop = this.plotter.plotHeight * 1.02 - this.margins.bottom;
     group.enter().append('g')
       .classed('upiq-x-tick-labels', true)
       .style({
