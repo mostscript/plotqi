@@ -459,12 +459,28 @@ export class TimeSeriesPlotter {
   }
 
   postRender() {
-    // per-plugin adjustments
+    var abovePlot = this.abovePlotGroup[0][0],
+        adjustHeight = Math.ceil(abovePlot.getBoundingClientRect().height);
+    // - per-plugin adjustments
     this.plugins.forEach(function (plugin) {
         plugin.postRender();
       },
       this
     );
+    // - general adjustments
+    // -- positioning adjustment to accommodate height of this.abovePlotGroup
+    //    which may be adjusted by plugins (e.g. a top legend); note this
+    //    adjusts the total plotCore height irrespective of aspect-ratio set
+    //    in this.sizePlot()
+    if (adjustHeight) {
+      this.plotGroup.attr({
+        transform: `translate(0, ${adjustHeight})`
+      });
+      this.plotHeight += adjustHeight;
+      this.plotCore.style({
+        height: `${this.plotHeight}px`
+      });
+    }
   }
 
   refresh() {
