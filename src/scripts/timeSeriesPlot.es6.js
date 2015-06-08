@@ -13,6 +13,7 @@ import {GoalLineRenderer} from './goalLineRenderer';
 import {ContinuityLinesPlugin} from './breakLines';
 import {AxisTitleRenderer} from './axisTitles';
 import {XTickLabelsRenderer} from './xTickLabels';
+import {BasicLegendRenderer} from './basicLegend';
 
 // Set up plugin namespace:
 window.plotqi = window.plotqi || {};
@@ -24,7 +25,8 @@ window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
   AxisTitleRenderer,
   TabularLegendRenderer,
   TrendLineRenderer,
-  PointLabelsRenderer
+  PointLabelsRenderer,
+  BasicLegendRenderer
 ];
 
 // Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
@@ -459,8 +461,8 @@ export class TimeSeriesPlotter {
   }
 
   postRender() {
-    var abovePlot = this.abovePlotGroup[0][0],
-        adjustHeight = Math.ceil(abovePlot.getBoundingClientRect().height);
+    var abovePlot = this.abovePlotGroup[0][0].getBoundingClientRect().height,
+        adjustHeight = Math.ceil(abovePlot * 1.5);
     // - per-plugin adjustments
     this.plugins.forEach(function (plugin) {
         plugin.postRender();
