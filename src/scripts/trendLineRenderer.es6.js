@@ -51,23 +51,6 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
     if (!considered) {
       return;  // no trendlines!
     }
-    this.plotGroup.select('defs')
-      .append('marker')
-      .attr({
-        id: 'trendmarker',
-        viewBox: '0 0 10 10',
-        markerWidth: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
-        markerHeight: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
-        orient: markerRotation,
-        refX: 0,
-        refY: 5
-      })
-      .append('path')
-        .attr({
-          d: 'M 0 0 L 10 5 L 0 10 z',
-          fill: '#444',
-          opacity: 0.5
-        });
 
     group = this.plotGroup.append('g')
       .classed('upiq-trendlines', true)
@@ -76,7 +59,7 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
         opacity: '0.5'
       });
 
-    scaledLines.forEach(function (line) {
+    scaledLines.forEach(function (line, idx) {
         var markerCount = Math.floor((line.point_count || 12) / 2),
             data = [],
             x1 = line.x1,
@@ -84,7 +67,28 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
             x2 = line.x2,
             y2 = line.y2,
             rise = (y2 - y1),
-            run = (x2 - x1);
+            run = (x2 - x1),
+            slope = rise/run,
+            markerRotation = Math.atan(slope) * (180/Math.PI);
+
+        this.plotGroup.select('defs')
+          .append('marker')
+          .attr({
+            id: `trendmarker-${idx}`,
+            viewBox: '0 0 10 10',
+            markerWidth: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
+            markerHeight: Math.floor(Math.sqrt(this.plotWidth / 160) + 2),
+            orient: markerRotation,
+            refX: 0,
+            refY: 5
+          })
+          .append('path')
+            .attr({
+              d: 'M 0 0 L 10 5 L 0 10 z',
+              fill: line.trend_color,
+              opacity: 0.5
+            });
+
         data.push({x: x1, y: y1});
         d3.range(1, markerCount + 1).forEach(function (i) {
           data.push({
@@ -98,7 +102,7 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
             d: lineFn(data),
             stroke: line.trend_color,
             'stroke-width': line.trend_width,
-            'marker-mid': 'url(#trendmarker)',
+            'marker-mid': `url(#trendmarker-${idx})`,
             fill: 'none'
           });
       },
