@@ -78,27 +78,20 @@ export function range() {
   return result;
 }
 
-export function getObjects(jsonFile, callback) {
-	d3.json(jsonFile, function (jsonData) {
-		var objs = [];
-
-		if(jsonData.length)
-			objs = jsonData.map( function ([, obj]) { return obj; } );
-		else //if the JSON payload wasn't an array
-			objs = [ jsonData ]; //then we were given a single object
-
-    objs.forEach( function (obj) { 
-      obj.series.forEach( function (serum) {
-        serum.data = serum.data.map( function ([, datum]) { return datum; } );
-        });
-      });
-		callback(objs);
+export function forReportJSON(jsonFile, callback) {
+	d3.json(jsonFile, function (input) {
+    /** given JSON where charts and data-points may be key/value pairs in 
+      * JSON Arrays, normalize to simple Arrays of objects.
+      */
+    var kv2data = ([k, v]) => v,  // key/value pair array to data/value object
+        data = (input instanceof Array) ? input.map(kv2data) : [ input ],
+        normalizeSeriesData = s => s.data = s.data.map(kv2data);
+    data.forEach(chart => chart.series.forEach(normalizeSeriesData));
+    callback(data);
 	});
 }
 
-/*
-Taken from an upcoming version of d3, heavily altered to suit needs of UPIQ
- */
+// Taken from an upcoming version of d3, heavily altered to suit UPIQ:
 export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, ignorePadding) {
 
     paddingRightLeft = paddingRightLeft != null ? paddingRightLeft : 5; //Default padding (5px)
