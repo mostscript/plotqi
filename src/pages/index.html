@@ -31,18 +31,20 @@ div.chart-div {
       <p class="alert-danger">You are using an <strong>unsupported</strong> version of Internet Explorer!</p>
     <![endif]-->
     <br/>
+
+  <!-- report testing below -->
+
+  <div class="report-core" data-report-json="report.json">
+    <h3>Core report</h3>
+    <!-- TODO: existing chart divs that get re-populated/enhanced progressively if server-side
+        template rendered into DOM via HTML source -->
+  </div>
+
+  <hr />
   <div class="report">
-    <h3>Adapter-based unified time-series re-factoring:</h3>
+    <h3>Unified time-series re-factoring / line vs bar comparison:</h3>
     <div id="chart-div-refactor-1"></div>
     <div id="chart-div-refactor-2"></div>
-  </div>
-  <div class="report">
-    <h3>Original renderings:</h3>
-    <div id="chart-div-test-1"></div>
-    <div id="chart-div-test-2"></div>
-  </div>
-  <div class="report">
-    <div id="small-chart-div-test"></div>
   </div>
   </body>
 </html>
