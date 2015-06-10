@@ -185,7 +185,7 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
     this.drawElements();
   }
 
-  postRender() {
+  _postRender() {
     var seriesGroups = this.group.selectAll('g.upiq-legend-series'),
         selParent = this.group[0][0],
         groupSelections = seriesGroups[0].map(function (group, idx) {
@@ -244,6 +244,13 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
     this.group.select('rect.legend-bg').attr({
       height: Math.floor(height * ((isTop) ? 1 : numSeries)) + (margin * 2)
     });
+  }
+
+  postRender() {
+    if (!this.enabled) {
+      return;
+    }
+    this._postRender();
   }
 
 }
