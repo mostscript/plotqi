@@ -141,8 +141,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         cellPadding = this.cellPadding,
         cellID = d => 'cell-' + uuid4(),
         minTextSize = 4,
-        avgCellWidth = this.xMax / cellData.length,
-        computedTextSize = Math.floor((avgCellWidth / 2.5) * 2) / 2.2,
+        computedTextSize = this.plotter.baseFontSize * 0.65,
         defaultTextSize = Math.max(computedTextSize, minTextSize),  // px
         textWeight = (defaultTextSize > 8) ? 'bold' : 'normal';
 
