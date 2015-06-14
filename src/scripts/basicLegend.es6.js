@@ -15,12 +15,16 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
   preRender() {
     super.preRender();
     this.placement = this.data.legend_placement;
+    this.smallPlot = (this.plotter.plotWidth < 400); 
     this.loc = this._location();
     this.enabled = this._enabled();
     if (this.enabled) {
       this.initialPositioning();
     }
-    this.textSize = this.plotter.baseFontSize * 0.75; 
+    this.textSize = this.plotter.baseFontSize * 0.75;
+    if (this.data.series.length > 4 && !this.smallPlot) {
+      this.textSize *= 0.6;
+    }
   }
 
   initialPositioning() {
