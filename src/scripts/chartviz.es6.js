@@ -289,15 +289,10 @@ export class TimeSeriesChart extends MultiSeriesChart {
         explicitEnd = this.end,
         timeStep = INTERVALS[this.frequency][0],
         interval = INTERVALS[this.frequency][1],
-        ceiling = function (d) {
-          /** ceiling(): date ceiling for timeStep+interval */
-          var d3Interval = d3.time[interval],
-              intervalFloor = d3Interval.utc.floor(d),
-              offsetCeiling = new Date(
-                d3Interval.utc.offset(intervalFloor, timeStep) - 1
-              );
-          return offsetCeiling;
-        };
+        quarterly = interval === 'month' && timeStep === 3,
+        intervalName = (quarterly) ? 'quarter' : interval,
+        ceiling = d => moment.utc(d).endOf(intervalName).toDate(),
+        floor = d => moment.utc(d).startOf(intervalName).toDate();
     if (explicitStart && explicitEnd) {
       return [d3.time.day.floor(explicitStart), d3.time.day.ceil(explicitEnd)];
     }
@@ -311,7 +306,7 @@ export class TimeSeriesChart extends MultiSeriesChart {
     }
     function getEnd() {
       return ceiling(
-        explicitEnd || 
+        (explicitEnd) ? moment.utc(explicitEnd).endOf('day').toDate() : null || 
         moment.max(...seriesDomains.map(([min, max]) => moment.utc(max))).toDate()
       );
     }

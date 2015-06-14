@@ -173,7 +173,7 @@ export class TimeSeriesPlotter {
 
   timeOffset(date, n) {
     /** n can be +/- integer for direction, number of intervals to offset */
-    return moment.utc(date).add(n, this.interval).toDate();
+    return moment.utc(date).add(n * this.timeStep, this.interval).toDate();
   }
 
   _margins() {

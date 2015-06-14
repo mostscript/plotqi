@@ -335,12 +335,12 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
           ) - timeScale(scaleDomain[0])) / padDenominator,
         xOffset = Math.round(this.margins.left + additionalPad),
         dataStart = this.data.domain[0],
+        quarterly = (this.plotter.interval === 'month' && timeStep === 3),
+        interval = (quarterly) ? 'quarter' : this.plotter.interval,
         cellInfo = timePeriods.map(
           function (d) {
             var periodStart = d,
-                periodEnd = moment.utc(
-                  this.plotter.timeOffset(d, timeStep).valueOf() - 1
-                ).toDate(),
+                periodEnd = moment.utc(d).endOf(interval).toDate(),
                 startX = Math.round(timeScale(periodStart.valueOf())),
                 endX = Math.round(timeScale(periodEnd.valueOf())),
                 rectWidth = Math.round(endX - startX),
