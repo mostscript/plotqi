@@ -1,8 +1,8 @@
 [
   [
-    "test_numero_dos", 
+    "0f647eaf2f574b8e84b2e0be10333323", 
     {
-      "uid": "test_numero_dos", 
+      "uid": "0f647eaf2f574b8e84b2e0be10333323", 
       "range_min": 0, 
       "series": [
         {
@@ -293,10 +293,11 @@
     }
   ], 
   [
-    "this_is_a_test", 
+    "a6dcb641795444cdb0e745ed84d569fd", 
     {
-      "uid": "this_is_a_test", 
+      "uid": "a6dcb641795444cdb0e745ed84d569fd", 
       "range_min": 0, 
+      "description": "This is a test, this is only a test.",
       "series": [
         {
           "line_width": 4, 
