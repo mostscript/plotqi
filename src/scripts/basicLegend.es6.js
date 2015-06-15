@@ -9,7 +9,7 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
 
   constructor(plotter) {
     super(plotter);
-    this.all_locations = ['e', 'n'];  // note 'east' is really northeast...
+    this.all_locations = ['e', 'n'];  // 'east' is really northeast...
   }
 
   preRender() {
@@ -33,19 +33,19 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
       * adjust margins and if needed positioning of plot relative to legend
       */
     var loc = this.loc,
-        isEast = (this.loc === 'e'),
+        isTop = this.loc === 'n',
         plotWidth = this.plotter.plotWidth,
-        plotHeight = (!isEast) ? 30 : this.plotter.plotHeight,
+        plotHeight = (isTop) ? 30 : this.plotter.plotHeight,
         gridLeft = this.plotter.margins.left,
         topWidth = plotWidth - gridLeft - this.margins.right,
-        legendWidth = (isEast) ? Math.floor(plotWidth * 0.2) : topWidth,
+        legendWidth = (isTop) ? topWidth : Math.floor(plotWidth * 0.2),
         legendMargin = Math.floor(0.01 * this.plotter.plotWidth),
         gridRight = plotWidth - legendWidth - legendMargin;
     this.width = legendWidth - 1;
-    this.left = (isEast) ? gridRight + legendMargin : gridLeft;
-    this.top = (isEast) ? this.plotter.margins.top - 1 : 1;
+    this.left = (isTop) ? gridLeft : gridRight + legendMargin;
+    this.top = (isTop) ? 1 : this.plotter.margins.top - 1;
     this.height = plotHeight - this.top - 1;
-    if (isEast) {
+    if (!isTop) {
       this.margins.right = this.width + legendMargin + 2;
     }
   }
