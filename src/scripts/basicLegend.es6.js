@@ -21,9 +21,10 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
     if (this.enabled) {
       this.initialPositioning();
     }
-    this.textSize = this.plotter.baseFontSize * 0.75;
+    this.rowMax = (this.smallPlot) ? 2 : 4;
+    this.textSize = this.plotter.baseFontSize * 0.7;
     if (this.data.series.length > 4 && !this.smallPlot) {
-      this.textSize *= 0.6;
+      this.textSize *= 0.9;
     }
   }
 
@@ -101,12 +102,18 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
       });
   }
 
-  mkElementGroup(idx, left) {
-    var group = this.group.append('g')
-      .classed('upiq-legend-series', true)
-      .attr({
-        transform: `translate(${left}, ${this.top})`
-      });
+  mkElementGroup(idx, padding) {
+    var isTop = this.loc === 'n',
+        rowIdx = (isTop) ? Math.floor(idx / this.rowMax) : idx,
+        leftPadding = (isTop) ? 0 : padding,
+        rowPos = (isTop) ? idx % this.rowMax : idx,
+        left = ((isTop) ? rowPos * this.itemWidth : 0) + leftPadding,
+        rowTop = rowIdx * 30,
+        group = this.group.append('g')
+          .classed('upiq-legend-series', true)
+          .attr({
+            transform: `translate(${left}, ${rowTop})`
+          });
     return group;
   }
 
@@ -115,10 +122,8 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
         label = series.title,
         padding = Math.floor(this.plotter.plotWidth * 0.01),
         innerPadding = Math.floor(padding/2),
-        leftPadding = (this.loc === 'n') ? 0 : padding,
         idx = series.position,
-        left = ((this.loc === 'n') ? idx * this.itemWidth : 0) + leftPadding,
-        group = this.mkElementGroup(idx, left),
+        group = this.mkElementGroup(idx, padding),
         groupY = 0 + ((this.loc === 'n') ? 1 : idx) * this.textSize,
         colorBoxSize = Math.floor(this.plotter.plotWidth / 45),
         textWidth = this.itemWidth - colorBoxSize - innerPadding * 3,
@@ -170,9 +175,10 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
   }
 
   drawElements() {
-    var n = this.data.series.length,
-        isEast = (this.loc === 'e');
-    this.itemWidth = Math.floor((isEast) ? this.width * 0.9 : this.width / n);
+    var isTop = this.loc === 'n',
+        itemCount = this.data.series.length,
+        n = (isTop) ? this.rowMax : itemCount;
+    this.itemWidth = Math.floor((isTop) ? this.width / n : this.width * 0.9);  
     this.data.series.forEach(function (series) {
       this.drawElement(series);
       },
@@ -192,32 +198,18 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
   _postRender() {
     var seriesGroups = this.group.selectAll('g.upiq-legend-series'),
         selParent = this.group[0][0],
+        rowMax = this.rowMax,
         groupSelections = seriesGroups[0].map(function (group, idx) {
             return d3.select(group).call(g => g[0].parentNode = selParent);
           },
           this
         ),
         numSeries = groupSelections.length,
-        _height = g => Math.ceil(g[0][0].getBoundingClientRect().height * 1.1),
+        selHeight = e => e[0][0].getBoundingClientRect().height,
+        _height = g => Math.ceil(selHeight(g.select('text')) * 1.35),
         height = Math.max.apply(null, groupSelections.map(_height)),
         isTop = (this.loc === 'n'),
         margin = Math.floor(this.plotter.plotWidth / 120);
-    // distribute series groups (evenly size, evenly spaced):
-    groupSelections.forEach(function (group, index) {
-        var yOffset = (isTop) ? margin : index * height + margin,
-            xOffset = d3.transform(group.attr('transform')).translate[0],
-            bgRect = group.select('rect.legend-series-bg');
-        // space:
-        group.attr({
-          transform: `translate(${xOffset} ${yOffset})` 
-        });
-        // size: even height for background rectangles:
-        bgRect.attr({
-          height: height
-        });
-      },
-      this
-    );
     // align elements within each series group:
     groupSelections.forEach(function (group, index) {
         var middle = Math.round(height / 2.0);
@@ -244,10 +236,33 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
       },
       this
     );
+    // distribute series groups (evenly size, evenly spaced):
+    groupSelections.forEach(function (group, index) {
+        var rowIdx = Math.floor(index / rowMax),
+            rowY = margin + (rowIdx * height),
+            yOffset = (isTop) ? rowY : index * height + margin,
+            xOffset = d3.transform(group.attr('transform')).translate[0],
+            bgRect = group.select('rect.legend-series-bg');
+        // space:
+        group.attr({
+          transform: `translate(${xOffset} ${yOffset})` 
+        });
+        // size: even height for background rectangles:
+        bgRect.attr({
+          height: height
+        });
+      },
+      this
+    );
     // adjust height of bg rect to content
-    this.group.select('rect.legend-bg').attr({
-      height: Math.floor(height * ((isTop) ? 1 : numSeries)) + (margin * 2)
-    });
+    this.group.select('rect.legend-bg')
+      .classed('sizing', true)
+      .attr({
+        height: function (d) {
+          var numRows = (Math.floor(numSeries / rowMax));
+          return Math.floor(height * ((isTop) ? numRows : numSeries)) + (margin * 2);
+        }
+      });
   }
 
   postRender() {
