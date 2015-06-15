@@ -128,6 +128,67 @@
           "show_trend": true
         }, 
         {
+          "line_width": 4, 
+          "break_lines": true, 
+          "marker_style": "filledSquare", 
+          "marker_color": "#d0a04e", 
+          "color": "#d0a04e", 
+          "title": "ACME Pediatrics", 
+          "marker_size": 9.0, 
+          "marker_width": 4, 
+          "point_labels": "show", 
+          "trend_width": 2, 
+          "display_format": "%.1f", 
+          "data": [
+            [
+              "2014-08-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 32.4, 
+                "key": "2014-08-01T00:00:00", 
+                "title": "2014-08-01"
+              }
+            ],
+            [
+              "2014-09-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 50.45, 
+                "key": "2014-09-01T00:00:00", 
+                "title": "2014-09-01"
+              }
+            ],
+            [
+              "2014-11-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 72.345, 
+                "key": "2014-11-01T00:00:00", 
+                "title": "2014-11-01"
+              }
+            ],
+            [
+              "2014-12-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 25.47892, 
+                "key": "2014-12-01T00:00:00", 
+                "title": "2014-12-01"
+              }
+            ],
+            [
+              "2015-02-01T00:00:00", 
+              {
+                "note": "Average of 8 values found.", 
+                "value": 62.3, 
+                "key": "2015-02-01T00:00:00", 
+                "title": "2015-02-01"
+              }
+            ]
+          ], 
+          "show_trend": false
+        }, 
+        {
           "line_width": 2, 
           "break_lines": true, 
           "marker_style": "x", 
