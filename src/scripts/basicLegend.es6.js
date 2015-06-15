@@ -22,9 +22,9 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
       this.initialPositioning();
     }
     this.rowMax = (this.smallPlot) ? 2 : 4;
-    this.textSize = this.plotter.baseFontSize * 0.7;
+    this.textSize = this.plotter.baseFontSize * 0.8;
     if (this.data.series.length > 4 && !this.smallPlot) {
-      this.textSize *= 0.9;
+      this.textSize *= 0.8;
     }
   }
 
