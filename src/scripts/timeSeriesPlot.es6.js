@@ -461,8 +461,10 @@ export class TimeSeriesPlotter {
   }
 
   postRender() {
-    var abovePlot = this.abovePlotGroup[0][0].getBoundingClientRect().height,
-        adjustHeight = Math.ceil(abovePlot * 1.5);
+    var abovePlot = this.abovePlotGroup,
+        _size = el => el.getBoundingClientRect().height,
+        sizers,
+        adjustHeight;
     // - per-plugin adjustments
     this.plugins.forEach(function (plugin) {
         plugin.postRender();
@@ -473,7 +475,13 @@ export class TimeSeriesPlotter {
     // -- positioning adjustment to accommodate height of this.abovePlotGroup
     //    which may be adjusted by plugins (e.g. a top legend); note this
     //    adjusts the total plotCore height irrespective of aspect-ratio set
-    //    in this.sizePlot()
+    //    in this.sizePlot() -- note: plugins must have a rect.sizing element,
+    //    within their output, as introspection of box model for group
+    //    elements is unreliable.
+    sizers = abovePlot.selectAll('.sizing');
+    if (sizers.size()) {
+      adjustHeight = sizers[0].map(_size).reduce(((a, b) => a + b), 0);
+    }
     if (adjustHeight) {
       this.plotGroup.attr({
         transform: `translate(0, ${adjustHeight})`
