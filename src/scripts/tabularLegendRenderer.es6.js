@@ -481,12 +481,9 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         tableOrigin = gridHeight + intermediarySpacing,
         plotHeight = tableHeight + gridHeight + intermediarySpacing,
         plotBottomMargin = 15;
-    // size plotDiv and plotCore divs with enough space for legend:
-    this.plotDiv.style({
-      height: '' + (plotHeight + plotBottomMargin) + 'px'
-    });
+    // size plotCore div with enough space for legend:
     this.plotCore.style({
-      height: '' + plotHeight + 'px'
+      height: '' + (plotHeight) + 'px'
     });
     table.attr({
       transform: `translate(5, ${tableOrigin})`,
