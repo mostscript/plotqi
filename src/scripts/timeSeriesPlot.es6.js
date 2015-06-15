@@ -71,7 +71,7 @@ nv.utils.symbolMap.set('x', function(size) {
 export class TimeSeriesPlotter {
   // multi-adapter of D3-wrapped dom element (chart div) context and plot data
 
-  constructor (plotDiv, data, interactive) {
+  constructor (plotDiv, data, interactive, prefix) {
     this.plotDiv = plotDiv;   // DOM (d3) node (outer plot div)
     this.data = data;         // TimeSeriesChart object
     this._loadConfig();
@@ -81,6 +81,7 @@ export class TimeSeriesPlotter {
     this.svg = null;          // will be svg inside the plot core div
     // Interactive mode?
     this.useInteractive = (interactive === undefined) ? true : interactive;
+    this.prefix = prefix || 'plot';
     this._initPlugins();
   }
 
@@ -331,13 +332,35 @@ export class TimeSeriesPlotter {
     );
   }
 
+  clear() {
+    /** stable clear: respect existing non-plotCore content */
+    if (this.plotCore && this.plotCore.size()) {
+      this.plotCore.remove();
+    }
+  }
+
+  displayMetadata() {
+    var plotTitle = this.plotDiv.selectAll('.plot-title').data([null]),
+        plotDesc = this.plotDiv.selectAll('.plot-description').data([null]);
+    plotTitle.enter()
+      .append('h3')
+        .classed('plot-title', true);
+    plotTitle.text(this.data.title || '');
+    plotDesc.enter()
+      .append('p')
+        .classed('plot-description', true);
+    plotDesc.text(this.data.description || '');
+  }
+
   preRender() {
     /** prepare the chart div context for rendering */
     var chart;
     // - Set margins:
     this.margins = this._margins();
-    // - Clear existing content:
-    this.plotDiv.html('');
+    // - Set metadata:
+    this.displayMetadata();
+    // - Clear existing (core plot) content:
+    this.clear();
     // - Create inner (core) div:
     this.plotCore = this.plotDiv.append('div').classed('chart-div', true);
     // - Size div elements according to specifications:
@@ -465,6 +488,7 @@ export class TimeSeriesPlotter {
         _size = el => el.getBoundingClientRect().height,
         sizers,
         adjustHeight;
+    console.log(this.plotDiv.attr('style'));
     // - per-plugin adjustments
     this.plugins.forEach(function (plugin) {
         plugin.postRender();
