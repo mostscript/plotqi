@@ -1,5 +1,5 @@
 /*jshint esnext:true, eqnull:true, undef:true */
-/*globals require, window */
+/*globals require, window, document */
 
 var d3 = require('d3');
 import {forReportJSON} from './utils';
