@@ -259,7 +259,7 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
       .classed('sizing', true)
       .attr({
         height: function (d) {
-          var numRows = (Math.floor(numSeries / rowMax));
+          var numRows = Math.ceil(numSeries / rowMax);
           return Math.floor(height * ((isTop) ? numRows : numSeries)) + (margin * 2);
         }
       });
