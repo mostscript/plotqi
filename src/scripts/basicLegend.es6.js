@@ -35,16 +35,16 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
     var loc = this.loc,
         isTop = this.loc === 'n',
         plotWidth = this.plotter.plotWidth,
-        plotHeight = (isTop) ? 30 : this.plotter.plotHeight,
+        legendHeight = (isTop) ? 30 : this.plotter.plotHeight,
         gridLeft = this.plotter.margins.left,
         topWidth = plotWidth - gridLeft - this.margins.right,
         legendWidth = (isTop) ? topWidth : Math.floor(plotWidth * 0.2),
-        legendMargin = Math.floor(0.01 * this.plotter.plotWidth),
+        legendMargin = Math.floor(0.01 * plotWidth),
         gridRight = plotWidth - legendWidth - legendMargin;
     this.width = legendWidth - 1;
     this.left = (isTop) ? gridLeft : gridRight + legendMargin;
     this.top = (isTop) ? 1 : this.plotter.margins.top - 1;
-    this.height = plotHeight - this.top - 1;
+    this.height = legendHeight - this.top - 1;
     if (!isTop) {
       this.margins.right = this.width + legendMargin + 2;
     }
