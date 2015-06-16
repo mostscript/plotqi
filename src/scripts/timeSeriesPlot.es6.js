@@ -341,7 +341,8 @@ export class TimeSeriesPlotter {
 
   displayMetadata() {
     var plotTitle = this.plotDiv.selectAll('.plot-title').data([null]),
-        plotDesc = this.plotDiv.selectAll('.plot-description').data([null]);
+        plotDesc = this.plotDiv.selectAll('.plot-description').data([null]),
+        plotInfo = this.plotDiv.selectAll('.plot-info').data([null]);
     plotTitle.enter()
       .append('h3')
         .classed('plot-title', true);
@@ -350,6 +351,9 @@ export class TimeSeriesPlotter {
       .append('p')
         .classed('plot-description', true);
     plotDesc.text(this.data.description || '');
+    plotInfo.enter()
+      .append('div')
+        .classed('plot-info', true);
   }
 
   preRender() {
@@ -361,8 +365,9 @@ export class TimeSeriesPlotter {
     this.displayMetadata();
     // - Clear existing (core plot) content:
     this.clear();
-    // - Create inner (core) div:
-    this.plotCore = this.plotDiv.append('div').classed('chart-div', true);
+    // - Create inner (core) div, insert before any end-matter/plot-info:
+    this.plotCore = this.plotDiv.insert('div', '.plot-info')
+      .classed('chart-div', true);
     // - Size div elements according to specifications:
     this.sizePlot();
     // - Add empty svg
