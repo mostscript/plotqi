@@ -488,7 +488,6 @@ export class TimeSeriesPlotter {
         _size = el => el.getBoundingClientRect().height,
         sizers,
         adjustHeight;
-    console.log(this.plotDiv.attr('style'));
     // - per-plugin adjustments
     this.plugins.forEach(function (plugin) {
         plugin.postRender();
