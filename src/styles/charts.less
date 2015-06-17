@@ -32,6 +32,25 @@ body * {
   fill-opacity: 0.3;
 }
 
+/* on-hover overlay styles for PointHoverPlugin */
+.point-hover-tip {
+  opacity: 0.8;
+  position: absolute;
+  width:10%;
+  min-width:110px;
+  padding:0.2em 0.2em 0.2em 0;
+  text-align:center;
+  line-height:1em;
+}
+
+.point-hover-tip .click-hint {
+  font-family:Arial Narrow,Arial;
+  font-size: 85%;
+  color:#666;
+  font-style:italic;
+}
+
+
 svg.upiq-chart .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point,
 svg.upiq-small-chart .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
   fill-opacity: 1;

@@ -14,6 +14,7 @@ import {ContinuityLinesPlugin} from './breakLines';
 import {AxisTitleRenderer} from './axisTitles';
 import {XTickLabelsRenderer} from './xTickLabels';
 import {BasicLegendRenderer} from './basicLegend';
+import {PointHoverPlugin} from './hover';
 
 // Set up plugin namespace:
 window.plotqi = window.plotqi || {};
@@ -26,7 +27,8 @@ window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
   TabularLegendRenderer,
   TrendLineRenderer,
   PointLabelsRenderer,
-  BasicLegendRenderer
+  BasicLegendRenderer,
+  PointHoverPlugin
 ];
 
 // Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
@@ -367,7 +369,10 @@ export class TimeSeriesPlotter {
     this.clear();
     // - Create inner (core) div, insert before any end-matter/plot-info:
     this.plotCore = this.plotDiv.insert('div', '.plot-info')
-      .classed('chart-div', true);
+      .classed('chart-div', true)
+      .style({
+        'postion': 'relative'
+      });
     // - Size div elements according to specifications:
     this.sizePlot();
     // - Add empty svg
