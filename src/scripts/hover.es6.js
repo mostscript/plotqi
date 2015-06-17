@@ -14,7 +14,7 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
   }
 
   render() {
-    this.xScale = this.plotter.xScale;
+    this.xScale = this.plotter.timeScale;
     this.yScale = this.plotter.yScale;
   }
 
@@ -33,14 +33,16 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
         useLeft = x < (this.plotter.plotWidth * 0.85),
         fontSize = Math.max(10, this.plotter.baseFontSize * 0.7),
         overlay,
-        pad;
+        pad,
+        w;
     // adjust border/text color if not dark enough:
     if (ColorTool.isLight(borderColor)) {
        borderColor = ColorTool.darken(borderColor, 0.4);
     }
     // pad x, y for use in overlay, so that overlay not on top of part of pt:
-    pad = Math.max(5, x * 0.02);
-    x = Math.floor((useLeft) ? x + pad : x - pad);
+    w = this.plotter.plotWidth;
+    pad = Math.max(5, w * 0.02) * ((this.plotter.type === 'bar') ? 1.8 : 1);
+    x = Math.floor((useLeft) ? x + pad : x);
     // create on-hover overlay:
     overlay = this.plotCore.append('div')
       .classed('point-hover-tip', true)
@@ -73,7 +75,7 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
 
   loadInteractiveFeatures() {
     var self = this,
-        markers = this.svg.selectAll('.nv-point'),
+        markers = this.svg.selectAll('.nv-point, .nv-bar'),
         data = markers.data(),
         onHover = function (d, i) {
           var marker = d3.select(this),
