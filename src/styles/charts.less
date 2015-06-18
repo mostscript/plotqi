@@ -12,6 +12,25 @@ body * {
   pointer-events: auto;
 }
 
+g.upiq-legend-table-cell:hover {
+  cursor:pointer;
+}
+
+g.upiq-legend-table-cell:hover rect {
+  fill:#000 !Important;
+  cursor:pointer;
+}
+
+g.upiq-legend-table-cell:hover text {
+  fill:#ff8 !Important;
+  cursor:pointer;
+}
+
+g.upiq-legend-header-row g.upiq-legend-table-cell:hover text {
+  fill:#000 !Important;
+  cursor:pointer;
+}
+
 /* upiq grid style */
 .upiq-chart .nv-x.nv-axis g.tick line {
   stroke:none;
@@ -44,7 +63,7 @@ body * {
 }
 
 .point-hover-tip .click-hint {
-  font-family:Arial Narrow,Arial;
+  font-family:Arial Npointer,Arial;
   font-size: 85%;
   color:#666;
   font-style:italic;
