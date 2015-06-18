@@ -7,13 +7,15 @@ import {BaseRenderingPlugin} from './plugin';
 export class AxisTitleRenderer extends BaseRenderingPlugin {
 
   preRender() {
-    var minMargin = Math.floor(this.plotter.baseFontSize * 4);
+    var minMargin = Math.floor(this.plotter.baseFontSize * 4),
+        superTiny = this.plotter.plotWidth < 165;
     super.preRender();
     this.titleX = this.data.x_label || '';
     this.titleY = this.data.y_label || '';
     this.hasLabels = (!!this.titleX || !!this.titleY);
+    this.superTiny = superTiny;
     // adjust room for each (in margins):
-    if (this.titleY && this.margins.left < minMargin) {
+    if (this.titleY && this.margins.left < minMargin && !superTiny) {
       this.margins.left = minMargin;
     }
     if (this.titleX) {
@@ -73,7 +75,7 @@ export class AxisTitleRenderer extends BaseRenderingPlugin {
     if (this.titleX) {
       this.renderX();
     }
-    if (this.titleY) {
+    if (this.titleY && !this.superTiny) {
       this.renderY();
     }
   }
