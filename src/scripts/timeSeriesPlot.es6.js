@@ -158,12 +158,12 @@ export class TimeSeriesPlotter {
           }
           return out;
         };
-    // hide X axis (tick labels):
-    if (this.type === 'bar') {
-      chart.xAxis.tickFormat(() => '');
-    } else {
-      chart.showXAxis(false);
-    }
+    // x-axis tick lines should be rendered, even if default CSS makes them
+    // invisible, but labels should not be rendered by nvd3, so we have 
+    // function yeilding empty string always.
+    chart.xAxis.tickFormat(() => '');
+    chart.xAxis.tickValues(this.tickVals);
+    // y-axis:
     chart.yAxis
       .tickFormat(d3.format(','))
       .tickValues(yTickVals(5))
