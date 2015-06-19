@@ -12,6 +12,8 @@ body * {
   pointer-events: auto;
 }
 
+/* TABULAR LEGEND STYLES: */
+
 g.upiq-legend-table-cell:hover {
   cursor:pointer;
 }
@@ -21,14 +23,41 @@ g.upiq-legend-table-cell:hover rect {
   cursor:pointer;
 }
 
-g.upiq-legend-table-cell:hover text {
+g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell:hover text {
   fill:#ff8 !Important;
   cursor:pointer;
+}
+
+g.upiq-legend-table-cell.col-highlighted rect {
+  fill:#ffd;
+}
+
+g.upiq-legend-table-cell.col-highlighted text {
+  fill:#666 !important;
+}
+
+g.upiq-legend g.upiq-legend-header-row g.upiq-legend-table-cell.col-highlighted text {
+  fill:#000 !Important;
+}
+
+g.upiq-legend-header-row g.upiq-legend-table-cell.col-highlighted rect {
+  fill:#ff8 !Important;
 }
 
 g.upiq-legend-header-row g.upiq-legend-table-cell:hover text {
   fill:#000 !Important;
   cursor:pointer;
+}
+
+g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-xaxis-title:hover rect,
+g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-xaxis-title:hover text,
+g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-series-title:hover rect,
+g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-series-title:hover text {
+  cursor:default !important;
+}
+
+g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-xaxis-title:hover text {
+  fill:#000 !important;
 }
 
 /* upiq grid style */

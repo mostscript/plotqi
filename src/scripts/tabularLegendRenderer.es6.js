@@ -36,8 +36,9 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
 
   preRender() {
     super.preRender();
+    this.enabled = this.useTabularLegend();
     // If rel-width & tabular legend: dynamic size for left margin, min 80px
-    if (this.useTabularLegend()) {
+    if (this.enabled) {
       this.margins.bottom = 100;  // default
       this.margins.left = Math.max(80, Math.floor(this.plotter.plotWidth * 0.2));
     }
@@ -153,6 +154,12 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         'data-timestamp': d => d.stamp,
         transform: function (cellPosition) {
           return `translate(${cellPosition.x}, ${cellPosition.y})`;
+        }
+      })
+      .each(function (d, i) {
+        var cellGroup = d3.select(this);
+        if (d.className) {
+          cellGroup.classed(d.className, true);
         }
       });
 
@@ -349,6 +356,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
             groupLeft = Math.round(groupLeft - (firstWidth / 2.0));
             groupLeft -= (barChart) ? leftPadBar : 0;
             return {
+              key: d,
               width: rectWidth - 2,
               x: xOffset + groupLeft,
               y: 0,
@@ -373,6 +381,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
           y: 0,
           width: this.plotter.margins.left - 10,
           color: '#aaa',
+          className: 'upiq-legend-xaxis-title',
           text: (axisTitle) ? axisTitle + ' →' : ''
         },
         textGetter = d => data.axisLabel(d).label || '';
@@ -387,6 +396,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
           x: 5,
           y: 0,
           width: this.plotter.margins.left - 10,
+          className: 'upiq-legend-series-title',
           text: series.title
         },
         textGetter = function (d) {
@@ -466,9 +476,49 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     /** called by this.clear(), should clear event handling before re-render */
   }
 
+  columnCells(key) {
+    var rows = this.legendGroup.selectAll('g.upiq-legend-row'),
+        columnCells = [];
+    rows.each(function (d, i) {
+      var row = d3.select(this),
+          cells = row.selectAll('.upiq-legend-table-cell'),
+          result = cells[0].filter(function (cell) {
+            var data = d3.select(cell).data()[0];
+            return data && data.key && data.key.valueOf() == key.valueOf();
+          });
+      columnCells.push(result[0]);
+    });
+    return columnCells;
+  }
+
+  highlightColumn(key) {
+    var cells = d3.selectAll(this.columnCells(key));
+    cells.classed('col-highlighted', true);
+  }
+
+  clearHighlights() {
+    var cells = this.legendGroup.selectAll('.upiq-legend-table-cell');
+    cells.classed('col-highlighted', false);
+  }
+
   loadInteractiveFeatures() {
+    var self = this;
     /** called by plotter after render */
     // TODO: implement click/hover for cell/column/row behaviors...
+    if (!this.enabled) return;
+    this.svg.selectAll(
+      'g.upiq-legend-table-cell rect, g.upiq-legend-table-cell text')
+      .on('mouseover', function (d, i) {
+        var cell = d3.select(this),
+            data = cell.data()[0],
+            key = (data) ? data.key : null;
+        if (key) {
+          self.highlightColumn(key);
+        }
+      })
+      .on('mouseout', function (d, i) {
+        self.clearHighlights();
+      });
   }
 
   _postRender() {
@@ -497,7 +547,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
   }
 
   postRender() {
-    if (this.useTabularLegend()) {
+    if (this.enabled) {
       // post-render adjustments (e.g. position fully rendered table)
       this._postRender();
     }
@@ -508,7 +558,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
   }
 
   update() {
-    if (!this.useTabularLegend()) {
+    if (!this.enabled) {
       return;  // plugin not applicable to plot
     }
     this.clear();

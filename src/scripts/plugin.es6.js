@@ -13,6 +13,7 @@ export class BaseRenderingPlugin {
     this.svg = plotter.svg;
     this.xScale = plotter.xScale;
     this.yScale = plotter.yScale;
+    this.enabled = true;  // default for all plugins
   }
 
   preRender() {
