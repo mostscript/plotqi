@@ -31,18 +31,27 @@ div.chart-div {
       <p class="alert-danger">You are using an <strong>unsupported</strong> version of Internet Explorer!</p>
     <![endif]-->
     <br/>
-  <div class="report">
-    <h3>Adapter-based unified time-series re-factoring:</h3>
-    <div id="chart-div-refactor-1"></div>
-    <div id="chart-div-refactor-2"></div>
+
+  <!-- report testing below -->
+
+  <div class="report-core" data-report-json="report.json" data-report-prefix="plotdiv">
+    <h3>Core report</h3>
+
+    <div class="plotdiv" id="plotdiv-0f647eaf2f574b8e84b2e0be10333323">
+      <h3 class="plot-title">Hello plot</h3>
+      <p class="plot-description">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <div class="plot-info">
+        <!-- end matter including captions, tables, or whatever -->
+        <p>Here is plot information that is rendered into template, sourced in HTML, not in JSON.</p>
+        <p>Here is more information.</p>
+      </div>
+    </div>
+
+    <!-- TODO: existing chart divs that get re-populated/enhanced progressively if server-side
+        template rendered into DOM via HTML source -->
   </div>
-  <div class="report">
-    <h3>Original renderings:</h3>
-    <div id="chart-div-test-1"></div>
-    <div id="chart-div-test-2"></div>
-  </div>
-  <div class="report">
-    <div id="small-chart-div-test"></div>
-  </div>
+
   </body>
 </html>
