@@ -15,7 +15,7 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
   preRender() {
     super.preRender();
     this.placement = this.data.legend_placement;
-    this.smallPlot = (this.plotter.plotWidth < 400); 
+    this.smallPlot = this.plotter.options.small;
     this.loc = this._location();
     this.enabled = this._enabled();
     if (this.enabled) {
@@ -60,10 +60,9 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
     var specifiedLocation = this.data.legend_location,
         unsupported = (this.all_locations.indexOf(specifiedLocation) === -1),
         plotWidth = this.plotter.plotWidth,
-        smallPlot = (plotWidth < 400),
         loc = (unsupported) ? 'e' : specifiedLocation;
     if (!specifiedLocation) return null;  // no legend
-    return (smallPlot) ? 'n' : loc;
+    return (this.smallPlot) ? 'n' : loc;
   }
 
   _legendOrigin() {

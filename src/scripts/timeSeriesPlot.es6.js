@@ -91,8 +91,11 @@ export class TimeSeriesPlotter {
     o = o || {};
     // interactive mode:
     o.interactive = (o.interactive === undefined) ? true : o.interactive;
-    // tiny mode (may be overridden by sizePlot during preRender:
+    // tiny mode (may be overridden by sizePlot during preRender (<165px),
+    // may be true/false, undefined, or 'disabled':
     o.tiny = (o.tiny === undefined) ? false : o.tiny;
+    // small mode usually auto-configured in preRender (<400px):
+    o.small = (o.small === undefined) ? false : o.small;
     // prefix:
     o.prefix = o.prefix || 'plot';
     return o;
@@ -355,6 +358,12 @@ export class TimeSeriesPlotter {
       minFontSize,
       Math.floor(clientWidth/45 * 2) / 2.0    // rounded to 0.5px
     );
+    // plot width flags: if sufficiently small, auto-set the 'tiny' flag:
+    if (this.options.tiny !== 'disabled' && this.plotWidth < 165) {
+      this.options.tiny = true;
+    }
+    // plot width flags: if sufficiently small, auto-set the 'small' flag:
+    this.options.small = (this.plotWidth < 400);
   }
 
   clear() {
