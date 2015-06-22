@@ -73,7 +73,8 @@ nv.utils.symbolMap.set('x', function(size) {
 export class TimeSeriesPlotter {
   // multi-adapter of D3-wrapped dom element (chart div) context and plot data
 
-  constructor (plotDiv, data, interactive, prefix) {
+  constructor (plotDiv, data, opts) {
+    this.options = this.getOptions(opts);
     this.plotDiv = plotDiv;   // DOM (d3) node (outer plot div)
     this.data = data;         // TimeSeriesChart object
     this._loadConfig();
@@ -82,9 +83,19 @@ export class TimeSeriesPlotter {
     this.plotCore = null;     // will be plot core inner div
     this.svg = null;          // will be svg inside the plot core div
     // Interactive mode?
-    this.useInteractive = (interactive === undefined) ? true : interactive;
-    this.prefix = prefix || 'plot';
     this._initPlugins();
+  }
+
+  getOptions(o) {
+    /** get options and/or load initial defaults */
+    o = o || {};
+    // interactive mode:
+    o.interactive = (o.interactive === undefined) ? true : o.interactive;
+    // tiny mode (may be overridden by sizePlot during preRender:
+    o.tiny = (o.tiny === undefined) ? false : o.tiny;
+    // prefix:
+    o.prefix = o.prefix || 'plot';
+    return o;
   }
 
   _loadConfig() {
@@ -495,9 +506,9 @@ export class TimeSeriesPlotter {
 
   loadInteractiveFeatures() {
     /** load interactive features from plugins, as applicable, if this
-      * is enabled (this.useInteractive === true).
+      * is enabled (this.options.interactive === true).
       */
-    if (!this.useInteractive) return;
+    if (!this.options.interactive) return;
     this.plugins.forEach(function (plugin) {
         plugin.loadInteractiveFeatures();
       },
