@@ -14,50 +14,66 @@ body * {
 
 /* TABULAR LEGEND STYLES: */
 
-g.upiq-legend-table-cell:hover {
-  cursor:pointer;
-}
+g.upiq-legend {
 
-g.upiq-legend-table-cell:hover rect {
-  fill:#000 !Important;
-  cursor:pointer;
-}
+  // interactive styles, cell:
 
-g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell:hover text {
-  fill:#ff8 !Important;
-  cursor:pointer;
-}
+  g.upiq-legend-table-cell:hover {
+    cursor:pointer;
+  }
 
-g.upiq-legend-table-cell.col-highlighted rect {
-  fill:#ffd;
-}
+  g.upiq-legend-table-cell:hover rect {
+    fill:#000 !Important;
+    cursor:pointer;
+  }
 
-g.upiq-legend-table-cell.col-highlighted text {
-  fill:#666 !important;
-}
+  g.upiq-legend-table-cell.col-highlighted rect {
+    fill:#ffd;
+  }
 
-g.upiq-legend g.upiq-legend-header-row g.upiq-legend-table-cell.col-highlighted text {
-  fill:#000 !Important;
-}
+  g.upiq-legend-table-cell.col-highlighted text {
+    fill:#666 !important;
+  }
 
-g.upiq-legend-header-row g.upiq-legend-table-cell.col-highlighted rect {
-  fill:#ff8 !Important;
-}
+  // interactive styles, row:
 
-g.upiq-legend-header-row g.upiq-legend-table-cell:hover text {
-  fill:#000 !Important;
-  cursor:pointer;
-}
+  g.upiq-legend-header-row {
 
-g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-xaxis-title:hover rect,
-g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-xaxis-title:hover text,
-g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-series-title:hover rect,
-g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-series-title:hover text {
-  cursor:default !important;
-}
+    g.upiq-legend-table-cell.col-highlighted text {
+      fill:#000 !Important;
+    }
 
-g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-xaxis-title:hover text {
-  fill:#000 !important;
+    g.upiq-legend-table-cell.col-highlighted rect {
+      fill:#ff8 !Important;
+    }
+
+    g.upiq-legend-table-cell:hover text {
+      fill:#000 !Important;
+      cursor:pointer;
+    }
+
+  }
+  
+  g.upiq-legend-row {
+
+    g.upiq-legend-table-cell:hover text {
+      fill:#ff8 !Important;
+      cursor:pointer;
+    }
+
+    g.upiq-legend-table-cell.upiq-legend-xaxis-title:hover rect,
+    g.upiq-legend-table-cell.upiq-legend-xaxis-title:hover text,
+    g.upiq-legend-table-cell.upiq-legend-series-title:hover rect,
+    g.upiq-legend-table-cell.upiq-legend-series-title:hover text {
+      cursor:default !important;
+    }
+
+    g.upiq-legend-table-cell.upiq-legend-xaxis-title:hover text {
+      fill:#000 !important;
+    }
+
+  }
+
 }
 
 /* upiq grid style */
@@ -109,60 +125,9 @@ g.upiq-legend g.upiq-legend-row g.upiq-legend-table-cell.upiq-legend-xaxis-title
 
 /* misc: */
 
-svg.upiq-chart .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point,
-svg.upiq-small-chart .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
+svg.upiq-chart .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
   fill-opacity: 1;
   stroke-opacity: 1;
-}
-
-.nv-tooltip {
-  pointer-events: none;
-  max-width: 145px;
-  word-wrap: break-word;
-  overflow: hidden;
-  overflow-wrap: break-word;
-  white-space: pre-line;
-
-  .nv-footer {
-    font-size: 8pt;
-    fill: gray;
-    text-anchor: middle;
-  }
-
-  .nv-header {
-    font-size: 10pt;
-  }
-
-  rect {
-    fill: yellow;
-    fill-opacity: .75;
-  }
-
-  circle {
-    pointer-events: all;
-    cursor: pointer;
-    fill: darkred;
-  }
-
-  path {
-    pointer-events: none;
-    stroke: grey;
-    stroke-width: 1%;
-  }
-}
-
-.nv-hover {
-  pointer-events: none;
-  text {
-    pointer-events: none;
-    text-anchor: end;
-    fill: #eef;
-  }
-  rect {
-    pointer-events: none;
-    fill: #2f4f4f;
-    fill-opacity: .75;
-  }
 }
 
 .chart-svg {
@@ -172,27 +137,10 @@ svg.upiq-small-chart .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
   left: 0;
   right: 0;
 }
+
 .chart-div {
   display: inline-block;
   position: relative;
-}
-
-.chart-title {
-  margin-bottom: 0;
-}
-.chart-desc {
-  margin-top: .3em;
-  margin-bottom: .5em;
-}
-
-svg.upiq-small-chart {
-  text {
-    font-family: 'silkscreennormal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 6pt;
-  }
-  .nv-year-lbl {
-    fill: #777;
-  }
 }
 
 svg.upiq-chart {
@@ -232,14 +180,6 @@ svg.upiq-chart {
   }
 }
 
-.smooth-shape {
-  shape-rendering: auto;
-}
-
-.crisp-shape {
-  shape-rendering: crispEdges;
-}
-
 .nv-y.nv-axis .nv-wrap.nv-axis {
     line {
         stroke: #a9a9a9;
@@ -251,33 +191,6 @@ svg.upiq-chart {
 }
 
 svg {
-  .dark-text {
-    fill: #222;
-  }
-  .light-text {
-    fill: #eee;
-  }
-  .svg-link {
-    pointer-events: all;
-    fill: blue;
-  }
-  .svg-link:hover {
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  .upiq-leg-header-bg {
-    fill: #dde;
-  }
-  g.upiq-leg-row:not(:nth-of-type(1)) text.upiq-leg-cell:not(:nth-of-type(1)):hover {
-    cursor: pointer;
-    text-decoration: underline;
-    &.dark-text {
-      fill: blue;
-    }
-    &.light-text {
-      fill: lightblue;
-    }
-  }
   .nv-wrap.nv-line .nv-scatterWrap .nv-wrap.nv-scatter .nv-groups path.nv-point {
     pointer-events: all;
     cursor: pointer;
