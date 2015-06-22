@@ -143,6 +143,18 @@ export class TimeSeriesPlotter {
     );
   }
 
+  pluginEnabled(name) {
+    /** return true if plugin singleton instance by name is enabled */
+    var plugin = this.plugins.filter(p => (p.constructor.name == name))[0];
+    return plugin && plugin.enabled; 
+  }
+
+  getPlugin(name) {
+    /** get plugin by name */
+    var plugin = this.plugins.filter(p => (p.constructor.name == name))[0];
+    return plugin;
+  }
+
   _configAxes() {
     var range = this.data.range,
         chart = this.chart,
@@ -491,6 +503,19 @@ export class TimeSeriesPlotter {
       },
       this
     );
+  }
+
+  highlightX(key) {
+    /** given date key, highlight any tick line associated with that key */
+    var value = (key) ? key.valueOf() : null,
+        tickLines = this.svg.select('g.nv-x').selectAll('g.tick'),
+        tick = tickLines[0].filter(l => d3.select(l).data() == value);
+    d3.select(tick[0]).classed('selected', true);
+  }
+
+  clearHighlights() {
+    var tickLines = this.svg.select('g.nv-x').selectAll('g.tick');
+    tickLines.classed('selected', false);
   }
 
   postRender() {

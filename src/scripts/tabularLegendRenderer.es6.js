@@ -511,13 +511,36 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
       .on('mouseover', function (d, i) {
         var cell = d3.select(this),
             data = cell.data()[0],
-            key = (data) ? data.key : null;
+            key = (data) ? data.key : null,
+            tableRow,
+            seriesIndex,
+            series,
+            hover = self.plotter.getPlugin('PointHoverPlugin');
         if (key) {
+          tableRow = cell[0][0].parentNode.parentNode;
+          seriesIndex = self.legendGroup.selectAll('.upiq-legend-row')[0].indexOf(tableRow) - 1;
+          series = self.data.series[seriesIndex];
+          if (series) {
+            data = series.data.get(key.valueOf());
+            if (data) {
+              data.x = data.key.valueOf();
+              data.y = data.value;
+              if (data.y !== null) {
+                hover.showTip(null, data, series);
+              }
+            }
+          }
           self.highlightColumn(key);
+          self.plotter.highlightX(key);  // highlight X tick
         }
       })
       .on('mouseout', function (d, i) {
+        var hover = self.plotter.getPlugin('PointHoverPlugin');
         self.clearHighlights();
+        self.plotter.clearHighlights();
+        if (hover) {
+          hover.clearTips();
+        }
       });
   }
 

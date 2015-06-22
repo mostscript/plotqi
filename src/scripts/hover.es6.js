@@ -25,9 +25,23 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
     return [x, y];
   }
 
+  glowMarker(marker) {
+    var glow = 'drop-shadow( -1px -1px 4px #ff3 )';
+    marker.style({
+      'filter': glow,
+      '-webkit-filter': glow
+    });
+  }
+
+  clearGlow() {
+    this.svg.selectAll('path.nv-point').style({
+      'filter': 'none',
+      '-webkit-filter': 'none'
+    });
+  }
+
   showTip(marker, dataPoint, series) {
-    var ev = d3.event,
-        color = ColorTool.lighten(series.color, 0.8),
+    var color = ColorTool.lighten(series.color, 0.8),
         borderColor = series.color,
         [x, y] = this.scaledCoordinates(dataPoint),
         useLeft = x < (this.plotter.plotWidth * 0.85),
@@ -35,6 +49,18 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
         overlay,
         pad,
         w;
+    // if marker is null, traverse to it:
+    if (marker === null) {
+      // .nv-scatterWrap .nv-groups .nv-series-0 path
+      marker = d3.select(
+        this.svg.selectAll(
+            '.nv-scatterWrap .nv-groups .nv-series-' +
+            series.position + ' path.nv-point'
+          )[0]
+          .filter(m => (d3.select(m).data()[0].x === dataPoint.x))[0]
+      );
+    }
+    this.glowMarker(marker);
     // adjust border/text color if not dark enough:
     if (ColorTool.isLight(borderColor)) {
        borderColor = ColorTool.darken(borderColor, 0.4);
@@ -64,6 +90,10 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
     overlay.append('p')
       .classed('click-hint', true)
       .text('Click datapoint for details.');
+    this.plotter.highlightX(dataPoint.x);
+    if (this.plotter.pluginEnabled('TabularLegendRenderer')) {
+      this.plotter.getPlugin('TabularLegendRenderer').highlightColumn(dataPoint.x);
+    } 
   }
 
   clearTips() {
@@ -71,6 +101,11 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
       .transition(3000)
         .style('opacity', 0)
         .remove();
+    this.plotter.clearHighlights();
+    this.clearGlow();
+    if (this.plotter.pluginEnabled('TabularLegendRenderer')) {
+      this.plotter.getPlugin('TabularLegendRenderer').clearHighlights();
+    } 
   }
 
   loadInteractiveFeatures() {
