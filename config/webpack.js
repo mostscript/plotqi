@@ -18,7 +18,6 @@ module.exports = function (release) {
     devtool: (!release) ? 'source-map' : false,
     entry: {
       plotqi: './src/plotqi-entry.js',
-      headless: './src/headless.js'
     },
 
     stats: {
