@@ -26,18 +26,12 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
   }
 
   glowMarker(marker) {
-    var glow = 'drop-shadow( -1px -1px 4px #ff3 )';
-    marker.style({
-      'filter': glow,
-      '-webkit-filter': glow
-    });
+    marker.classed('highlighted', true);
   }
 
   clearGlow() {
-    this.svg.selectAll('path.nv-point').style({
-      'filter': 'none',
-      '-webkit-filter': 'none'
-    });
+    this.svg.selectAll('path.nv-point.highlighted')
+      .classed('highlighted', false);
   }
 
   showTip(marker, dataPoint, series) {
