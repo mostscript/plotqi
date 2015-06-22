@@ -1,10 +1,11 @@
-/*jshint esnext:true, eqnull:true */
+/*jshint esnext:true, eqnull:true, undef:true */
 /*globals require */
+
 import {Schema, schematize, ValidationError, ValidationTypeError} from './classviz.es6.js';
-var moment = require('moment');
+import {parseDate} from './utils.es6.js';
 
 function dateTypeConstraint(value) {
-  var m = moment(value);
+  var m = parseDate(value, true);
   if(!m.isValid()) return null;
   return m.toDate();
 }
@@ -135,7 +136,7 @@ export class DataSeriesSchema extends Schema {
                          'vocabulary of allowable choices.',
             type: 'string',
             constraint: function (value, obj) {
-              if(value === 'x') return 'cross';
+              //if(value === 'x') return 'cross';
               if(value === 'filledCircle') {
                 obj.filled = true;
                 return 'circle';
@@ -150,6 +151,7 @@ export class DataSeriesSchema extends Schema {
               }
             },
             vocabulary: [
+              'x',
               'diamond',
               'circle',
               'square',
@@ -506,27 +508,15 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
     super();
     schematize({
           frequency: {
-            title: 'Frequency (YAGNI??)',
+            title: 'Frequency',
             description: 'Frequncy between periods of reporting that ' +
                          'the plot visualizes.  May be used as cue for ' +
                          'handling the default date-label choices, ' +
                          'where month names are often stand-ins for ' +
                          'an exemplar date value for the month, e.g. ' +
-                         '2014-06-01 may be represented as "Jun 2014". ' +
-                         'THIS MAY BE YAGNI if we do not need to draw ' +
-                         'vertical lines at X-axis tick labels, or just ' +
-                         'rely on scales and explicit data-labels in ' +
-                         'the labels field below (the JSON will provide ' +
-                         'them, and if it does not, then just using ' +
-                         'default US-appropriate short-date of ' +
-                         'MM/DD/YYYY may be good enough to justify ' +
-                         'ignoring this?  I cannot remember why jqPlot ' +
-                         'wants this interval-frequency on the domain, ' +
-                         'but it may be unnecessarily constraining to ' +
-                         'fix this to a controlled set of choices or ' +
-                         'just plain unnecessary?',
+                         '2014-06-01 may be represented as "Jun 2014". ',
             type: 'string',
-            vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly'],
+            vocabulary: ['monthly', 'weekly', 'yearly', 'quarterly', 'daily'],
             defaultValue: 'monthly',
             required: false
           },
@@ -575,7 +565,7 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
               // validate the object key/value pairs:
               Object.keys(value).forEach(function (k) {
                 var v = value[k];
-                if (!moment(k).isValid())
+                if (!parseDate(k, true).isValid())
                   throw new ValidationError(this, value, 'Key is not a valid Datestamp: ' + k);
                 if (typeof v !== 'string')
                   throw new ValidationTypeError(this, typeof v, 'Labels must be strings');

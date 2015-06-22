@@ -15,13 +15,10 @@ module.exports = function (release) {
 
     cache: !release,
     debug: !release,
-    devtool: false,
-    //devtool: 'source-map',
+    devtool: (!release) ? 'source-map' : false,
     entry: {
-      app: './src/App.js',
-      headless: './src/headless.js'
+      plotqi: './src/plotqi-entry.js',
     },
-    //entry: './src/App.js',
 
     stats: {
       colors: true,
@@ -34,16 +31,16 @@ module.exports = function (release) {
       new webpack.optimize.UglifyJsPlugin(),
       new webpack.optimize.OccurenceOrderPlugin(),
       new webpack.optimize.AggressiveMergingPlugin(),
-      new webpack.dependencies.LabeledModulesPlugin()
+      new webpack.dependencies.LabeledModulesPlugin(),
+      new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/])
     ] : [
+      new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]),
       new webpack.dependencies.LabeledModulesPlugin()
     ],
 
     resolve: {
       extensions: ['', '.webpack.js', '.web.js', '.js', '.es6.js'],
-      alias: {
-        moment$: 'moment/min/moment.min.js'
-      }
+      modulesDirectories: ['node_modules'],
     },
 
     module: {
@@ -52,11 +49,7 @@ module.exports = function (release) {
           test: '\\.js$',
           exclude: 'node_modules',
           loader: 'jshint'
-        },
-        {
-          test: /\.es6(\.js)?$/,
-          loader: 'esnext'
-        },
+        } //,
       ],
 
       loaders: [
@@ -78,7 +71,8 @@ module.exports = function (release) {
         },
         {
           test: /\.es6(\.js)?$/,
-          loader: 'es6-loader'
+          exclude: 'node_modules',
+          loader: '6to5-loader'
         }
       ]
     }

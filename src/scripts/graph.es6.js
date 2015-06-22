@@ -1,16 +1,16 @@
-/*jshint esnext:true, eqnull:true */
-/*globals require */
-import {getObjects} from './utils';
-import {Chart} from './chartviz';
-import {SmallMultiplesChart} from './smallMultiplesChart';
-import {LargeChart} from './largeFormatChart';
-var nv = require('imports?d3=d3!exports?window.nv!nvd3');
-getObjects('report.json', function (charts) {
-  charts = charts.map( graph => Chart(graph) )
-  window.charts = charts;
+/*jshint esnext:true, eqnull:true, undef:true */
+/*globals require, window, document */
 
-  var small_div = d3.select('#small-chart-div-test_numero_dos');
-  var lg_div = d3.select('#chart-div-test_numero_dos');
-  nv.addGraph(SmallMultiplesChart(charts[0], small_div));
-  nv.addGraph(LargeChart(charts[0], lg_div));
-});
+var d3 = require('d3');
+import {forReportJSON} from './utils';
+import {Chart} from './chartviz';
+import {chartLoader, loadReports} from './loader';
+
+var nv = require('./vendor/nvd3');
+
+function readySetGo(callback) {
+  document.addEventListener('DOMContentLoaded', callback);
+}
+
+readySetGo(loadReports);
+

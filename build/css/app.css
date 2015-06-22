@@ -753,19 +753,40 @@ body {
   margin: 8px;
   }
 /********************
- * HTML CSS
+ * SVG CSS
  */
-.chartWrap {
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
+svg {
+  /* Trying to get SVG to act like a greedy block in all browsers */
+  display: block;
+  width: 100%;
+  height: 100%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+
+  -webkit-touch-callout: none;
+   -khtml-user-select: none;
+  }
+/********************
+  Default CSS for an svg element nvd3 used
+*/
+svg.nvd3-svg {
+  display: block;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+
+  -webkit-touch-callout: none;
+   -khtml-user-select: none;
   }
 /********************
   Box shadow and border radius styling
 */
 .nvtooltip.with-3d-shadow,
 .with-3d-shadow .nvtooltip {
-  border-radius: 6px;
+  border-radius: 5px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
   }
 /********************
@@ -795,12 +816,12 @@ body {
 */
 .nvtooltip.with-transitions,
 .with-transitions .nvtooltip {
-  -webkit-transition: opacity 250ms linear;
-     -moz-transition: opacity 250ms linear;
-          transition: opacity 250ms linear;
-  -webkit-transition-delay: 250ms;
-     -moz-transition-delay: 250ms;
-          transition-delay: 250ms;
+  -webkit-transition: opacity 50ms linear;
+     -moz-transition: opacity 50ms linear;
+          transition: opacity 50ms linear;
+  -webkit-transition-delay: 200ms;
+     -moz-transition-delay: 200ms;
+          transition-delay: 200ms;
   }
 .nvtooltip.x-nvtooltip,
 .nvtooltip.y-nvtooltip {
@@ -814,7 +835,7 @@ body {
   text-align: center;
   background-color: rgba(247, 247, 247, .75);
   border-bottom: 1px solid #ebebeb;
-  border-radius: 5px 5px 0 0;
+  border-radius: 1px 5px 0 0;
   }
 .nvtooltip p {
   padding: 5px 14px;
@@ -860,34 +881,15 @@ body {
   position: absolute;
   pointer-events: none;
   }
-/********************
- * SVG CSS
- */
-svg {
-  /* Trying to get SVG to act like a greedy block in all browsers */
-  display: block;
-  width: 100%;
-  height: 100%;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-
-  -webkit-touch-callout: none;
-   -khtml-user-select: none;
-  }
-svg text {
+.nvd3 text {
   font: normal 12px Arial;
   }
-svg .title {
+.nvd3 .title {
   font: bold 14px Arial;
   }
 .nvd3 .nv-background {
   fill: white;
   fill-opacity: 0;
-  /*
-  pointer-events: none;
-  */
   }
 .nvd3.nv-noData {
   font-size: 18px;
@@ -906,12 +908,18 @@ svg .title {
 .nvd3 .nv-legend .nv-series {
   cursor: pointer;
   }
-.nvd3 .nv-legend .disabled circle {
+.nvd3 .nv-legend .nv-disabled circle {
   fill-opacity: 0;
   }
 /**********
 *  Axes
 */
+.axis {
+  opacity: 1;
+  }
+.axis.nv-disabled {
+  opacity: 0;
+  }
 .nvd3 .nv-axis {
   pointer-events: none;
   }
@@ -1011,6 +1019,11 @@ svg .title {
 
   stroke-opacity: 0;
   }
+.nvd3.nv-pie .nv-pie-title {
+  font-size: 24px;
+
+  fill: rgba(19, 196, 249, .59);
+  }
 .nvd3.nv-pie .nv-slice text {
   stroke: #000;
   stroke-width: 0;
@@ -1036,47 +1049,20 @@ svg .title {
 .nvd3 .nv-groups path.nv-line {
   fill: none;
   stroke-width: 1.5px;
-  /*
-  stroke-linecap: round;
-  shape-rendering: geometricPrecision;
-
-  transition: stroke-width 250ms linear;
-  -moz-transition: stroke-width 250ms linear;
-  -webkit-transition: stroke-width 250ms linear;
-
-  transition-delay: 250ms
-  -moz-transition-delay: 250ms;
-  -webkit-transition-delay: 250ms;
-  */
   }
 .nvd3 .nv-groups path.nv-line.nv-thin-line {
   stroke-width: 1px;
   }
 .nvd3 .nv-groups path.nv-area {
   stroke: none;
-  /*
-  stroke-linecap: round;
-  shape-rendering: geometricPrecision;
-
-  stroke-width: 2.5px;
-  transition: stroke-width 250ms linear;
-  -moz-transition: stroke-width 250ms linear;
-  -webkit-transition: stroke-width 250ms linear;
-
-  transition-delay: 250ms
-  -moz-transition-delay: 250ms;
-  -webkit-transition-delay: 250ms;
-  */
   }
 .nvd3 .nv-line.hover path {
   stroke-width: 6px;
   }
-/*
-.nvd3.scatter .groups .point {
-  fill-opacity: 0.1;
-  stroke-opacity: 0.1;
-}
-  */
+.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
+  fill-opacity: 0;
+  stroke-opacity: 0;
+  }
 .nvd3.nv-scatter.nv-single-point .nv-groups .nv-point {
   fill-opacity: .5 !important;
   stroke-opacity: .5 !important;
@@ -1110,11 +1096,6 @@ svg .title {
 /**********
 *  Scatter
 */
-/* **Attempting to remove this for useVoronoi(false), need to see if it's required anywhere
-.nvd3 .nv-groups .nv-point {
-  pointer-events: none;
-}
-*/
 .nvd3 .nv-groups .nv-point.hover {
   stroke-width: 20px;
   stroke-opacity: .5;
@@ -1122,11 +1103,6 @@ svg .title {
 .nvd3 .nv-scatter .nv-point.hover {
   fill-opacity: 1;
   }
-/*
-.nv-group.hover .nv-point {
-  fill-opacity: 1;
-}
-*/
 /**********
 *  Stacked Area
 */
@@ -1136,38 +1112,15 @@ svg .title {
           transition: fill-opacity 250ms linear, stroke-opacity 250ms linear;
 
   fill-opacity: .7;
-  /*
-  stroke-opacity: .65;
-  fill-opacity: 1;
-  */
   stroke-opacity: 0;
-  /*
-  transition-delay: 500ms;
-  -moz-transition-delay: 500ms;
-  -webkit-transition-delay: 500ms;
-  */
   }
 .nvd3.nv-stackedarea path.nv-area.hover {
   fill-opacity: .9;
-  /*
-  stroke-opacity: .85;
-  */
   }
-/*
-.d3stackedarea .groups path {
-  stroke-opacity: 0;
-}
-  */
 .nvd3.nv-stackedarea .nv-groups .nv-point {
   stroke-opacity: 0;
   fill-opacity: 0;
   }
-/*
-.nvd3.nv-stackedarea .nv-groups .nv-point.hover {
-  stroke-width: 20px;
-  stroke-opacity: .75;
-  fill-opacity: 1;
-}*/
 /**********
 *  Line Plus Bar
 */
@@ -1250,9 +1203,6 @@ svg .title {
 .nvd3.nv-sparklineplus .nv-yValue {
   font-size: .9em;
   font-weight: normal;
-  /*
-  stroke: #666;
-  */
 
   stroke-width: 0;
   }
@@ -1269,20 +1219,16 @@ svg .title {
   }
 .nvd3.nv-sparklineplus .nv-currentValue {
   font-size: 1.1em;
-  /*
-  stroke: #444;
-  fill: #000;
-  */
   font-weight: bold;
   }
 /**********
 * historical stock
 */
 .nvd3.nv-ohlcBar .nv-ticks .nv-tick {
-  stroke-width: 2px;
+  stroke-width: 1px;
   }
 .nvd3.nv-ohlcBar .nv-ticks .nv-tick.hover {
-  stroke-width: 4px;
+  stroke-width: 2px;
   }
 .nvd3.nv-ohlcBar .nv-ticks .nv-tick.positive {
   stroke: #2ca02c;
@@ -1300,9 +1246,6 @@ svg .title {
   stroke: none;
   }
 .nvd3 .nv-brush .extent {
-  /*
-  cursor: ew-resize !important;
-  */
   fill-opacity: 0 !important;
   }
 .nvd3 .nv-brushBackground rect {
@@ -1312,50 +1255,16 @@ svg .title {
   fill-opacity: .7;
   }
 /**********
-* Indented Tree
-*/
-/**
- * TODO: the following 3 selectors are based on classes used in the example.  I should either make them standard and leave them here, or move to a CSS file not included in the library
- */
-.nvd3.nv-indentedtree .name {
-  margin-left: 5px;
-  }
-.nvd3.nv-indentedtree .clickable {
-  color: #08c;
-  cursor: pointer;
-  }
-.nvd3.nv-indentedtree span.clickable:hover {
-  color: #005580;
-  text-decoration: underline;
-  }
-.nvd3.nv-indentedtree .nv-childrenCount {
-  display: inline-block;
-  margin-left: 5px;
-  }
-.nvd3.nv-indentedtree .nv-treeicon {
-  cursor: pointer;
-  /*
-  cursor: n-resize;
-  */
-  }
-.nvd3.nv-indentedtree .nv-treeicon.nv-folded {
-  cursor: pointer;
-  /*
-  cursor: s-resize;
-  */
-  }
-/**********
 * Parallel Coordinates
 */
 .nvd3 .background path {
   fill: none;
-  stroke: #ccc;
+  stroke: #eee;
   stroke-opacity: .4;
   shape-rendering: crispEdges;
   }
 .nvd3 .foreground path {
   fill: none;
-  stroke: steelblue;
   stroke-opacity: .7;
   }
 .nvd3 .brush .extent {
@@ -1393,6 +1302,28 @@ html {
 body * {
   pointer-events: auto;
   }
+/* upiq grid style */
+.upiq-chart .nv-x.nv-axis g.tick line {
+  stroke: none;
+  }
+.upiq-chart .nv-y.nv-axis g.tick line {
+  stroke-width: .35%;
+  shape-rendering: auto;
+  }
+.upiq-chart .nvd3 text {
+  font-size: 100%;
+  }
+/* tabular legend style */
+.upiq-legend-cell-text.noValue,
+.upiq-legend-cell-text.nullValue {
+  fill: #999;
+  fill-opacity: .3;
+  }
+svg.upiq-chart .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point,
+svg.upiq-small-chart .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
+  fill-opacity: 1;
+  stroke-opacity: 1;
+  }
 .nv-tooltip {
   max-width: 145px;
   overflow: hidden;
@@ -1425,7 +1356,7 @@ body * {
   pointer-events: none;
 
   stroke: grey;
-  stroke-width: 2px;
+  stroke-width: 1%;
   }
 .nv-hover {
   pointer-events: none;
@@ -1486,8 +1417,9 @@ svg.upiq-chart .nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatt
   fill: currentColor;
   }
 .nv-dist.nv-goal line {
-  stroke-width: 1px;
+  stroke-width: .35%;
   shape-rendering: crispEdges;
+  stroke-dasharray: 16 8;
   }
 .nv-dist.nv-goal text {
   color: inherit;
@@ -1498,13 +1430,15 @@ svg.upiq-chart .nv-linesWrap .nv-wrap.nv-line g.nv-scatterWrap .nv-wrap.nv-scatt
   shape-rendering: auto;
   }
 .crisp-shape,
-svg.upiq-chart .nv-legend rect {
+svg.upiq-chart .upiq-legend rect {
   shape-rendering: crispEdges;
   }
-.nv-y.nv-axis .nv-wrap.nv-axis .tick:nth-last-of-type(1) line,
-.nv-y.nv-axis .nv-wrap.nv-axis .tick:nth-of-type(1) line,
+.nv-y.nv-axis .nv-wrap.nv-axis line {
+  stroke: #a9a9a9;
+  stroke-width: .05%;
+  }
 .nv-y.nv-axis .nv-wrap.nv-axis path.domain {
-  stroke: dimgray;
+  stroke: none;
   }
 svg .dark-text {
   fill: #222;
@@ -1521,17 +1455,17 @@ svg .svg-link:hover {
   text-decoration: underline;
   cursor: pointer;
   }
-svg .nv-leg-header-bg {
+svg .upiq-leg-header-bg {
   fill: #dde;
   }
-svg g.nv-leg-row:not( :nth-of-type(1)) text.nv-leg-cell:not( :nth-of-type(1)):hover {
+svg g.upiq-leg-row:not( :nth-of-type(1)) text.upiq-leg-cell:not( :nth-of-type(1)):hover {
   text-decoration: underline;
   cursor: pointer;
   }
-svg g.nv-leg-row:not( :nth-of-type(1)) text.nv-leg-cell:not( :nth-of-type(1)):hover.dark-text {
+svg g.upiq-leg-row:not( :nth-of-type(1)) text.upiq-leg-cell:not( :nth-of-type(1)):hover.dark-text {
   fill: blue;
   }
-svg g.nv-leg-row:not( :nth-of-type(1)) text.nv-leg-cell:not( :nth-of-type(1)):hover.light-text {
+svg g.upiq-leg-row:not( :nth-of-type(1)) text.upiq-leg-cell:not( :nth-of-type(1)):hover.light-text {
   fill: lightblue;
   }
 svg .nv-wrap.nv-line .nv-scatterWrap .nv-wrap.nv-scatter .nv-groups path.nv-point {
