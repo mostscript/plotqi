@@ -100,7 +100,6 @@
       .pipe($.less({sourceMap: !RELEASE, sourceMapBasepath: __dirname}))
       .on('error', $.util.log)
       .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
-      .pipe($.csscomb())
       .pipe($.if(RELEASE, $.minifyCss()))
       .pipe(gulp.dest(DEST + '/css'))
       .pipe($.if(watch, reload({stream: true})));
