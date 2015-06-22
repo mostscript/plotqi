@@ -4,8 +4,6 @@
 var d3 = require('d3');
 import {forReportJSON} from './utils';
 import {Chart} from './chartviz';
-import {SmallMultiplesChart} from './smallMultiplesChart';
-import {LargeChart} from './largeFormatChart';
 import {chartLoader, loadReports} from './loader';
 
 var nv = require('./vendor/nvd3');
