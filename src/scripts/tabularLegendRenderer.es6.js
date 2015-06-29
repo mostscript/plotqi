@@ -511,7 +511,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         seriesIndex,
         series;
     if (key) {
-      tableRow = cell[0][0].parentNode.parentNode;
+      tableRow = cell[0][0].parentNode;
       seriesIndex = this.legendGroup.selectAll('.upiq-legend-row')[0].indexOf(tableRow) - 1;
       series = this.data.series[seriesIndex];
       if (series) {
@@ -531,38 +531,61 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     var self = this,
         click = this.plotter.getPlugin('PointClickPlugin'),
         hover = self.plotter.getPlugin('PointHoverPlugin'),
+        table = this.svg.select('g.upiq-legend'),
         sCell = 'g.upiq-legend-table-cell rect, g.upiq-legend-table-cell text',
         cells = this.svg.selectAll(sCell),
-        cellKey = cell => (cell.data()[0] || {}).key || null;
+        cellKey = cell => (cell.data()[0] || {}).key || null,
+        getCell = function (target) {
+          var parent = target.parentNode,
+              pClass = parent.getAttribute('class') || '',
+              isCell = pClass.indexOf('upiq-legend-table-cell') !== -1;
+          if (isCell) {
+            return parent;
+          }
+          if (parent.tagName === 'svg') {
+            return null;  // prevent inf recurse
+          }
+          return getCell(parent);
+        };
     if (!this.enabled) return;
+    // experimental bubbling:
     // hover behavior:
-    cells
-      .on('mouseover', function (d, i) {
-        var cell = d3.select(this),
-            key = cellKey(cell);
+    table.on('mouseover', function (d, i) {
+      var rawTarget = d3.event.target,
+          targetCell = (rawTarget) ? d3.select(getCell(rawTarget)) : null,
+          key;
+      if (targetCell) {
+        key = cellKey(targetCell);
         if (key) {
-          self.coordinateEvent(cell, hover);
+          if (hover) {
+            hover.clearOverlays();
+            self.coordinateEvent(targetCell, hover);
+          }
           self.highlightColumn(key);
           self.plotter.highlightX(key);  // highlight X tick
         }
+      }
       })
       .on('mouseout', function (d, i) {
-        self.clearHighlights();
-        self.plotter.clearHighlights();
         if (hover) {
           hover.clearOverlays();
         }
+        self.clearHighlights();
+        self.plotter.clearHighlights();
       });
     // click behavior:
     if (click) {
-      cells
-        .on('click', function (d, i) {
-          var cell = d3.select(this),
-              key = cellKey(cell);
+      table.on('click', function (d, i) {
+        var rawTarget = d3.event.target,
+            targetCell = (rawTarget) ? d3.select(getCell(rawTarget)) : null,
+            key;
+        if (targetCell) {
+          key = cellKey(targetCell);
           if (key) {
-            self.coordinateEvent(cell, click);
+            self.coordinateEvent(targetCell, click);
           }
-        });
+        }
+      });
     }
   }
 
