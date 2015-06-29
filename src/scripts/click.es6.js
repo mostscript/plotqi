@@ -94,30 +94,6 @@ export class PointClickPlugin extends BaseRenderingPlugin {
         pad,
         w;
     overlay.open();
-/*
-    // if marker is null, traverse to it:
-    if (marker === null) {
-      // .nv-scatterWrap .nv-groups .nv-series-0 path
-      marker = d3.select(
-        this.svg.selectAll(
-            '.nv-scatterWrap .nv-groups .nv-series-' +
-            series.position + ' path.nv-point'
-          )[0]
-          .filter(m => (d3.select(m).data()[0].x === dataPoint.x))[0]
-      );
-    }
-    this.glowMarker(marker);
-    // adjust border/text color if not dark enough:
-    if (ColorTool.isLight(borderColor)) {
-       borderColor = ColorTool.darken(borderColor, 0.4);
-    }
-    // pad x, y for use in overlay, so that overlay not on top of part of pt:
-    w = this.plotter.plotWidth;
-    pad = Math.max(5, w * 0.02) * ((this.plotter.type === 'bar') ? 1.8 : 1);
-    x = Math.floor((useLeft) ? x + pad : x);
-    // TODO TODO TODO
-    this.plotter.highlightX(dataPoint.x);
-*/
   }
 
   loadInteractiveFeatures() {
