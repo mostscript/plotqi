@@ -34,7 +34,7 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
       .classed('highlighted', false);
   }
 
-  showTip(marker, dataPoint, series) {
+  showOverlay(marker, dataPoint, series) {
     var color = ColorTool.lighten(series.color, 0.8),
         borderColor = series.color,
         [x, y] = this.scaledCoordinates(dataPoint),
@@ -90,7 +90,7 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
     } 
   }
 
-  clearTips() {
+  clearOverlays() {
     this.plotCore.selectAll('.point-hover-tip')
       .transition(3000)
         .style('opacity', 0)
@@ -110,10 +110,10 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
           var marker = d3.select(this),
               dataPoint = marker.data()[0],
               series = self.data.series[dataPoint.seriesIndex];
-          self.showTip(marker, dataPoint, series);
+          self.showOverlay(marker, dataPoint, series);
         },
         onMouseOut = function (d, i) {
-          self.clearTips();
+          self.clearOverlays();
         };
     markers
       .on('mouseover', onHover)

@@ -501,47 +501,69 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     cells.classed('col-highlighted', false);
   }
 
+  coordinateEvent(cell, plugin) {
+    /* coordinate with hover or click plugins, such that hovering or clicking
+     * in tabular legend has effect on data-point hover/click.
+     */
+    var data = cell.data()[0],
+        key = (data) ? data.key : null,
+        tableRow,
+        seriesIndex,
+        series;
+    if (key) {
+      tableRow = cell[0][0].parentNode.parentNode;
+      seriesIndex = this.legendGroup.selectAll('.upiq-legend-row')[0].indexOf(tableRow) - 1;
+      series = this.data.series[seriesIndex];
+      if (series) {
+        data = series.data.get(key.valueOf());
+        if (data) {
+          data.x = data.key.valueOf();
+          data.y = data.value;
+          if (data.y !== null) {
+            plugin.showOverlay(null, data, series);
+          }
+        }
+      }
+    }
+  }
+
   loadInteractiveFeatures() {
-    var self = this;
-    /** called by plotter after render */
-    // TODO: implement click/hover for cell/column/row behaviors...
+    var self = this,
+        click = this.plotter.getPlugin('PointClickPlugin'),
+        hover = self.plotter.getPlugin('PointHoverPlugin'),
+        sCell = 'g.upiq-legend-table-cell rect, g.upiq-legend-table-cell text',
+        cells = this.svg.selectAll(sCell),
+        cellKey = cell => (cell.data()[0] || {}).key || null;
     if (!this.enabled) return;
-    this.svg.selectAll(
-      'g.upiq-legend-table-cell rect, g.upiq-legend-table-cell text')
+    // hover behavior:
+    cells
       .on('mouseover', function (d, i) {
         var cell = d3.select(this),
-            data = cell.data()[0],
-            key = (data) ? data.key : null,
-            tableRow,
-            seriesIndex,
-            series,
-            hover = self.plotter.getPlugin('PointHoverPlugin');
+            key = cellKey(cell);
         if (key) {
-          tableRow = cell[0][0].parentNode.parentNode;
-          seriesIndex = self.legendGroup.selectAll('.upiq-legend-row')[0].indexOf(tableRow) - 1;
-          series = self.data.series[seriesIndex];
-          if (series) {
-            data = series.data.get(key.valueOf());
-            if (data) {
-              data.x = data.key.valueOf();
-              data.y = data.value;
-              if (data.y !== null) {
-                hover.showTip(null, data, series);
-              }
-            }
-          }
+          self.coordinateEvent(cell, hover);
           self.highlightColumn(key);
           self.plotter.highlightX(key);  // highlight X tick
         }
       })
       .on('mouseout', function (d, i) {
-        var hover = self.plotter.getPlugin('PointHoverPlugin');
         self.clearHighlights();
         self.plotter.clearHighlights();
         if (hover) {
-          hover.clearTips();
+          hover.clearOverlays();
         }
       });
+    // click behavior:
+    if (click) {
+      cells
+        .on('click', function (d, i) {
+          var cell = d3.select(this),
+              key = cellKey(cell);
+          if (key) {
+            self.coordinateEvent(cell, click);
+          }
+        });
+    }
   }
 
   _postRender() {
