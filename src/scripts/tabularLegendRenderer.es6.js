@@ -548,7 +548,6 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
           return getCell(parent);
         };
     if (!this.enabled) return;
-    // experimental bubbling:
     // hover behavior:
     table.on('mouseover', function (d, i) {
       var rawTarget = d3.event.target,
