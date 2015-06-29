@@ -12,6 +12,11 @@ body * {
   pointer-events: auto;
 }
 
+/* Basic typography */
+div.chart-div {
+  font-family: Arial;
+}
+
 /* TABULAR LEGEND STYLES: */
 
 g.upiq-legend {
@@ -198,4 +203,72 @@ svg {
   .nv-linesWrap .nv-wrap.nv-line > g > .nv-groups path {
     pointer-events: none;
   }
+}
+
+// Interactive styles (click / tinyOverlay):
+
+div.tinyOverlay {
+  position:absolute;
+}
+
+div.tinyOverlay .overlayInner {
+  border-radius:0.4em; 
+  border:0.1em solid rgba(0,0,0,0.5); 
+  box-shadow:0.1em 0.2em 0.5em #999; 
+  background-color:white; 
+  padding:0 0.5em;
+  margin:-0.3em;
+  overflow:hidden;
+}
+
+.olControlBtn {
+  background-color:rgba(255,255,255,0.85); 
+  font-weight:bold; 
+  font-size:160%; 
+  display:block; 
+  float:right; 
+  width:0.9em; 
+  margin-right:-0.4em; 
+  margin-top:-0.3em; 
+  text-align:center; 
+  line-height:100%; 
+  border-radius:0.5em; 
+  box-shadow:0 0.1em 0.4em #ddd; 
+}
+
+div.tinyOverlay.left .olControlBtn {
+  margin-right:0;
+  margin-left:-0.7em;
+  float:left;
+  box-shadow:0 -0.2em 0.4em #ddd; 
+}
+
+.olControlBtn a.close {
+  color:#006; 
+  cursor:pointer; 
+  text-decoration:none !important; 
+};
+
+.tinyOverlay .point-title .series-title {
+  display:block;
+  font-size: 80%;
+  padding-left:0.5em;
+}
+
+.tinyOverlay h5 {
+  margin:0 -0.8em;
+  padding:0.4em 1em;
+}
+
+.tinyOverlay dl {
+  margin:0.1em;
+}
+
+.tinyOverlay dd {
+  margin:0.1em;
+  font-weight: bold;
+}
+
+.tinyOverlay .note {
+  font-size:70%;
 }

@@ -15,6 +15,7 @@ import {AxisTitleRenderer} from './axisTitles';
 import {XTickLabelsRenderer} from './xTickLabels';
 import {BasicLegendRenderer} from './basicLegend';
 import {PointHoverPlugin} from './hover';
+import {PointClickPlugin} from './click';
 
 // Set up plugin namespace:
 window.plotqi = window.plotqi || {};
@@ -28,7 +29,8 @@ window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
   TrendLineRenderer,
   PointLabelsRenderer,
   BasicLegendRenderer,
-  PointHoverPlugin
+  PointHoverPlugin,
+  PointClickPlugin
 ];
 
 // Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
@@ -413,9 +415,9 @@ export class TimeSeriesPlotter {
     // - set core groups in this.svg:
     this.abovePlotGroup = this.svg.append('g').classed('upiq-above-plot', true);
     this.plotGroup = this.svg.append('g').classed('upiq-plot', true);
-    // - set initial base styles on svg element that will be inherited:
-    this.svg.style({
-      'font-size': '' + this.baseFontSize + 'px'
+    // - set initial base styles on plotCore element that will be inherited:
+    this.plotCore.style({
+      'font-size': '' + this.baseFontSize + 'px',
     });
     // - Add singleton 'defs' to svg:
     this.svg.append('defs');
