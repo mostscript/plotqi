@@ -2,7 +2,6 @@
 /*globals require, window */
 
 var d3 = require('d3');
-var nv = require('./vendor/nvd3');
 import {TimeSeriesPlotter} from './timeSeriesPlot';
 import {forReportJSON} from './utils';
 import {Chart} from './chartviz';
@@ -48,7 +47,7 @@ export function loadReport(container, url, opts) {
       //  -- this favors order set in HTML source over JSON:
       plotDivs.each(function (d, i) {
         var plotDiv = d3.select(this);
-        nv.addGraph(chartLoader(plotDiv, d, opts));
+        chartLoader(plotDiv, d, opts)();
       });
       // Enter selection to add remaining plot DIVs as needed:
       plotDivs.enter()
@@ -59,7 +58,7 @@ export function loadReport(container, url, opts) {
         })
         .each(function (d, i) {
           var plotDiv = d3.select(this);
-          nv.addGraph(chartLoader(plotDiv, d, opts));
+          chartLoader(plotDiv, d, opts)();
         });
         //.call();
     }
