@@ -78,6 +78,18 @@ export function range() {
   return result;
 }
 
+export function geometricBatch(length) {
+    var r = [],
+        size = 1,
+        pos = 0;
+    while (size <= length) {
+        r.push([pos, Math.min(size, length-pos)]);
+        pos = pos + size;
+        size += size;  // 1, 2, 4, 8, 16, 32,...N
+    }
+    return r;
+}
+
 export function forReportJSON(jsonFile, callback) {
 	d3.json(jsonFile, function (input) {
     /** given JSON where charts and data-points may be key/value pairs in 

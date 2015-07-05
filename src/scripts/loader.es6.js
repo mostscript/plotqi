@@ -3,10 +3,22 @@
 
 var d3 = require('d3');
 import {TimeSeriesPlotter} from './timeSeriesPlot';
-import {forReportJSON} from './utils';
+import {forReportJSON, geometricBatch} from './utils';
 import {Chart} from './chartviz';
 
 var INTERACT = true;   // default
+
+function batchURLs(base, spec, total) {
+  var cacheBust = 'cache_bust=' + Math.floor(Math.random() * Math.pow(10,8)),
+      _bSpec = pair => '' + base + 'b_size=' + pair[1] + '&b_start=' + pair[0],
+      _qs = pair => _bSpec(pair) + '&' + cacheBust,
+      _url = pair => base + '?' + _qs(pair);
+  if (spec === 'geometric') {
+    return geometricBatch(total).map(_url);
+  }
+  return [base + '?' + cacheBust];  // default is all reports in one url fetch
+}
+
 
 export function chartLoader(node, data, opts) {
   var interactive, plotter;
@@ -22,6 +34,50 @@ export function chartLoader(node, data, opts) {
   return plotter.update.bind(plotter);
 }
 
+function loadReportBatched(container, url, opts, keyFn) {
+  /** Given container, base URL to JSON, options, get size of total
+    * for all plots in report, load batches on respective data receipt.
+    */
+
+  function size() {
+    if (typeof opts.size === 'number') {
+      return opts.size;
+    }
+    return container.selectAll('div.plotdiv').size();
+  }
+
+  function divFor(uid) {
+    var _prefix = (opts.prefix || 'plot') + '-',
+        divId = _prefix + uid,
+        plotDiv = container.select('div#' + _prefix);
+    if (!plotDiv.size()) {
+      plotDiv = container.append('div')
+        .classed('plotdiv', true)
+        .attr('id', divId);
+    }
+    return plotDiv;
+  }
+
+  var chartIds = [],
+      uniqueChart = c => chartIds.indexOf(c.uid) === -1,
+      processChart = function (chart) {
+        divFor(chart.uid).call(plotDiv => chartLoader(plotDiv, chart, opts)());
+      };
+
+  batchURLs(url, opts.batching, size()).forEach(function (url) {
+    forReportJSON(
+      url,
+      function (charts) {
+        // improbable chance of race condition across de-dupe next 2 lines
+        // but likelihood and impact thereof not a practical issue:
+        charts = charts.filter(uniqueChart).map(graph => new Chart(graph));
+        chartIds.push(...charts.map(c => c.uid));
+        charts.forEach(processChart);
+      }
+    );
+  }); 
+}
+
 export function loadReport(container, url, opts) {
   opts = opts || {};
 
@@ -34,6 +90,15 @@ export function loadReport(container, url, opts) {
         uid = (exists) ? this.getAttribute('id').replace(_prefix, '') : null;
     return uid || ((d) ? d.uid : null);
   }
+
+  // If batched, as we cannot stream and do d3 data-join - process one-by-one:
+  if (opts.batching === 'geometric') {
+    loadReportBatched(container, url, opts, divKey);
+    return;
+  }
+
+  // non-batched, still use batchURLs just to get single cache-busting URL:
+  url = batchURLs(url, 'all', opts)[0];
 
   forReportJSON(
     url,
@@ -60,7 +125,6 @@ export function loadReport(container, url, opts) {
           var plotDiv = d3.select(this);
           chartLoader(plotDiv, d, opts)();
         });
-        //.call();
     }
   );
 }
@@ -76,7 +140,11 @@ export function loadReports(opts) {
   d3.select('.report-core').each(function (d, i) {
     var container = d3.select(this),
         url = container.attr('data-report-json'),
-        prefix = container.attr('data-report-prefix') || 'plot';
-    loadReport(container, url, opts);
+        size = parseInt(container.attr('data-report-size'), 10),
+        reportOptions = Object.create(opts);
+    reportOptions.prefix = container.attr('data-report-prefix') || opts.prefix;
+    reportOptions.batching = container.attr('data-report-batch-step') || 'all';
+    reportOptions.size = (isNaN(size)) ? null : size;
+    loadReport(container, url, reportOptions);
   });
 }
