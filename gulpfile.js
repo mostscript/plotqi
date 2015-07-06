@@ -108,30 +108,40 @@
   // Bundle
   gulp.task('bundle', function (cb) {
     var started = false;
-    var config = require('./config/webpack.js')(RELEASE);
-    var bundler = webpack(config);
+    var specs = ['./config/webpack.js'];
 
-    function bundle (err, stats) {
-      if (err) {
-        throw new $.util.PluginError('webpack', err);
+    if (RELEASE) {
+      specs.push('./config/release.js');
+    }
+
+  
+    specs.forEach(function (path) {
+      var config = require(path)(),
+          bundler = webpack(config);
+      
+      function bundle (err, stats) {
+        if (err) {
+          throw new $.util.PluginError('webpack', err);
+        }
+        if (argv.verbose) {
+          $.util.log('[webpack]', stats.toString({colors: true}));
+        }
+        if (watch) {
+          reload(config.output.filename);
+        }
+        if (!started) {
+          started = true;
+          return cb();
+        }
       }
-      if (argv.verbose) {
-        $.util.log('[webpack]', stats.toString({colors: true}));
-      }
+
       if (watch) {
-        reload(config.output.filename);
+        bundler.watch(200, bundle);
+      } else {
+        bundler.run(bundle);
       }
-      if (!started) {
-        started = true;
-        return cb();
-      }
-    }
-
-    if (watch) {
-      bundler.watch(200, bundle);
-    } else {
-      bundler.run(bundle);
-    }
+    });
+      
   });
 
   // Build the app from source code
