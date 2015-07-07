@@ -101,7 +101,7 @@
       .on('error', $.util.log)
       .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
       .pipe($.if(RELEASE, $.minifyCss()))
-      .pipe(gulp.dest(DEST + '/css'))
+      .pipe(gulp.dest(DEST))
       .pipe($.if(watch, reload({stream: true})));
   });
 
