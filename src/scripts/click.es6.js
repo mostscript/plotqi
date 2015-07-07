@@ -74,8 +74,8 @@ export class PointClickPlugin extends BaseRenderingPlugin {
         ct = ColorTool,
         titleColor = ct.isLight(color) ? ct.darken(color) : color,
         [x, y] = this.scaledCoordinates(dataPoint),
-        useLeft = x < (this.plotter.plotWidth * 0.45),
-        fontSize = Math.max(10, this.plotter.baseFontSize * 0.7),
+        useLeft = x < (this.plotter.plotWidth * 0.5),
+        fontSize = Math.max(13, this.plotter.baseFontSize * 0.7),
         html = mkHTML(series, dataPoint, titleColor).html(),
         overlay = new Overlay(html, {
           container: this.plotCore[0][0],
@@ -84,10 +84,11 @@ export class PointClickPlugin extends BaseRenderingPlugin {
             left: (useLeft) ? `${x}px` : undefined,
             right: (!useLeft) ? `${this.plotter.plotWidth-x}px` : undefined,
             top: `${y}px`,
-            width: '30%',
-            'min-width': '160px',
+            width: '45%',
+            'min-width': '150px',
             'max-width': '300px',
             border: '1.5% solid ' + color,
+            'font-size': `${fontSize}px`,
             'z-index': 10000
           }
         }),
