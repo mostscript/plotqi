@@ -95,7 +95,7 @@
   // CSS style sheets
   gulp.task('styles', function () {
     src.styles = 'src/styles/**/*.{css,less}';
-    return gulp.src('src/styles/app.less')
+    return gulp.src('src/styles/plotqi.less')
     .pipe($.plumber())
       .pipe($.less({sourceMap: !RELEASE, sourceMapBasepath: __dirname}))
       .on('error', $.util.log)
