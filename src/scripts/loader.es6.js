@@ -10,7 +10,7 @@ var INTERACT = true;   // default
 
 function batchURLs(base, spec, total) {
   var cacheBust = 'cache_bust=' + Math.floor(Math.random() * Math.pow(10,8)),
-      _bSpec = pair => '' + base + 'b_size=' + pair[1] + '&b_start=' + pair[0],
+      _bSpec = pair => 'b_size=' + pair[1] + '&b_start=' + pair[0],
       _qs = pair => _bSpec(pair) + '&' + cacheBust,
       _url = pair => base + '?' + _qs(pair);
   if (spec === 'geometric') {
@@ -49,7 +49,7 @@ function loadReportBatched(container, url, opts, keyFn) {
   function divFor(uid) {
     var _prefix = (opts.prefix || 'plot') + '-',
         divId = _prefix + uid,
-        plotDiv = container.select('div#' + _prefix);
+        plotDiv = container.select('#' + divId);
     if (!plotDiv.size()) {
       plotDiv = container.append('div')
         .classed('plotdiv', true)
