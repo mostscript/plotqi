@@ -63,17 +63,27 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
     return rise / run;
   }
 
-  tangentLineSlope(point, prev, next) {
+  pointAngles(point, prev, next) {
+    /** 
+      * return array of: tangent line angle, perpendiculat angle, and
+      * inflection angle
+      */
     var slope = this.lineSlope,
         slopeA = (prev === null) ? slope(point, next) : slope(prev, point),
         slopeB = (next === null) ? slope(prev, point) : slope(point, next),
-        avgSlope = (slopeA + slopeB) / 2.0;
-    return avgSlope;
+        avgSlope = (slopeA + slopeB) / 2.0,
+        perpendicularSlope = -1 / avgSlope,
+        tanLnAngle = Math.atan(avgSlope),
+        positioningAngle = Math.atan(perpendicularSlope),
+        inflectionAngle = Math.PI - Math.abs(Math.atan(slopeB)) - Math.abs(Math.atan(slopeA));
+    return [tanLnAngle, positioningAngle, inflectionAngle];
   }
 
   scaledPoints(series) {
     var points = [],
-        scaledPoints = [];
+        scaledPoints = [],
+        gridZero = this.plotter.gridHeight() + this.margins.top,
+        textSize = this.plotter.baseFontSize * 0.75;
     series.data.forEach(function (k, point) {
       if (point.value !== null) {
         points.push(point);
@@ -89,27 +99,41 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
             */
           var prev = (idx === 0) ? null : arr[idx - 1],
               next = (idx === arr.length - 1) ? null : arr[idx + 1],
-              tanLnSlope = this.tangentLineSlope(point, prev, next),
-              perpendicularSlope = -1 / tanLnSlope,
-              positioningAngle = Math.atan(perpendicularSlope),
+              //tanLnSlope = this.tangentLineSlope(point, prev, next),
+              //perpendicularSlope = -1 / tanLnSlope,
+              //positioningAngle = Math.atan(perpendicularSlope),
+              [tanAngle, posAngle, inflectionAngle] = this.pointAngles(
+                point,
+                prev,
+                next
+              ),
+              // angle multipler, *-1 if acute angle:
+              acute = (inflectionAngle < Math.PI / 2),
+              downward = (prev && next && prev.y < point.y && next.y < point.y),
+              mult = (acute && downward) ? -1 : 1, 
               // text is wider than tall, so perceived hypotenuse difference
               // from marker to text should be shorter when tanLnSlope is
               // less than 1 (45°):
-              distanceDenominator = (Math.abs(tanLnSlope) > 1) ? 37 : 42,
+              textAbove = (!downward && Math.abs(tanAngle) < Math.PI/4),
+              baseDistance = (textAbove) ? 60 : 52,
+              distanceDenominator = (downward && acute) ? 33 : baseDistance,
               // ideal hypotenuse distance:
               c = Math.floor(this.plotter.plotWidth / distanceDenominator),
               // opposite leg, delta for Y
-              a = c * Math.sin(positioningAngle),
+              a = mult * c * Math.sin(posAngle),
               // adjacent leg, delta for X
-              b = c * Math.cos(positioningAngle);
+              b = mult * c * Math.cos(posAngle);
           // if tangent line has negative slope (going down left-to-right)
           // then we want to multiply a,b each by -1
-          if (tanLnSlope < 0) {
+          if (tanAngle < 0) {
             b *= -1;
             a *= -1;
           }
           point.x2 = point.x - b;
           point.y2 = point.y + a;
+          if (point.y2 > gridZero - textSize) {
+            point.y2 = point.y - a;
+          }
         },
         this
       );
