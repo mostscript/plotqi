@@ -4,7 +4,7 @@
 var moment = require('moment');
 var d3 = require('d3');
 var nv = require('./vendor/nvd3');
-import {styleSheet, d3textWrap} from './utils';
+import {styleSheet, d3textWrap, range} from './utils';
 import {debounce} from './vendor/debounce';
 import {TabularLegendRenderer} from './tabularLegendRenderer';
 import {PointLabelsRenderer} from './pointLabelsRenderer';
@@ -252,7 +252,7 @@ export class TimeSeriesPlotter {
         _transform = function (series, index) {
             var plotType = this.type,
                 obj = {
-                  key: series.title,
+                  key: series.position,
                   color: series.color,
                   values: [],
                   format: d3.format(series.display_format),
@@ -540,11 +540,34 @@ export class TimeSeriesPlotter {
     tickLines.classed('selected', false);
   }
 
+  reorderSeries() {
+    /** DOM order is stacking/painting order; reversing puts the top-most
+      * and front-most line in all series at the top of the drawing, with
+      * subsequent (and assumed of lesser importance) lines are painted 
+      * underneath.
+      */
+    var indexes = range(this.data.series.length);
+    indexes.reverse();
+    indexes.forEach(function (i) {
+      var selector = '.nv-series-' + i,
+          selection = this.plotGroup.selectAll(selector);
+      selection[0].forEach(function (el) {
+        el.parentNode.appendChild(el);
+      });
+      },
+      this
+    );
+  }
+
   postRender() {
     var abovePlot = this.abovePlotGroup,
         _size = el => el.getBoundingClientRect().height,
         sizers,
         adjustHeight;
+    // - Re-order series that NVD3 draws, if line chart:
+    if (this.type === 'line') {
+      this.reorderSeries();
+    }
     // - per-plugin adjustments
     this.plugins.forEach(function (plugin) {
         plugin.postRender();
