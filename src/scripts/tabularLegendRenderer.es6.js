@@ -193,7 +193,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
      */
  
     row.selectAll(selectCellGroup).attr({
-      'clip-path': `url(#${cellID})`
+      'clip-path': `url(#${cellID()})`
     });
 
     // make bg rects in each group, with width
