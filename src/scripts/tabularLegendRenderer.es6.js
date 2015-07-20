@@ -191,9 +191,13 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
      *  https://bugs.webkit.org/show_bug.cgi?id=83438
      *
      */
- 
+
     row.selectAll(selectCellGroup).attr({
-      'clip-path': `url(#${cellID()})`
+      'clip-path': function () {
+        var cellGroup = d3.select(this),
+            cPath = cellGroup.select('defs .groupClip');
+        return `url(#${cPath.attr('id')})`;
+      }
     });
 
     // make bg rects in each group, with width
