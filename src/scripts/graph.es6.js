@@ -5,6 +5,7 @@ var d3 = require('d3');
 import {forReportJSON} from './utils';
 import {Chart} from './chartviz';
 import {chartLoader, loadReports} from './loader';
+import {BaseRenderingPlugin} from './plugin';
 
 var nv = require('./vendor/nvd3');
 
@@ -15,6 +16,7 @@ function readySetGo(callback) {
 window.plotqi = window.plotqi || {};
 window.plotqi.ready = readySetGo;
 window.plotqi.load = loadReports;
+window.plotqi.BaseRenderingPlugin = BaseRenderingPlugin;
 
 // Calling semantics:
 //  <script type="text/javascript">
