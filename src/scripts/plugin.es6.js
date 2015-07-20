@@ -55,6 +55,12 @@ export class BaseRenderingPlugin {
     /** post-render hook for after-rendering adjustments */
   }
 
+  onComplete() {
+    /** hook for after completion, should be used sparingly for idemopotent
+      * actions/notification: ideally should not modify state of plot.
+      */
+  }
+
   update() {
     this.clear();
     this.render();

@@ -17,9 +17,16 @@ import {BasicLegendRenderer} from './basicLegend';
 import {PointHoverPlugin} from './hover';
 import {PointClickPlugin} from './click';
 
-// Set up plugin namespace:
+// Set up namespace:
 window.plotqi = window.plotqi || {};
+
+// Global list of plotters, may be used by plugins or external:
 window.plotqi.plotters = [];
+
+// Integration plugins, may be appended to core/stock plugins (late-binding):
+window.plotqi.ADDITIONAL_PLUGINS = window.plotqi.ADDITIONAL_PLUGINS || [];
+
+// Core plugins:
 window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
   ContinuityLinesPlugin,
   GoalLineRenderer,
@@ -86,6 +93,8 @@ export class TimeSeriesPlotter {
     this.svg = null;          // will be svg inside the plot core div
     // Interactive mode?
     this._initPlugins();
+    // Completion flag may be used by onComplete() of plugins or external:
+    this.complete = false;
   }
 
   getOptions(o) {
@@ -148,10 +157,16 @@ export class TimeSeriesPlotter {
     this.wrapType = (isLine) ? LINESWRAP_CLASSNAME : BARWRAP_CLASSNAME;
   }
 
+  _allPlugins() {
+    var core = window.plotqi.RENDERING_PLUGINS,
+        additional = window.plotqi.ADDITIONAL_PLUGINS;
+    return core.concat(additional);
+  }
+
   _initPlugins() {
     // init plugins for later use by respective hookable methods
     this.plugins = [];
-    window.plotqi.RENDERING_PLUGINS.forEach(function (klass) {
+    this._allPlugins().forEach(function (klass) {
         var adapter = new klass(this);  // plugin adapts this plotter core
         this.plugins.push(adapter);
       },
@@ -594,6 +609,14 @@ export class TimeSeriesPlotter {
         height: `${this.plotHeight}px`
       });
     }
+    // - Mark as complete:
+    this.complete = true;
+    // - per-plugin on-complete notifiers:
+    this.plugins.forEach(function (plugin) {
+        plugin.onComplete();
+      },
+      this
+    );
   }
 
   refresh() {
