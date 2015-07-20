@@ -8,7 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="plotqi.css">
     <script src="plotqi.js"></script>
-<!-- test-only styles -->
+    <script type="text/javascript">
+      (function () {
+        // break if no reasonable ES5 support:
+        if (!Array.prototype.forEach || !Object.create) {
+          alert('Your browser does not support this application.');
+          return;
+        }
+        window.plotqi.ready(window.plotqi.load);
+      }());
+    </script>
+    <!-- test-only styles -->
 <style>
 div.report {
   background-color:#d0dfe9;
@@ -22,6 +32,11 @@ div.chart {
   float:left;
 }
 div.chart-div {
+}
+
+@media print {
+  .report-core { width:1920px; }
+  .plotdiv { page-break-inside:avoid; }
 }
 
 </style>

@@ -12,5 +12,20 @@ function readySetGo(callback) {
   document.addEventListener('DOMContentLoaded', callback);
 }
 
-readySetGo(loadReports);
+window.plotqi = window.plotqi || {};
+window.plotqi.ready = readySetGo;
+window.plotqi.load = loadReports;
 
+// Calling semantics:
+//  <script type="text/javascript">
+//    (function () {
+//      // break if no reasonable ES5 support:
+//      if (!Array.prototype.forEach || !Object.create) {
+//        alert('Your browser does not support this application.');
+//        return;
+//      }
+//      // add any integration-specific custom plugins:
+//      window.plotqi.ADDITIONAL_PLUGINS.push(MyCustomPlugin);
+//      window.plotqi.ready(window.plotqi.load);
+//    }());
+//  </script>
