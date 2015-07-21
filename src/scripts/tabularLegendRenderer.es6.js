@@ -229,7 +229,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
             x: 0,
             y: cellPadding.top,
             lengthAdjust: 'spacingAndGlyphs',
-            height: rowHeight,
+            height: rowHeight
           })
           .style({
             'text-anchor': 'middle',
