@@ -62,9 +62,12 @@ function loadReportBatched(container, url, opts, keyFn) {
       uniqueChart = c => chartIds.indexOf(c.uid) === -1,
       processChart = function (chart) {
         divFor(chart.uid).call(plotDiv => chartLoader(plotDiv, chart, opts)());
-      };
+      },
+      plotCount = size();
 
-  batchURLs(url, opts.batching, size()).forEach(function (url) {
+  window.plotqi.plotCount = (window.plotqi.plotCount || 0) + plotCount;
+
+  batchURLs(url, opts.batching, plotCount).forEach(function (url) {
     forReportJSON(
       url,
       function (charts) {
@@ -114,6 +117,7 @@ export function loadReport(container, url, opts) {
         var plotDiv = d3.select(this);
         chartLoader(plotDiv, d, opts)();
       });
+      window.plotqi.plotCount = (window.plotqi.plotCount || 0) + plotDivs.size();
       // Enter selection to add remaining plot DIVs as needed:
       plotDivs.enter()
         .append('div')

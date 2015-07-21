@@ -95,6 +95,8 @@ export class TimeSeriesPlotter {
     this._initPlugins();
     // Completion flag may be used by onComplete() of plugins or external:
     this.complete = false;
+    // make global reference available in plotqi namespace for plotter(s):
+    window.plotqi.plotters.push(this);
   }
 
   getOptions(o) {
@@ -504,8 +506,6 @@ export class TimeSeriesPlotter {
     this.timeScale
       .domain(sDomain)
       .range(sRange);
-    // make global reference available in plotqi namespace for plotter(s):
-    window.plotqi.plotters.push(this);
   }
 
   render() {
