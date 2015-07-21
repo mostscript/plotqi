@@ -8,6 +8,11 @@ import {ColorTool} from './utils';
 
 export class PointHoverPlugin extends BaseRenderingPlugin {
 
+  constructor(plotter) {
+    super(plotter);
+    this.__name__ = 'PointHoverPlugin';
+  }
+
   preRender() {
     super.preRender();
     this.overlay = null;  // will be set in render(), used in interactive...

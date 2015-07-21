@@ -53,6 +53,11 @@ function mkHTML(series, point, color) {
 
 export class PointClickPlugin extends BaseRenderingPlugin {
 
+  constructor(plotter) {
+    super(plotter);
+    this.__name__ = 'PointClickPlugin';
+  }
+
   preRender() {
     super.preRender();
   }

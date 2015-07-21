@@ -15,6 +15,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
 
   constructor (plotter) {
     super(plotter);
+    this.__name__ = 'TabularLegendRenderer';
     this.legendGroup = null;  // will be set by this.makeLegendGroup
     this.leftPad = 5;
     this.legPad = 10;

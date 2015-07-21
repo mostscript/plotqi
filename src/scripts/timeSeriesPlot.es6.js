@@ -176,15 +176,22 @@ export class TimeSeriesPlotter {
     );
   }
 
+  pluginName(p) {
+    /** plugin name: __name__ string stable post-minification, constructor name
+      * not guranteed safe, so only used as fallback.
+      */
+    return p.__name__ || p.constructor.name;
+  }
+
   pluginEnabled(name) {
     /** return true if plugin singleton instance by name is enabled */
-    var plugin = this.plugins.filter(p => (p.constructor.name == name))[0];
+    var plugin = this.plugins.filter(p => (this.pluginName(p) === name))[0];
     return plugin && plugin.enabled; 
   }
 
   getPlugin(name) {
     /** get plugin by name */
-    var plugin = this.plugins.filter(p => (p.constructor.name == name))[0];
+    var plugin = this.plugins.filter(p => (this.pluginName(p) === name))[0];
     return plugin;
   }
 
