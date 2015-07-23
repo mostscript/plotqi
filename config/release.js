@@ -74,7 +74,7 @@ module.exports = function () {
         {
           test: /\.es6(\.js)?$/,
           exclude: 'node_modules',
-          loader: '6to5-loader'
+          loader: 'babel-loader'
         }
       ]
     }
