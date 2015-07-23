@@ -48,10 +48,10 @@ export class TimeDataPoint extends DataPoint {
 
 export class DataSeries extends Klass {
   constructor(obj) {
+    var localprops = ['color'];
     obj = obj || {};
-    this.localprops = ['color'];
     obj.schema = obj.schema || dataSeriesSchema;
-    super(obj);
+    super(obj, localprops);
     this.data = obj.data || [];
     this._color = obj.color || null;
     this.position = 0;  // default, may be overwritten by chart managing this

@@ -131,7 +131,7 @@ export class ValidationTypeError extends TypeError {
 
 export class Klass {
 
-  constructor(obj) {
+  constructor(obj, localprops) {
     obj = obj || {};
     var schema = obj.schema || schematize(obj, {});
     this.schema = schema;
@@ -153,7 +153,7 @@ export class Klass {
     }
     Object.keys(schema).forEach(function (field) {
       var fieldname = schema[field].name;
-      if ((this.localprops || []).indexOf(fieldname) !== -1) {
+      if ((localprops || []).indexOf(fieldname) !== -1) {
         return;  // do not use schema property descriptor for this field
       }
       Object.defineProperty(this, fieldname, descriptor(schema[field], this));
