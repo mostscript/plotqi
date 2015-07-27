@@ -11,6 +11,9 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
 
   constructor(plotter) {
     super(plotter);
+    // blacklist trident from mid-markers, due to bug:
+    //  http://stackoverflow.com/a/21727740/835961
+    this.showMarkers = window.navigator.userAgent.indexOf('Trident') === -1;
   }
 
   preRender() {
@@ -47,6 +50,7 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
         gridOffsetX = this.margins.left,
         gridOffsetY = this.margins.top,
         lineFn = d3.svg.line().x(d => d.x).y(d => d.y).interpolate('linear'),
+        midMarkers = this.showMarkers,
         group;
     if (!considered) {
       return;  // no trendlines!
@@ -84,7 +88,7 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
           })
           .append('path')
             .attr({
-              d: 'M 0 0 L 10 5 L 0 10 z',
+              d: 'M 0 0 L 10 5 L 0 10 L 0 0 Z',
               fill: line.trend_color,
               opacity: 0.5
             });
@@ -102,7 +106,7 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
             d: lineFn(data),
             stroke: line.trend_color,
             'stroke-width': line.trend_width,
-            'marker-mid': `url(#trendmarker-${idx})`,
+            'marker-mid': (midMarkers) ? `url(#trendmarker-${idx})` : undefined,
             fill: 'none'
           });
       },
