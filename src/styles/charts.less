@@ -218,7 +218,7 @@ div.tinyOverlay .overlayInner {
   box-shadow:0.1em 0.2em 0.5em #999; 
   background-color:white; 
   padding:0 0.5em;
-  margin:-0.3em;
+  margin:-0.3em -0.3em 0 0;
   overflow:hidden;
 }
 
@@ -229,12 +229,23 @@ div.tinyOverlay .overlayInner {
   display:block; 
   float:right; 
   width:0.9em; 
-  margin-right:-0.4em; 
-  margin-top:-0.3em; 
+  margin:-0.3em -0.4em 0 0;
   text-align:center; 
   line-height:100%; 
   border-radius:0.5em; 
   box-shadow:0 0.1em 0.4em #ddd; 
+}
+
+div.tinyOverlay .olControl {
+  position: absolute;
+  right: -0.3em;
+  top: -0.3em;
+}
+
+div.tinyOverlay.left .olControl {
+  right: none;
+  left: 0.3em;
+  top: -0.3em;
 }
 
 div.tinyOverlay.left .olControlBtn {

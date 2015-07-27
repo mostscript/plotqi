@@ -35,6 +35,7 @@ function style(target, spec, value) {
     return;
   }
   target.style.removeProperty(spec);
+  if (value === undefined) return;
   target.style.setProperty(spec, value);
 }
 
