@@ -53,6 +53,9 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
   _enabled() {
     var nonTabularPlacement = (this.placement && this.placement !== 'tabular'),
         multiSeries = (this.data.series.length > 1);
+    if (this.plotter.options.tiny || this.plotter.plotWidth < 320) {
+      nonTabularPlacement = true;
+    }
     return nonTabularPlacement && this.loc !== null && multiSeries;
   }
 

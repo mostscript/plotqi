@@ -387,6 +387,8 @@ export class TimeSeriesPlotter {
     // plot width flags: if sufficiently small, auto-set the 'tiny' flag:
     if (this.options.tiny !== 'disabled' && this.plotWidth < 165) {
       this.options.tiny = true;
+    } else if (this.plotWidth >= 165) {
+      this.options.tiny = false;
     }
     // plot width flags: if sufficiently small, auto-set the 'small' flag:
     this.options.small = (this.plotWidth < 400);

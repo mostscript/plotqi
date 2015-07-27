@@ -36,8 +36,10 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
   }
 
   preRender() {
+    var smallFormat;
     super.preRender();
-    this.enabled = this.useTabularLegend();
+    smallFormat = this.plotter.plotWidth < 320 || this.plotter.options.tiny;
+    this.enabled = this.useTabularLegend() && !smallFormat;
     // If rel-width & tabular legend: dynamic size for left margin, min 80px
     if (this.enabled) {
       this.margins.bottom = 100;  // default
