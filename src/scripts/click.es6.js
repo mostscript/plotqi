@@ -92,7 +92,6 @@ export class PointClickPlugin extends BaseRenderingPlugin {
             width: '45%',
             'min-width': '150px',
             'max-width': '300px',
-            border: '1.5% solid ' + color,
             'font-size': `${fontSize}px`,
             'z-index': 10000
           }
