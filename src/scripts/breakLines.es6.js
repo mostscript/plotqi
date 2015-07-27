@@ -67,9 +67,24 @@ export class ContinuityLinesPlugin extends BaseRenderingPlugin {
         baseSel = '.nv-linesWrap g.nv-line .nv-groups .nv-group.' + classname,
         baseGroup = this.svg.select(baseSel),
         path = baseGroup.select('path.nv-line'),
-        data = this.extractPathLineSegments(path.attr('d')),
-        missing = this.missingLines(data),
+        segList = path[0][0].pathSegList,
+        segLen = segList.numberOfItems,
+        segments = [],
+        data,
+        missing,
+        i,
         behavior = series.break_lines;  // either 'solid' or 'dashed'
+    for (i=0; i < segLen; i++) {
+      segments.push(segList.getItem(i));
+    }
+    data = this.extractPathLineSegments(
+      segments.map(function (s) {
+        return `${s.pathSegTypeAsLetter}${s.x},${s.y}`;
+        },
+        this
+      ).join('')
+    );
+    missing = this.missingLines(data);
     if (missing) {
       this.renderMissing(baseGroup, missing, behavior, series);
     }
