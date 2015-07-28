@@ -24,14 +24,16 @@ div.report {
   background-color:#d0dfe9;
   padding:0.5em;
   clear:both;
+  font-family:Arial;
 }
-div.chart {
+div.plotdiv {
   margin:0.2em;
   background-color:white;
   padding:0.3em;
-  float:left;
+  font-family:Arial;
 }
-div.chart-div {
+div.plotdiv h3.plot-title {
+  font-size:90%;
 }
 
 @media print {
@@ -50,7 +52,7 @@ div.chart-div {
   <!-- report testing below -->
 
   <div class="report-core"
-       data-report-json="report.json"
+       data-report-json="report2.json"
        data-report-batch-step="geometric"
        data-report-size="8"
        data-report-prefix="plotdiv">
@@ -59,15 +61,13 @@ div.chart-div {
     <div class="plotdiv" id="plotdiv-0f647eaf2f574b8e84b2e0be10333323">
       <h3 class="plot-title">Hello plot</h3>
       <p class="plot-description">
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       </p>
       <div class="plot-info">
-        <!-- end matter including captions, tables, or whatever -->
         <p>Here is plot information that is rendered into template, sourced in HTML, not in JSON.</p>
         <p>Here is more information.</p>
       </div>
     </div>
-
     <!-- TODO: existing chart divs that get re-populated/enhanced progressively if server-side
         template rendered into DOM via HTML source -->
   </div>
