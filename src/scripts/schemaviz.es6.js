@@ -157,7 +157,6 @@ export class DataSeriesSchema extends Schema {
               'cross',
               'plus',
               'dash',
-              // triangle-up / triangle-down effectively same:
               'triangle-up',
               'triangle-down'
             ],
