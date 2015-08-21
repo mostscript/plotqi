@@ -8,7 +8,7 @@
         {
           "line_width": 4, 
           "break_lines": true, 
-          "marker_style": "triangle-down",
+          "marker_style": "filledSquare", 
           "marker_color": "#554e4e", 
           "title": "Jupiter Pediatrics", 
           "marker_size": 9.0, 
