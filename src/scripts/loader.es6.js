@@ -3,7 +3,7 @@
 
 var d3 = require('d3');
 import {TimeSeriesPlotter} from './timeSeriesPlot';
-import {forReportJSON, geometricBatch} from './utils';
+import {forReportJSON, geometricBatch, urlArgs} from './utils';
 import {Chart} from './chartviz';
 
 var INTERACT = true;   // default
@@ -134,19 +134,32 @@ export function loadReport(container, url, opts) {
 }
 
 export function loadReports(opts) {
+  var pageArgs = urlArgs(),
+      safeInt = function (v) {
+        v = parseInt(v, 10);
+        return (!isNaN(v)) ? v : null;
+      };
   // default options
   opts = opts || {};
   opts.interactive = opts.interactive || 'true';
   opts.prefix = opts.prefix || 'plot';
+  opts.layout = opts.layout || pageArgs.layout || 'normal';
+  // column count only applicable to compact mode:
+  opts.columns = opts.columns || pageArgs.columns || 5;
   // Let the HTML drive what gets loaded: any element that contains
   // class of 'report-core' and 'data-report-json' should get
   // loaded with the URL listed in data-report-json.
   d3.select('.report-core').each(function (d, i) {
     var container = d3.select(this),
         url = container.attr('data-report-json'),
+        layout = container.attr('data-report-layout'),
         size = parseInt(container.attr('data-report-size'), 10),
         reportOptions = Object.create(opts);
     reportOptions.prefix = container.attr('data-report-prefix') || opts.prefix;
+    reportOptions.layout = container.attr('data-report-layout') || opts.layout;
+    reportOptions.columns = safeInt(
+      container.attr('data-report-columns') || opts.columns
+    );
     reportOptions.batching = container.attr('data-report-batch-step') || 'all';
     reportOptions.size = (isNaN(size)) ? null : size;
     loadReport(container, url, reportOptions);

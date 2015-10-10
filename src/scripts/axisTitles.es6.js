@@ -17,7 +17,7 @@ export class AxisTitleRenderer extends BaseRenderingPlugin {
     if (this.titleY && this.margins.left < minMargin && !this.superTiny) {
       this.margins.left = minMargin;
     }
-    if (this.titleX) {
+    if (this.titleX && !this.superTiny) {
       this.margins.bottom += this.plotter.baseFontSize * 1.2;
     }
   }

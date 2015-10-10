@@ -16,6 +16,7 @@ import {XTickLabelsRenderer} from './xTickLabels';
 import {BasicLegendRenderer} from './basicLegend';
 import {PointHoverPlugin} from './hover';
 import {PointClickPlugin} from './click';
+import {CompactLayoutPlugin} from './compact';
 
 // Set up namespace:
 window.plotqi = window.plotqi || {};
@@ -28,6 +29,7 @@ window.plotqi.ADDITIONAL_PLUGINS = window.plotqi.ADDITIONAL_PLUGINS || [];
 
 // Core plugins:
 window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
+  CompactLayoutPlugin,
   ContinuityLinesPlugin,
   GoalLineRenderer,
   XTickLabelsRenderer,
@@ -104,6 +106,8 @@ export class TimeSeriesPlotter {
     o = o || {};
     // interactive mode:
     o.interactive = (o.interactive === undefined) ? true : o.interactive;
+    // Check for whether plot will be contained inside a compact layout:
+    o.compact = (o.layout === 'compact');
     // tiny mode (may be overridden by sizePlot during preRender (<165px),
     // may be true/false, undefined, or 'disabled':
     o.tiny = (o.tiny === undefined) ? false : o.tiny;
@@ -448,12 +452,12 @@ export class TimeSeriesPlotter {
     // - Add singleton 'defs' to svg:
     this.svg.append('defs');
     // - create an NVD3 chart object that will be returned:
-    chart = this.nvChartFactory();
+    this.chart = this.nvChartFactory();
     // - get scales from chart, set for use by plotter, plugins:
     // -- xScale may be oridinal or linear:
-    this.xScale = chart.xScale();
+    this.xScale = this.chart.xScale();
     // -- yScale:
-    this.yScale = chart.yScale();
+    this.yScale = this.chart.yScale();
     // - Bind plugin svg, scales for plugins, call any plugins pre-render
     this.plugins.forEach(function (plugin) {
         if (typeof plugin.preRender === 'function') {
@@ -463,10 +467,9 @@ export class TimeSeriesPlotter {
       this
     );
     // - Set chart positioning: width, height, margins:
-    chart.width(this.plotWidth);    // width before margins
-    chart.height(this.plotHeight);  // height before margins
-    chart.margin(this.margins);     // margins around exterior of grid
-    return chart;
+    this.chart.width(this.plotWidth);    // width before margins
+    this.chart.height(this.plotHeight);  // height before margins
+    this.chart.margin(this.margins);     // margins around exterior of grid
   }
 
   _grid () {
@@ -520,7 +523,7 @@ export class TimeSeriesPlotter {
   render() {
     var data = this.allSeries(),
         sDomain, sRange;
-    this.chart = this.preRender();
+    this.preRender();
     // now that we have chart, configure axes:
     this._configAxes();
     // Bind data to selection, call this.chart function in context

@@ -16,14 +16,15 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
     super.preRender();
     this.placement = this.data.legend_placement;
     this.smallPlot = this.plotter.options.small;
+    this.tiny = this.plotter.options.tiny;
     this.loc = this._location();
     this.enabled = this._enabled();
     if (this.enabled) {
       this.initialPositioning();
     }
-    this.rowMax = (this.smallPlot) ? 2 : 4;
-    this.textSize = this.plotter.baseFontSize * 0.8;
-    if (this.data.series.length > 4 && !this.smallPlot) {
+    this.rowMax = ((this.tiny) ? 1 : (this.smallPlot) ? 2 : 4);
+    this.textSize = this.plotter.baseFontSize * ((this.tiny) ? 0.9 : 0.8);
+    if (this.data.series.length > 4 && !this.smallPlot && !this.tiny) {
       this.textSize *= 0.8;
     }
   }
@@ -34,10 +35,11 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
       */
     var loc = this.loc,
         isTop = this.loc === 'n',
+        tiny = this.tiny,
         plotWidth = this.plotter.plotWidth,
         legendHeight = (isTop) ? 30 : this.plotter.plotHeight,
         gridLeft = this.plotter.margins.left,
-        topWidth = plotWidth - gridLeft - this.margins.right,
+        topWidth = plotWidth - ((tiny) ? 10 : gridLeft) - this.margins.right,
         legendWidth = (isTop) ? topWidth : Math.floor(plotWidth * 0.2),
         legendMargin = Math.floor(0.01 * plotWidth),
         gridRight = plotWidth - legendWidth - legendMargin;
@@ -69,7 +71,8 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
   }
 
   _legendOrigin() {
-    return [this.left, this.top];  // x,y
+    var left = (this.plotter.options.tiny) ? 10 : this.left;
+    return [left, this.top];  // x,y
   }
 
   container() {
@@ -122,12 +125,13 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
   drawElement(series) {
     var color = series.color,
         label = series.title,
-        padding = Math.floor(this.plotter.plotWidth * 0.01),
+        tiny = this.tiny,
+        padding = Math.floor(this.plotter.plotWidth * ((tiny) ? 0.1 : 0.01)),
         innerPadding = Math.floor(padding/2),
         idx = series.position,
         group = this.mkElementGroup(idx, padding),
         groupY = 0 + ((this.loc === 'n') ? 1 : idx) * this.textSize,
-        colorBoxSize = Math.floor(this.plotter.plotWidth / 45),
+        colorBoxSize = Math.floor(this.plotter.plotWidth / ((tiny) ? 20 : 45)),
         textWidth = this.itemWidth - colorBoxSize - innerPadding * 3,
         text;
     // draw background rectangle (transparent by default, used for sizing)
@@ -153,7 +157,7 @@ export class BasicLegendRenderer extends BaseRenderingPlugin {
         x: innerPadding,
         y: groupY,
         width: colorBoxSize,
-        height: colorBoxSize
+        height: colorBoxSize * ((tiny) ? 2 : 1)
       })
       .style({
         fill: color

@@ -32,6 +32,17 @@ export var uuid4 = function () {
   });
 };
 
+export function urlArgs() {
+  var qs = window.location.search.slice(1),
+      pair = part => part.split('='),
+      pairs = qs.split('&').map(pair),
+      result = {};
+  pairs.forEach(function ([key, value]) {
+    result[key] = value;
+  });
+  return result;
+}
+
 export function parseDate(spec, useMoment) {
   /** parse date specification/stamp, strictly ISO 8601 if string, and assume
    *  any naive timestamp should be treated as UTC.  Returns Date if
