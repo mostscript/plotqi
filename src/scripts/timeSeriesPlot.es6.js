@@ -103,7 +103,7 @@ export class TimeSeriesPlotter {
 
   getOptions(o) {
     /** get options and/or load initial defaults */
-    o = o || {};
+    o = Object.create(o) || {};
     // interactive mode:
     o.interactive = (o.interactive === undefined) ? true : o.interactive;
     // Check for whether plot will be contained inside a compact layout:
