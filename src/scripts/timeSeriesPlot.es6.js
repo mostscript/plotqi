@@ -221,7 +221,7 @@ export class TimeSeriesPlotter {
     chart.xAxis.tickValues(this.tickVals);
     // y-axis:
     chart.yAxis
-      .tickFormat(d3.format(','))
+      .tickFormat(d3.format(',.0f'))
       .tickValues(yTickVals(5))
       .showMaxMin(false)
       .tickPadding(6);
