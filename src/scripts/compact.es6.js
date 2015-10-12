@@ -48,9 +48,67 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
     this.plotter.options.tiny = true;
   }
 
+  expandAll() {
+    window.plotqi.plotters.forEach(function (plotter) {
+      plotter.options.layout = 'normal';
+      plotter.options.interactive = true;
+      plotter.refresh();
+    });
+  }
+
+  contractAll() {
+    // first, mark state on all plotters as incomplete (needed for onComplete)
+    window.plotqi.plotters.forEach(function (plotter) {
+      plotter.complete = false;
+    });
+    // then re-render:
+    window.plotqi.plotters.forEach(function (plotter) {
+      plotter.options.layout = 'compact';
+      plotter.refresh();
+    });
+  }
+
+  hookupToggle() {
+    var control = d3.select('.upiq-report-control'),
+        hasControl = (!!control.size()),
+        hookedUp = hasControl && window.plotqi.compactControlReady,
+        alreadyCompact = this.enabled,
+        linkText = (alreadyCompact) ? 'Standard View' : 'Compact View',
+        href = (alreadyCompact) ? '#standard' : '#compact',
+        toggleState = alreadyCompact,
+        self = this,
+        link;
+    if (hasControl && !hookedUp) {
+      link = control
+        .append('a')
+        .classed('upiq-compact-toggle', true)
+        .attr({
+          href: href,
+          title: 'Enable or disable compact view'
+        })
+        .text(linkText);
+      link.on('click', function (d, i) {
+        var newState = !toggleState,
+            href = (newState) ? '#compact' : '#standard',
+            linkText = (newState) ? 'Standard View' : 'Compact View',
+            action = (newState) ? self.contractAll : self.expandAll;
+        link
+          .attr({
+            href: href
+          })
+          .text(linkText);
+        toggleState = newState;  // flip
+        action();
+      });
+      // finally set state to avoid duplication:
+      window.plotqi.compactControlReady = true; 
+    }
+  }
+
   preRender() {
     super.preRender();
     this.enabled = this.isEnabled();
+    this.hookupToggle();  // hookup regardless of initial state, if div
     if (this.enabled) {
       this.chart = this.plotter.chart;
       // ensure container marked as compact:

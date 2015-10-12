@@ -138,12 +138,18 @@ export function loadReports(opts) {
       safeInt = function (v) {
         v = parseInt(v, 10);
         return (!isNaN(v)) ? v : null;
-      };
+      },
+      hash = window.location.hash;
   // default options
   opts = opts || {};
   opts.interactive = opts.interactive || 'true';
   opts.prefix = opts.prefix || 'plot';
+  // initial page layout may come from options, querystring, or hash
   opts.layout = opts.layout || pageArgs.layout || 'normal';
+  if (hash) {
+    opts.layout = (hash === '#compact') ? 'compact' : opts.layout;
+    opts.layout = (hash === '#standard') ? 'normal' : opts.layout;
+  }
   // column count only applicable to compact mode:
   opts.columns = opts.columns || pageArgs.columns || 5;
   // Let the HTML drive what gets loaded: any element that contains
