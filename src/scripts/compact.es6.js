@@ -8,7 +8,7 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
 
   constructor(plotter) {
     super(plotter);
-    this.colcount = this.plotter.options.columns || 5;
+    this.colCount = this.plotter.options.columns || 5;
     this.container = d3.select(this.plotter.plotDiv[0][0].parentNode);
   }
 
@@ -18,7 +18,7 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
 
   sizeColumns() {
     var padding_mult = 0.89,
-        pct = Math.floor((100 / this.colcount) * padding_mult),
+        pct = Math.floor((100 / this.colCount) * padding_mult),
         spec = '' + pct + '%',
         clientWidth;
     this.plotDiv.style({
@@ -73,30 +73,44 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
         hasControl = (!!control.size()),
         hookedUp = hasControl && window.plotqi.compactControlReady,
         alreadyCompact = this.enabled,
-        linkText = (alreadyCompact) ? 'Standard View' : 'Compact View',
+        labelStandard = 'Standard',
+        labelCompact = 'Compact',
+        linkText = (alreadyCompact) ? labelStandard : labelCompact,
+        otherText = (!alreadyCompact) ? labelStandard : labelCompact,
         href = (alreadyCompact) ? '#standard' : '#compact',
         toggleState = alreadyCompact,
         self = this,
         link;
     if (hasControl && !hookedUp) {
+      control
+        .html('')
+        .append('span')
+          .classed('control-subtle', true)
+          .text('Layout: ');
+      control
+        .append('span')
+          .classed('control-current-layout', true)
+          .text(otherText);
+      control.append('span').classed('divider', true).text(' | '); 
       link = control
         .append('a')
         .classed('upiq-compact-toggle', true)
         .attr({
-          href: href,
-          title: 'Enable or disable compact view'
+          href: href
         })
         .text(linkText);
       link.on('click', function (d, i) {
         var newState = !toggleState,
             href = (newState) ? '#compact' : '#standard',
-            linkText = (newState) ? 'Standard View' : 'Compact View',
+            linkText = (newState) ? labelStandard : labelCompact,
+            otherText = (toggleState) ? labelStandard : labelCompact,
             action = (newState) ? self.contractAll : self.expandAll;
         link
           .attr({
             href: href
           })
           .text(linkText);
+        control.select('span.control-current-layout').text(otherText);
         toggleState = newState;  // flip
         action();
       });
@@ -144,6 +158,25 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
     }
   }
 
+  rowPlotters(plotter) {
+    var plotters = window.plotqi.plotters,
+        plotIdx = plotters.indexOf(plotter),
+        colCount = this.colCount,
+        plotRow = Math.floor(plotIdx / colCount);
+    return plotters.filter(function (p) {
+      var idx = plotters.indexOf(p),
+          sameRow = Math.floor(idx/colCount) === plotRow;
+      return sameRow;
+    });
+  }
+
+  rowHeight(plotter) {
+    var rowPlotters = this.rowPlotters(plotter);
+    return Math.ceil(
+      Math.max.apply(null, rowPlotters.map(p => p.plotHeight))
+    );
+  }
+
   adjustHeight(plotter) {
     var title = plotter.plotDiv.select('.plot-title'),
         titleHeight = title[0][0].getBoundingClientRect().height,
@@ -152,7 +185,7 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
     plotter.plotCore.style({
       'margin-top': `${Math.ceil(titleDifferential)}px`
     });
-    plotter.plotHeight = this.maxHeight;
+    plotter.plotHeight = this.rowHeight(plotter); //this.maxHeight;
     plotter.plotCore.style({
       height: '' + plotter.plotHeight + 'px'
     });
@@ -172,10 +205,10 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
   }
 
   allDone() {
-    var colcount = this.colcount,
+    var colCount = this.colCount,
         container = this.container,
         firstOfRow = this.container.selectAll('.plotdiv').filter(
-          (d, i) => (i % colcount === 0 && i !== 0) ? this : null
+          (d, i) => (i % colCount === 0 && i !== 0) ? this : null
         ),
         plotters = window.plotqi.plotters,
         maxHeight = Math.ceil(
