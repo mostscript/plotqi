@@ -4,12 +4,10 @@
 import {BaseRenderingPlugin} from './plugin';
 var d3 = require('d3');
 
-
 export class CompactLayoutPlugin extends BaseRenderingPlugin {
 
   constructor(plotter) {
     super(plotter);
-    this.enabled = this.isEnabled();
     this.colcount = this.plotter.options.columns || 5;
     this.container = d3.select(this.plotter.plotDiv[0][0].parentNode);
   }
@@ -52,6 +50,7 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
 
   preRender() {
     super.preRender();
+    this.enabled = this.isEnabled();
     if (this.enabled) {
       this.chart = this.plotter.chart;
       // ensure container marked as compact:
@@ -71,13 +70,19 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
   }
 
   plotClicked() {
-    //console.log('Clicked plot, TODO');  // TODO
+    var url = this.plotter.data.url || null;
+    if (url) {
+      // just open plot url in a new window
+      window.open(url, '_blank');
+    }
   }
 
   postRender() {
     var self = this;
     if (this.enabled && this.originally_interactive) {
-      // TODO allow for expansion on click of anywhere on plot:
+      this.svg.on('click', function (d, i) {
+        self.plotClicked();
+      });
     }
   }
 
