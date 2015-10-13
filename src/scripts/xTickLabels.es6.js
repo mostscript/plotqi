@@ -27,7 +27,7 @@ export class XTickLabelsRenderer extends BaseRenderingPlugin {
   mkGroup() {
     var group = this.plotGroup.selectAll('g.upiq-x-tick-labels').data([null]),
         isBar = this.type === 'bar',
-        linePlotFontSize = (this.tiny) ? '75%' : '90%',
+        linePlotFontSize = (this.plotter.plotWidth < 200) ? '75%' : '90%',
         tickVals = this.plotter.tickVals,
         columnWidth = this.scale(tickVals[1]) - this.scale(tickVals[0]),
         padLeft = (this.type === 'bar') ? Math.floor(columnWidth/2) + 1 : 5,
