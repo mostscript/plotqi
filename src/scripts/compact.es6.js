@@ -8,7 +8,7 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
 
   constructor(plotter) {
     super(plotter);
-    this.colCount = this.plotter.options.columns || 5;
+    this.colCount = this.plotter.options.columns || 4;
     this.container = d3.select(this.plotter.plotDiv[0][0].parentNode);
   }
 

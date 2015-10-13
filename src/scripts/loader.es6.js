@@ -151,7 +151,7 @@ export function loadReports(opts) {
     opts.layout = (hash === '#standard') ? 'normal' : opts.layout;
   }
   // column count only applicable to compact mode:
-  opts.columns = opts.columns || pageArgs.columns || 5;
+  opts.columns = opts.columns || pageArgs.columns || 4;
   // Let the HTML drive what gets loaded: any element that contains
   // class of 'report-core' and 'data-report-json' should get
   // loaded with the URL listed in data-report-json.
