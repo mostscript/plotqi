@@ -38,7 +38,7 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
   }
 
   markerSize(d) {
-    return (d.size || 8) * Math.pow(this.plotter.plotWidth / 150, 2);
+    return (d.size || 8) * Math.pow(this.plotter.plotWidth / 220, 2);
   }
 
   layoutAdjustments() {
