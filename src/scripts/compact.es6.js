@@ -30,7 +30,7 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
     this.plotter.plotHeight = Math.floor(clientWidth * 0.85);
     this.chart.width(this.plotter.plotWidth);    // width before margins
     this.chart.height(this.plotter.plotHeight);  // height before margins
-    this.plotter.baseFontSize = Math.max(11, Math.floor(clientWidth/45 * 2) / 2.0);
+    this.plotter.baseFontSize = Math.max(10, Math.floor(clientWidth/45 * 2) / 2.0);
     this.plotter.plotCore.style({
       'font-size': '' + this.plotter.baseFontSize + 'px',
       height: '' + this.plotter.plotHeight + 'px'
@@ -138,6 +138,8 @@ export class CompactLayoutPlugin extends BaseRenderingPlugin {
       if (this.data.chart_type === 'line') {
         this.plotter.chart.pointSize(this.markerSize.bind(this));
       }
+    } else {
+      this.container.classed('compact', false);
     }
   }
 
