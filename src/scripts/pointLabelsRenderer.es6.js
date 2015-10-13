@@ -197,6 +197,7 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
   render() {
     var considered = this.data.series.filter(s => (this.data.showLabels(s))),
         group = this.mkGroup();
+    if (this.plotter.options.tiny) return;
     considered.forEach(function (series) {
         this.renderSeries(series, group);
       },
