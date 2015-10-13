@@ -289,9 +289,12 @@ div.tinyOverlay.left .olControlBtn {
 
 div.report-core.compact {
 
+  .nonplot { display:none; }
+
   .plotdiv {
     
     border-left:1px solid #eee;
+    margin-left:1.85%;
 
     .plot-title {
       padding-left: 10px;
@@ -309,6 +312,15 @@ div.report-core.compact {
   
   .rowbreak {
     clear:both;
+  }
+
+  .plotdiv:hover {
+    background-color:#dad7ff;
+    cursor:pointer;
+  }
+
+  .plotdiv:hover h3 {
+    color:blue;
   }
 
 }
