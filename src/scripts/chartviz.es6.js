@@ -230,7 +230,7 @@ export class TimeSeriesChart extends MultiSeriesChart {
           points.map(datapoint=>datapoint.key).forEach(function (key) {
             var ms = key.valueOf();
             if (!isNaN(key) && found.indexOf(ms) === -1) {
-              if (autoCrop && key.valueOf() <= rightSide) {
+              if ((autoCrop && key.valueOf() <= rightSide) || !autoCrop) {
                 result.push(key);
                 found.push(ms);
               }
