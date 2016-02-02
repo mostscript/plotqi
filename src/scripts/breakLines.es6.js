@@ -1,6 +1,9 @@
 /*jshint esnext:true, eqnull:true, undef:true */
 /*globals require, window */
 
+
+var pathSegPolyfill = require('./vendor/pathseg');  // https://goo.gl/RAfPKC
+
 import {BaseRenderingPlugin} from './plugin';
 import {ColorTool} from './utils';
 
