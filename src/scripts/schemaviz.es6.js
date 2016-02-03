@@ -364,11 +364,6 @@ export class MultiSeriesChartSchema extends Schema {
                          '(optional; if not specified, calculate from '+
                          'available data on all contained series).',
             type: 'number',
-            constraint: function(value, obj) {
-              var max = (obj.range_max != null) ? obj.range_max : null;
-              if(value > max) throw new ValidationError(this, value, 'range_min must be less than or equal to range_max');
-              return value;
-            },
             required: false
           },
           range_max: {
@@ -377,11 +372,6 @@ export class MultiSeriesChartSchema extends Schema {
                          '(optional; if not specified, calculate from '+
                          'available data on all contained series).',
             type: 'number',
-            constraint: function(value, obj) {
-              var min = (obj.range_min != null) ? obj.range_min : null;
-              if(value < min) throw new ValidationError(this, value, 'range_max must be greater than or equal to range_min');
-              return value;
-            },
             required: false
           },
           units: {
@@ -528,9 +518,6 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
             type: Date,
             constraint: function(value, obj) {
               value = dateTypeConstraint(value);
-              var end = obj.end;
-              if(end == null) return value;
-              if(value > end) throw new ValidationError(this, value, 'Start date cannot be after end date');
               return value;
             },
             required: false
@@ -544,9 +531,6 @@ export class TimeSeriesChartSchema extends MultiSeriesChartSchema {
             type: Date,
             constraint: function(value, obj) {
               value = dateTypeConstraint(value);
-              var start = obj.start;
-              if(start == null) return value;
-              if(value < start) throw new ValidationError(this, value, 'End date cannot be before start date');
               return value;
             },
             required: false
