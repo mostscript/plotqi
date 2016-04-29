@@ -20,7 +20,13 @@ export var DEFAULT_COLORS = [
   '#FF7F50',
   '#FFD700',
   '#DA70D6',
-  '#008080'
+  '#008080',
+  '#FF1493',
+  '#6A5ACD',
+  '#708090',
+  '#FF6347',
+  '#66CDAA',
+  '#F08080'
 ];
 
 // uuid function via http://stackoverflow.com/a/2117523/835961

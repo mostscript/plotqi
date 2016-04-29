@@ -73,7 +73,8 @@ export class DataSeries extends Klass {
   get color() {
     var explicitColor = this._color,
         pos = (!explicitColor) ? this.position : null,
-        color = (explicitColor !== 'auto') ? explicitColor : DEFAULT_COLORS[pos];
+        defaultColor = DEFAULT_COLORS[pos] || '#999999',
+        color = (explicitColor !== 'auto') ? explicitColor : defaultColor;
     return color;
   }
 
