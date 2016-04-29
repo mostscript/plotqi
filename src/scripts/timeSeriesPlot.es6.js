@@ -72,12 +72,20 @@ var SEL_CHARTSVG = '.chart-svg';
 
 
 // registration of custom marker symbols for NVD3 1.7.x+
-nv.utils.symbolMap.set('x', function(size) {
-    size = Math.sqrt(size) * 1.8;
+nv.utils.symbolMap.set('x', function(specifiedSize) {
+    var size = Math.sqrt(specifiedSize) * 1.8;
     return 'M' + (-size/2) + ',' + (-size/2) +
             'l' + size + ',' + size +
             'm0,' + -(size) +
             'l' + (-size) + ',' + size;
+});
+
+nv.utils.symbolMap.set('plus', function(specifiedSize) {
+    var size = Math.sqrt(specifiedSize) * 1.8;
+    return 'M0,0' +
+            'l0,' + (size) +
+            'm' + (-size/2) + ',' + -(size/2) +
+            'l' + (size) + ',0';
 });
 
 
