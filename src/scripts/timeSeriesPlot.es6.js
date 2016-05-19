@@ -207,6 +207,21 @@ export class TimeSeriesPlotter {
     return plugin;
   }
 
+  computedInterval(value) {
+    /** Given maximum possible value, infer a display maximum, interval.
+      * Returns two-value array of max, interval.
+      */
+    var n, n_max=0, interval, m = Math;
+    // boundary check:
+    if (value <= 0 || value === Infinity) return [100, 20];  // safety
+    // normal inference:
+    for (n=1; n_max < value; n++) {
+      n_max = 10 * m.max(1, m.pow(10, m.floor((n - 1) / 5))) * ((n % 5) || 5);
+      interval = ([0,1].indexOf(n % 5) !== -1) ? n_max/5 : n_max / (n % 5);
+    }
+    return [n_max, interval];
+  }
+
   _configAxes() {
     var range = this.data.range,
         chart = this.chart,
@@ -216,11 +231,19 @@ export class TimeSeriesPlotter {
         yTickVals = n => {
           var out = [],
               interval = (range[1] - range[0]) / n,
+              inferred,
               i;
-          if (range[0] === range[1] && range[1] === 0) {
-            // range of [0,0] causes problem interval, infinite loop
+          if (range[0] === range[1] && range[1] <= 100) {
+            // e.g. range of [0,0] causes problem interval, infinite loop
             range = [0, 100];
             interval = 20;
+          }
+          console.log(this.data.range_max);
+          if (range[1] > 100 && !this.data.range_max) {
+            inferred = this.computedInterval(range[1]);
+            range = [0, inferred[0]];
+            interval = inferred[1];
+            console.log(inferred, range, interval);
           }
           for (i = range[0]; i <= range[1]; i += interval) {
             out.push(i);
