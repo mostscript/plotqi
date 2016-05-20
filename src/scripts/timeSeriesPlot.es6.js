@@ -238,12 +238,10 @@ export class TimeSeriesPlotter {
             range = [0, 100];
             interval = 20;
           }
-          console.log(this.data.range_max);
           if (range[1] > 100 && !this.data.range_max) {
             inferred = this.computedInterval(range[1]);
             range = [0, inferred[0]];
             interval = inferred[1];
-            console.log(inferred, range, interval);
           }
           for (i = range[0]; i <= range[1]; i += interval) {
             out.push(i);
