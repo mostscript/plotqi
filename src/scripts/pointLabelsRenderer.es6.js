@@ -36,13 +36,26 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
       return (!!considered.length);  // high-val labeled series gets room
   }
 
-  scalePoint(point) {
+  scalePoint(info) {
     /** return scaled point (plain) object */
-    var scaled = Object.create(point),  // wrap with orig point as proto
+    var point = info[0],
+        series = info[1],
+        scaled = Object.create(point),  // wrap with orig point as proto
+        timeStep = this.plotter.timeStep,
+        quarterly = (this.plotter.interval === 'month' && timeStep === 3),
+        interval = (quarterly) ? 'quarter' : this.plotter.interval,
         x = point.key.valueOf(),
+        periodEnd = moment.utc(x).endOf(interval).toDate(),
+        endX = Math.round(this.xScale(periodEnd.valueOf())),
+        width = endX - Math.round(this.xScale(x)),
+        barWidth = width / this.data.series.length,
+        barOffset = (series.position) * barWidth * 0.65 + (barWidth * 0.35),
         y = point.value;
     scaled.x = this.xScale(x);
     scaled.y = this.yScale(y);
+    if (this.plotter.data.chart_type === 'bar') {
+      scaled.x += barOffset;
+    }
     // default x2, y2 as label coordinate (default is used by bar chart, and
     // is above the marker data x,y):
     scaled.x2 = scaled.x + 5;
@@ -86,7 +99,7 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
         textSize = this.plotter.baseFontSize * 0.75;
     series.data.forEach(function (k, point) {
       if (point.value !== null) {
-        points.push(point);
+        points.push([point, series]);
       }
     }); // map to Array of points, filtering out null-valued
     scaledPoints = points.map(this.scalePoint, this);
@@ -196,7 +209,13 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
 
   render() {
     var considered = this.data.series.filter(s => (this.data.showLabels(s))),
-        group = this.mkGroup();
+        group = this.mkGroup(),
+        tickVals = this.plotter.tickVals;
+    // force continuous scale in case of oridinal scale via bar chart:
+    this.xScale = this.plotter.timeScale;
+    this.xMax = this.xScale(this.xScale.domain()[1].valueOf());
+    // column width interval based on sample of first data column, scaled:
+    this.columnInterval = this.xScale(tickVals[1]) - this.xScale(tickVals[0]);
     if (this.plotter.options.tiny) return;
     considered.forEach(function (series) {
         this.renderSeries(series, group);
