@@ -144,7 +144,9 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
           }
           point.x2 = point.x - b;
           point.y2 = point.y + a;
-          if (point.y2 > gridZero - textSize) {
+          if (point.y2 > gridZero || point.y2 < 0) {
+            point.hidden = true;
+          } else if (point.y2 > gridZero - textSize * 2) {
             point.y2 = point.y - a;
           }
         },
@@ -204,7 +206,9 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
       .style({
         fill: series.color,
       });
-    scaledPoints.forEach(p => this.renderPoint(p, seriesGroup, series));
+    scaledPoints
+      .filter(p => p.hidden !== true)
+      .forEach(p => this.renderPoint(p, seriesGroup, series));
   }
 
   render() {
