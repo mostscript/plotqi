@@ -88,11 +88,12 @@ export class DataSeries extends Klass {
 }
 
 export class TimeDataSeries extends DataSeries {
-  constructor(obj) {
+  constructor(obj, context) {
     obj = obj || {};
     obj.schema = obj.schema || timeDataSeriesSchema;
     super(obj);
     this.data = obj.data || [];
+    this.context = context;
   }
 
   get color() {
@@ -106,8 +107,25 @@ export class TimeDataSeries extends DataSeries {
     this._color = v;
   }
 
-  get data() {
+  rawData() {
+    /** uncropped all data for series */
     return this[dataSym];
+  }
+
+  get data() {
+    /** return data filtered to be within any meaningful domain crop */
+    var raw = this.rawData(),
+        [min, max] = this.croppedDomain,
+        result = raw;
+    if (this.context.auto_crop) {
+      result = d3.map();
+      raw.values().forEach(function (point) {
+        if (point.key >= min && point.key <= max) {
+          result.set(point.key.valueOf(), point);
+        }
+      });
+    }
+    return result;
   }
 
   set data(d) {
@@ -126,7 +144,14 @@ export class TimeDataSeries extends DataSeries {
   }
 
   get croppedDomain() {
-    var data = this.data.values().filter( datum => datum.value != null );
+    /** crop empty, crop deliberately excluded if plot opts for auto_crop */
+    var autoCrop = this.context.auto_crop,
+        start = this.context.start,
+        end = this.context.end,
+        data = this.rawData().values()
+          .filter( point => point.value != null )
+          .filter( point => (autoCrop && start) ? point.key >= start : true )
+          .filter( point => (autoCrop && end) ? point.key <= end : true);
     var min = moment.min(...data.map( d => parseDate(d.key, true) )).toDate();
     var max = moment.max(...data.map( d => parseDate(d.key, true) )).toDate();
     return [min, max];
