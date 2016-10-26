@@ -65,8 +65,8 @@ export class DataSeries extends Klass {
     var data = d3.map();
     d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
     .filter( (v, i) => (i === 0 || v.key != d[i-1].key) )
-    .map( datum => new DataPoint(datum) )
-    .forEach( datum => data.set(datum.key, datum) );
+    .map( point => new DataPoint(point) )
+    .forEach( point => data.set(point.key, point) );
     this[dataSym] = data;
   }
  
@@ -132,8 +132,8 @@ export class TimeDataSeries extends DataSeries {
     var data = d3.map();
     d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
     .filter( (v, i) => (i === 0 || v.key.toString() != d[i-1].key.toString()) )
-    .map( datum => new TimeDataPoint(datum) )
-    .forEach( datum => data.set(datum.key.valueOf(), datum) );
+    .map( point => new TimeDataPoint(point) )
+    .forEach( point => data.set(point.key.valueOf(), point) );
     this[dataSym] = data;
   }
 
@@ -193,9 +193,9 @@ export class MultiSeriesChart extends Klass {
 
   get keys() {
     var data = this.series.map( serum => serum.data )
-    .map( datum => datum.values() );
+    .map( point => point.values() );
     data = d3.merge(data);
-    return data.map( datum => datum.key );
+    return data.map( point => point.key );
   }
 
   fittedTrendline(series) {
