@@ -256,7 +256,7 @@ export class TimeSeriesPlotter {
     // y-axis:
     chart.yAxis
       .tickFormat(d3.format(',.0f'))
-      .tickValues(yTickVals(5))
+      .tickValues(yTickVals((range[1] < 5) ? Math.ceil(range[1]) : 5))
       .showMaxMin(false)
       .tickPadding(6);
     chart
