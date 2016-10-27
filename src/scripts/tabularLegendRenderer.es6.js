@@ -349,8 +349,10 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
           ) - timeScale(scaleDomain[0])) / padDenominator,
         xOffset = Math.round(this.margins.left + additionalPad),
         dataStart = this.data.domain[0],
+        defInterval = this.plotter.interval,
         quarterly = (this.plotter.interval === 'month' && timeStep === 3),
-        interval = (quarterly) ? 'quarter' : this.plotter.interval,
+        weekly = this.plotter.weekdays.indexOf(this.plotter.interval) !== -1,
+        interval = (quarterly) ? 'quarter' : (weekly) ? 'week' : defInterval,
         cellInfo = timePeriods.map(
           function (d) {
             var periodStart = d,

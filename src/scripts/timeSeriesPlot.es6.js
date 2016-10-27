@@ -45,11 +45,14 @@ window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
 // Map uu.chart frequency name to interval name (moment||d3.time), multiplier:
 var INTERVALS = {
   daily: [1, 'day'],
-  weekly: [1, 'week'],
+  weekly: [1, 'monday'],
   monthly: [1, 'month'],
   yearly: [1, 'year'],
   quarterly: [3, 'month'],
 };
+
+// Weekdays, needed vocab for d3 intervals:
+var WEEKDAYS = moment.weekdays().map(v => v.toLowerCase());
 
 // Class names:
 var SVG_CLASSNAME = 'upiq-chart chart-svg';
@@ -126,8 +129,24 @@ export class TimeSeriesPlotter {
     return o;
   }
 
+  _intervalConfig() {
+    var freq = this.data.frequency,
+        base = INTERVALS[freq || 'monthly'],
+        weekly = (freq === 'weekly'),
+        interval = base,
+        firstDate;
+    if (weekly && this.data.series && this.data.series[0].data.size()) {
+      // d3 forces funny dance with weekly, must specify day of week;
+      // otherwise, nvd3 will choke.
+      firstDate = moment.utc(this.data.series[0].data.values()[0].key);
+      // day of week, lower-case as interval for d3:
+      interval[1] = firstDate.locale('en-us').format('dddd').toLowerCase();
+    }
+    return interval;
+  }
+
   _loadConfig() {
-    var interval = INTERVALS[this.data.frequency || 'monthly'],
+    var interval = this._intervalConfig(),
         domain = this.data.domain,
         dValue = x => x.valueOf(),
         type = this.data.chart_type || 'line',
@@ -143,6 +162,8 @@ export class TimeSeriesPlotter {
     this.type = type;
     // whether plot is relative (not fixed-px) width:
     this.relativeWidth = (this.data.width_units == '%');
+    // Weekdays, used only for weekly freq/interval:
+    this.weekdays = WEEKDAYS;
     // intverval bits:
     this.timeStep = interval[0];
     this.interval = interval[1];
@@ -266,7 +287,9 @@ export class TimeSeriesPlotter {
 
   timeOffset(date, n) {
     /** n can be +/- integer for direction, number of intervals to offset */
-    return moment.utc(date).add(n * this.timeStep, this.interval).toDate();
+    var weekly = this.weekdays.indexOf(this.interval) !== -1,
+        interval = (weekly) ? 'week' : this.interval;
+    return moment.utc(date).add(n * this.timeStep, interval).toDate();
   }
 
   _margins() {
