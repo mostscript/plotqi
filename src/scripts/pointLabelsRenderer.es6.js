@@ -42,8 +42,10 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
         series = info[1],
         scaled = Object.create(point),  // wrap with orig point as proto
         timeStep = this.plotter.timeStep,
-        quarterly = (this.plotter.interval === 'month' && timeStep === 3),
-        interval = (quarterly) ? 'quarter' : this.plotter.interval,
+        defInterval = this.plotter.interval,
+        quarterly = (defInterval === 'month' && timeStep === 3),
+        weekly = (this.plotter.weekdays.indexOf(defInterval) !== -1),
+        interval = (quarterly) ? 'quarter' : (weekly) ? 'week' : defInterval,
         x = point.key.valueOf(),
         periodEnd = moment.utc(x).endOf(interval).toDate(),
         endX = Math.round(this.xScale(periodEnd.valueOf())),
@@ -51,6 +53,7 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
         barWidth = width / this.data.series.length,
         barOffset = (series.position) * barWidth * 0.65 + (barWidth * 0.35),
         y = point.value;
+    console.log(moment.utc(x), periodEnd, barWidth, this.data.series.length);
     scaled.x = this.xScale(x);
     scaled.y = this.yScale(y);
     if (this.plotter.data.chart_type === 'bar') {
@@ -152,6 +155,8 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
         },
         this
       );
+    } else {
+      console.log(scaledPoints);
     }
     return scaledPoints;
   }
