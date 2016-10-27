@@ -345,7 +345,7 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
         groupSpacing = (barChart) ? this.plotter.chart.groupSpacing() : 0.0,
         padDenominator = 2 + (groupSpacing * 0.2),
         additionalPad = (this.plotter.type === 'line') ? 0 : (timeScale(
-          this.plotter.timeOffset(scaleDomain[0], +1).valueOf() 
+          this.plotter.timeOffset(scaleDomain[0], +0.875).valueOf() 
           ) - timeScale(scaleDomain[0])) / padDenominator,
         xOffset = Math.round(this.margins.left + additionalPad),
         dataStart = this.data.domain[0],
