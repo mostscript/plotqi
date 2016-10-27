@@ -53,7 +53,6 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
         barWidth = width / this.data.series.length,
         barOffset = (series.position) * barWidth * 0.65 + (barWidth * 0.35),
         y = point.value;
-    console.log(moment.utc(x), periodEnd, barWidth, this.data.series.length);
     scaled.x = this.xScale(x);
     scaled.y = this.yScale(y);
     if (this.plotter.data.chart_type === 'bar') {
@@ -155,8 +154,6 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
         },
         this
       );
-    } else {
-      console.log(scaledPoints);
     }
     return scaledPoints;
   }
