@@ -597,6 +597,17 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     }
   }
 
+  _dailyPostFixups() {
+    var rows = this.legendGroup.selectAll('g.upiq-legend-row');
+    rows.each(function (d, i) {
+      var row = d3.select(this);
+      row.selectAll('g text.noValue').each(function (d, j) {
+        var cell = d3.select(d3.select(this).node().parentNode);
+        cell.remove();
+      });
+    });
+  }
+
   _postRender() {
     // adjustments as needed after rendering other bits
     var table = this.plotGroup.select(SEL_LEGEND),
@@ -614,6 +625,9 @@ export class TabularLegendRenderer extends BaseRenderingPlugin {
     table.attr({
       transform: `translate(5, ${tableOrigin})`,
     });
+    if (this.plotter.interval === 'day') {
+      this._dailyPostFixups();
+    }
   }
 
   render() {
