@@ -59,7 +59,7 @@ export class ContinuityLinesPlugin extends BaseRenderingPlugin {
     if (useDashes) {
       path.style({
         'stroke-dasharray': '4 4',
-        stroke: ColorTool.lighten(series.color, 0.33)
+        stroke: ColorTool.lighten(series.color, 0.2)
       });
     }
   }
@@ -81,7 +81,9 @@ export class ContinuityLinesPlugin extends BaseRenderingPlugin {
       segments.push(segList.getItem(i));
     }
     data = this.extractPathLineSegments(
-      segments.map(function (s) {
+      segments
+        .filter(s => s.pathSegTypeAsLetter !== 'z')
+        .map(function (s) {
         return `${s.pathSegTypeAsLetter}${s.x},${s.y}`;
         },
         this
