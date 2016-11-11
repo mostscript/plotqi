@@ -131,7 +131,7 @@ export function d3textWrap(text, width, paddingRightLeft, paddingTopBottom, igno
     var arrLineCreatedCount = [];
     text.each(function() {
         var text = d3.select(this),
-            words = text.text().split(' ').reverse(),
+            words = text.text().split(/[ ,]+/).reverse(),
             word,
             line = [],
             lineNumber = 0,
