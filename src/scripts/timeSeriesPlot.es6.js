@@ -30,7 +30,7 @@ window.plotqi.ADDITIONAL_PLUGINS = window.plotqi.ADDITIONAL_PLUGINS || [];
 
 // Core plugins:
 window.plotqi.RENDERING_PLUGINS = window.plotqi.RENDERING_PLUGINS || [
-  //AutoIntervalPlugin,
+  AutoIntervalPlugin,
   CompactLayoutPlugin,
   ContinuityLinesPlugin,
   GoalLineRenderer,

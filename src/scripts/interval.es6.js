@@ -38,8 +38,7 @@ export class AutoIntervalPlugin extends BaseRenderingPlugin {
   }
 
   setInterval(v) {
-    // TODO, needs more testing
-    //this.plotter._loadConfig(v);
+    this.plotter._loadConfig(v);
   }
 
   isSubMonthly() {
@@ -101,13 +100,13 @@ export class AutoIntervalPlugin extends BaseRenderingPlugin {
     /** return array of min, max spread of days between adjacent points */
     var segments = this._adjacencyList(points),
         daySpread = function (pair) {
-          var [a, b] = pair;
-          return (moment.utc(a.key) - moment.utc(b.key)) / DAY_MS;
+          var abs = Math.abs,
+              [a, b] = pair;
+          return abs((moment.utc(a.key) - moment.utc(b.key)) / DAY_MS);
         },
         spreads = segments.map(daySpread),
-        abs = Math.abs,
-        min = abs(Math.min.apply(null, spreads)),
-        max = abs(Math.max.apply(null, spreads));
+        min = Math.min.apply(null, spreads),
+        max = Math.max.apply(null, spreads);
     return [min, max];
   }
 
@@ -170,13 +169,13 @@ export class AutoIntervalPlugin extends BaseRenderingPlugin {
     var fourPerYearOrLess = this.detectAnnual(4),
         [min, max] = this.distanceDays(this.points),
         firstDay = this.dayOfMonths(this.points) === 1;
-    return firstDay && min > 63 && fourPerYearOrLess;
+    return firstDay && max <= 180 && min > 63 && fourPerYearOrLess;
   }
 
   detectBiMonthly() {
     var [min, max] = this.distanceDays(this.points),
         firstDay = this.dayOfMonths(this.points) === 1;
-    return firstDay && min <= 63;
+    return firstDay && max <= 63 && min >= 32;
   }
 
   inferInterval() {
