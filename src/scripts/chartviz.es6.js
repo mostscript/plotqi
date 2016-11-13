@@ -227,6 +227,7 @@ export class TimeSeriesChart extends MultiSeriesChart {
     obj.schema = obj.schema || timeSeriesChartSchema;
     super(obj);
     this.series = obj.series || [];
+    this.forceGenerated = [];
   }
 
   get series() {
@@ -283,7 +284,8 @@ export class TimeSeriesChart extends MultiSeriesChart {
   }
 
   dateFormat (key) {
-    var interval = INTERVALS[this.frequency][1],
+    var force = this.forceGenerated,
+        interval = (force) ? force[1] : INTERVALS[this.frequency][1],
         defaultFn = d => parseDate(d, true).format('M/D/YYYY'),
         fn = (interval === 'month') ? d3.time.format.utc('%b %Y') : defaultFn;
     return fn(parseDate(key));
@@ -298,11 +300,12 @@ export class TimeSeriesChart extends MultiSeriesChart {
         generated = d => ({key: d, label: this.dateFormat(dateKey)}),
         configured = ((d, ds) => ({key: d, label: this.labels[ds]})),
         dateStamp = stamp(dateKey),
+        forceGenerated = this.forceGenerated.length,
         considered = this.allDates().map(d => d.valueOf());
-    if (this.labels.hasOwnProperty(dateStamp)) {
+    if (!forceGenerated && this.labels.hasOwnProperty(dateStamp)) {
       return configured(dateKey, dateStamp);
     }
-    if (considered.indexOf(dateValue) !== -1) {
+    if (forceGenerated && considered.indexOf(dateValue) !== -1) {
       return generated(dateKey);
     }
     return {key: dateKey, label: ''};

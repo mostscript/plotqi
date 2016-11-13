@@ -20,6 +20,12 @@ export var INTERVALS = {
   yearly: [1, 'year'],
 };
 
+export var submonthly = function (v) {
+  var consider = v && v.length ===2,
+      unitsNotMonths = (consider) ? v[1] !== 'month' && v[1] !== 'year' : false;
+  return (v[0] === 0.5 || unitsNotMonths);
+};
+
 // d3 intervals for weeks need consistent day of week:
 export var WEEKDAYS = moment.weekdays().map(v => v.toLowerCase());
 

@@ -17,7 +17,7 @@ import {BasicLegendRenderer} from './basicLegend';
 import {PointHoverPlugin} from './hover';
 import {PointClickPlugin} from './click';
 import {CompactLayoutPlugin} from './compact';
-import {INTERVALS, WEEKDAYS, AutoIntervalPlugin} from './interval';
+import {INTERVALS, WEEKDAYS, submonthly, AutoIntervalPlugin} from './interval';
 
 // Set up namespace:
 window.plotqi = window.plotqi || {};
@@ -154,10 +154,15 @@ export class TimeSeriesPlotter {
     this.relativeWidth = (this.data.width_units == '%');
     // Weekdays, used only for weekly freq/interval:
     this.weekdays = WEEKDAYS;
-    // intverval bits:
+    // interval bits:
     this.timeStep = interval[0];
     this.interval = interval[1];
     this.d3Interval = d3.time[this.interval].utc;
+    // was interval overridden from auto-detection
+    if (intval && intval.length === 2 && submonthly(intval)) {
+      // submonthly auto-interval override:
+      this.data.forceGenerated = interval;
+    }
     // pad left/right with 0-1 periods of space:
     domain = [
       this.timeOffset(domain[0], leftSidePadding),
