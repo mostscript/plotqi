@@ -79,16 +79,17 @@ export class Field {
       }
     }
 
+    // set default if no value and defaultValue is in fact declared
+    if (normalized == null && this.defaultValue != null) {
+      normalized = this.defaultValue;
+    }
+
     if (this.required && (normalized == null)) {
-      if (this.defaultValue != null) {
-        normalized = this.defaultValue;
-      } else {
-        throw new ValidationError(
-          this,
-          normalized,
-          'Required fields cannot be null'
-        );
-      }
+      throw new ValidationError(
+        this,
+        normalized,
+        'Required fields cannot be null'
+      );
     }
 
     if (this.vocabulary && this.vocabulary.indexOf(normalized) === -1) {
