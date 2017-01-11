@@ -73,6 +73,12 @@ nv.utils.symbolMap.set('x', function(specifiedSize) {
             'l' + (-size) + ',' + size;
 });
 
+nv.utils.symbolMap.set('dash', function(specifiedSize) {
+    var size = Math.sqrt(specifiedSize) * 1.8;
+    return 'M' + (-size/2) + ',' + 0 +
+            'l' + size + ',' + 0;
+});
+
 nv.utils.symbolMap.set('plus', function(specifiedSize) {
     var size = Math.sqrt(specifiedSize) * 1.8;
     return 'M0,0' +
