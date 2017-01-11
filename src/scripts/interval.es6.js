@@ -150,8 +150,9 @@ export class AutoIntervalPlugin extends BaseRenderingPlugin {
   // multi-monthly detection methods:
 
   detectAnnual(split) {
-    var max = s => Math.max.apply(null, s),
+    var _max = s => Math.max.apply(null, s),
         yearPoints = d3.map(),
+        [min, max] = this.distanceDays(this.points),
         firstDay = this.dayOfMonths(this.points) === 1;
     this.points.forEach(function (p) {
       var d = moment.utc(p.key),
@@ -161,7 +162,7 @@ export class AutoIntervalPlugin extends BaseRenderingPlugin {
       }
       yearPoints.set(year, yearPoints.get(year) + 1);
     });
-    return firstDay && max(yearPoints.values()) <= (1 * (split || 1));
+    return firstDay && _max(yearPoints.values()) <= (1 * (split || 1)) && min >= 365;
   }
 
   detectSemiAnnual() {
