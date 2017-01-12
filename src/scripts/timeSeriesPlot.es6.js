@@ -100,7 +100,7 @@ export class TimeSeriesPlotter {
     this.chart = null;        // will be NVD3 chart obj
     this.plotCore = null;     // will be plot core inner div
     this.svg = null;          // will be svg inside the plot core div
-    // Interactive mode?
+    // Initialize plugins:
     this._initPlugins();
     // Completion flag may be used by onComplete() of plugins or external:
     this.complete = false;
