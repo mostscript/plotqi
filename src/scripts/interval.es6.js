@@ -16,7 +16,7 @@ export var INTERVALS = {
   monthly: [1, 'month'],
   bimonthly: [2, 'month'],
   quarterly: [3, 'month'],
-  semiannual: [2, 'year'],
+  semiannual: [0.5, 'year'],
   yearly: [1, 'year'],
 };
 
