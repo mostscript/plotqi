@@ -4,6 +4,7 @@
 var moment = require('moment');
 var d3 = require('d3');
 import {BaseRenderingPlugin} from './plugin';
+import {AnnualDataSeries} from './chartviz';
 
 var DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -227,11 +228,35 @@ export class AutoIntervalPlugin extends BaseRenderingPlugin {
     return result;
   }
 
+  adjustAnnualData() {
+    var data = this.plotter.data.series,
+        result = [];
+    // Copy original data to a place it could be introspected, if needed:
+    this.plotter.data.original_series = data.slice();
+    // Replace data with AnnualDataSeries objects in Array:
+    data.forEach(function (series) {
+        /** construct AnnualDataSeries to stand-in for the original series */
+        // hack to make autocrop relevant to data:
+        this.plotter.data.start = null;
+        result.push(new AnnualDataSeries(series, this.plotter.data));
+      },
+      this
+    ); 
+    this.plotter.data.series = result;
+    this.plotter.data.frequency = 'yearly';
+  }
+
   autodetect() {
+    var interval, annual;
     this.series = this.largestSeries();
     this.points = this.series.values();
     if (this.attemptAutoInterval()) {
-      this.setInterval(this.inferInterval());
+      interval = this.inferInterval();
+      annual = interval[0] === 1 && interval[1] === 'year';
+      if (annual) {
+        this.adjustAnnualData();
+      }
+      this.setInterval(interval);
     }
   }
 

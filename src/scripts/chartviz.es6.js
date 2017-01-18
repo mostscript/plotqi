@@ -129,11 +129,21 @@ export class TimeDataSeries extends DataSeries {
   }
 
   set data(d) {
-    var data = d3.map();
-    d.sort( (a, b) => (a.key > b.key) ? 1 : -1 )
-    .filter( (v, i) => (i === 0 || v.key.toString() != d[i-1].key.toString()) )
-    .map( point => new TimeDataPoint(point) )
-    .forEach( point => data.set(point.key.valueOf(), point) );
+    var data = d3.map(),
+        isMap = v => (v instanceof Object && typeof v.values === 'function'),
+        _key = function (point) {
+          return point.key.valueOf();
+        },
+        input = (isMap(d)) ? d.values() : d;
+    if (isMap(d)) {
+      this[dataSym] = d;
+      return;
+    }
+    input
+      .sort( (a, b) => (a.key > b.key) ? 1 : -1 )
+      .filter( (point, i) => (i === 0 || _key(point) != _key(input[i-1])) )
+      .map( point => new TimeDataPoint(point) )
+      .forEach( point => data.set(point.key.valueOf(), point) );
     this[dataSym] = data;
   }
 
@@ -157,6 +167,38 @@ export class TimeDataSeries extends DataSeries {
     return [min, max];
   }
 
+}
+
+export class AnnualDataSeries extends TimeDataSeries {
+  /** Takes ad-hoc annual series, and make more formal annual series on
+   *  construction, such that all keys/dates are keyed to the first of
+   *  the year in which they take place; constructing with duplicate
+   *  data points within any given calendar year will result in
+   *  a thrown error.
+   */ 
+  constructor(obj, context) {
+    var data = obj.rawData(),
+        points = data instanceof Array ? data : obj.data.values(),
+        adjusted = d3.map();
+    points.forEach(
+      function (p) {
+        var point = new TimeDataPoint(p),
+            key = point.key,
+            newKey = moment.utc(key).startOf('year'),
+            stamp = (d => parseDate(d).toISOString().split('T')[0]),
+            label = context.axisLabel(key);
+        point.key = newKey;
+        // adjust here
+        adjusted.set(newKey.valueOf(), point);
+        // use label against new key:
+        if (label && label.label && label.label.length) {
+          context.labels[stamp(newKey)] = label.label;
+        }
+      }
+    );
+    obj.data = adjusted;
+    super(obj, context);
+  }
 }
 
 export class MultiSeriesChart extends Klass {
@@ -235,7 +277,13 @@ export class TimeSeriesChart extends MultiSeriesChart {
   }
 
   set series(s) {
-    this[dataSym] = s.map( serum => new TimeDataSeries(serum, this) );
+    this[dataSym] = s.map(
+      function (dataSeries) {
+        var isSeries = (dataSeries instanceof TimeDataSeries);
+        return (isSeries) ? dataSeries : new TimeDataSeries(dataSeries, this);
+      },
+      this
+    );
     this[dataSym].map(function (series, index) {
         series.position = index;
       },
@@ -319,7 +367,8 @@ export class TimeSeriesChart extends MultiSeriesChart {
         timeStep = INTERVALS[this.frequency][0],
         interval = INTERVALS[this.frequency][1],
         quarterly = interval === 'month' && timeStep === 3,
-        intervalName = (quarterly) ? 'quarter' : interval,
+        annual = interval === 'year' && timeStep === 3,
+        intervalName = (quarterly) ? 'quarter' : (annual) ? 'year' : interval,
         ceiling = d => moment.utc(d).endOf(intervalName).toDate(),
         floor = d => moment.utc(d).startOf(intervalName).toDate();
     if (explicitStart && explicitEnd) {
@@ -343,7 +392,6 @@ export class TimeSeriesChart extends MultiSeriesChart {
   }
 
 }
-
 
 export function Chart(data) {
   return data.x_axis_type === 'date' ? new TimeSeriesChart(data) : new MultiSeriesChart(data);
