@@ -228,6 +228,21 @@ export class AutoIntervalPlugin extends BaseRenderingPlugin {
     return result;
   }
 
+  allPoints() {
+    /** to be used in lieu of this.largestSeries() when largest series has
+     *  fewer than two points
+     */
+    var result = d3.map();
+    this.plotter.data.series.forEach(function(s) {
+      s.data.values().forEach(function (point) {
+        if (point.value != null) {
+          result.set(point.key, point);
+        }
+      });
+    });
+    return result;
+  }
+
   adjustAnnualData() {
     var data = this.plotter.data.series,
         result = [];
@@ -250,6 +265,11 @@ export class AutoIntervalPlugin extends BaseRenderingPlugin {
     var interval, annual;
     this.series = this.largestSeries();
     this.points = this.series.values();
+    // special case if largest series length is one, we might need to infer
+    // from more series:
+    if (this.series.size() < 2) {
+      this.series = this.allPoints();
+    }
     if (this.attemptAutoInterval()) {
       interval = this.inferInterval();
       annual = interval[0] === 1 && interval[1] === 'year';
