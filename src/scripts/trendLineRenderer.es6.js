@@ -5,6 +5,7 @@ var d3 = require('d3');
 var moment = require('moment');
 
 import {BaseRenderingPlugin} from './plugin';
+import {ColorTool} from './utils';
 
 
 export class TrendLineRenderer extends BaseRenderingPlugin {
@@ -73,7 +74,10 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
             rise = (y2 - y1),
             run = (x2 - x1),
             slope = rise/run,
+            lineColor = line.trend_color,
             markerRotation = Math.atan(slope) * (180/Math.PI);
+
+        lineColor = (lineColor === 'Auto') ? '#CCCCCC' : lineColor;
 
         this.plotGroup.select('defs')
           .append('marker')
@@ -89,7 +93,7 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
           .append('path')
             .attr({
               d: 'M 0 0 L 10 5 L 0 10 L 0 0 Z',
-              fill: line.trend_color,
+              fill: ColorTool.darken(lineColor, 0.25),
               opacity: 0.5
             });
 
@@ -104,7 +108,7 @@ export class TrendLineRenderer extends BaseRenderingPlugin {
         group.append('path')
           .attr({
             d: lineFn(data),
-            stroke: line.trend_color,
+            stroke: lineColor,
             'stroke-width': line.trend_width,
             'marker-mid': (midMarkers) ? `url(#trendmarker-${idx})` : undefined,
             fill: 'none'
