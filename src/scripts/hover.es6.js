@@ -44,6 +44,7 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
         borderColor = series.color,
         [x, y] = this.scaledCoordinates(dataPoint),
         useLeft = x < (this.plotter.plotWidth * 0.85),
+        useTop = y > (this.plotter.plotHeight * 0.75),
         fontSize = Math.max(10, this.plotter.baseFontSize * 0.7),
         overlay,
         pad,
@@ -68,6 +69,7 @@ export class PointHoverPlugin extends BaseRenderingPlugin {
     w = this.plotter.plotWidth;
     pad = Math.max(5, w * 0.02) * ((this.plotter.type === 'bar') ? 1.8 : 1);
     x = Math.floor((useLeft) ? x + pad : x);
+    y = Math.floor((useTop) ? y - (pad*2.15) : y);
     // create on-hover overlay:
     overlay = this.plotCore.append('div')
       .classed('point-hover-tip', true)
