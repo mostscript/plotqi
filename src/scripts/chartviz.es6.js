@@ -130,7 +130,12 @@ export class TimeDataSeries extends DataSeries {
 
   set data(d) {
     var data = d3.map(),
-        isMap = v => (v instanceof Object && typeof v.values === 'function'),
+        isArray = v => (v instanceof Array),
+        isMap = v => (
+          !isArray(v) &&
+          v instanceof Object &&
+          typeof v.values === 'function'
+          ),
         _key = function (point) {
           return point.key.valueOf();
         },
