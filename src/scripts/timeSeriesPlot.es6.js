@@ -245,7 +245,8 @@ export class TimeSeriesPlotter {
   }
 
   _configAxes() {
-    var range = this.data.range,
+    var range = [Math.floor(this.data.range[0]), Math.ceil(this.data.range[1])],
+        rangeSpread = range[1] - range[0],
         chart = this.chart,
         labelFn = d => this.data.axisLabel(d).label,
         tabular = this.data.legend_placement === 'tabular',
@@ -278,7 +279,7 @@ export class TimeSeriesPlotter {
     // y-axis:
     chart.yAxis
       .tickFormat(d3.format(',.0f'))
-      .tickValues(yTickVals((range[1] < 5) ? Math.ceil(range[1]) : 5))
+      .tickValues(yTickVals((rangeSpread < 5) ? rangeSpread : 5))
       .showMaxMin(false)
       .tickPadding(6);
     chart
