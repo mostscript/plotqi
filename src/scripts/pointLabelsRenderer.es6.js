@@ -98,9 +98,15 @@ export class PointLabelsRenderer extends BaseRenderingPlugin {
     var points = [],
         scaledPoints = [],
         gridZero = this.plotter.gridHeight() + this.margins.top,
+        seenLabels = [],
         textSize = this.plotter.baseFontSize * 0.75;
     series.data.forEach(function (k, point) {
+      var axisLabel;
       if (point.value !== null) {
+        // de-duplicate on display label frequency; one point per x-axis label
+        axisLabel = series.context.axisLabel(point.key).label;
+        if (seenLabels.indexOf(axisLabel) !== -1) return;
+        seenLabels.push(axisLabel);
         points.push([point, series]);
       }
     }); // map to Array of points, filtering out null-valued
